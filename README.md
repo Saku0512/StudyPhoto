@@ -1,2 +1,6 @@
 # ChildApp
-App for child to dicrease car accident
+児童の交通安全推進アプリを作る。
+two-afcディレクトリの中の、apps-for-childrenディレクトリで基本操作してほしい。
+今どうゆうものを作るかはまだ決まってないから、「お問い合わせ」だけ作ってる。
+
+随時更新するので必ず読んでほしい。
