@@ -19,7 +19,7 @@ $ git checkout -b hoge //編集をするときに適当な名前の役割を作�
 <br>
 STEP2:githubに変更内容を反映させる<br>
 $ git add . && git commit -m "hoge" <br>
-// hogeの部分は"[自分の名前] 変更内容"の書式で書いてほしい<br>
-$ git push origin develop //githubに反映させる。<br>
+// hogeの部分は"[自分の名前] 月/日 変更内容"の書式で書いてほしい<br>
+$ git push origin hoge //githubに反映させる。<br>
 githubのPull requestタブをクリック。New pull requestをクリック。<br>
 base:をdevelop,compare:をSTEP1で作成したhogeにする。<br>
