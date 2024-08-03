@@ -32,3 +32,5 @@ $ git fetch origin //githubの変更内容を取得する<br>
 $ git merge origin/develop //githubの変更内容を反映させる。<br>
 ※うまくmergeされない時がある。その時は自分でファイルを編集し、反映させる。<br>
 
+<firebaseの使い方><br>
+今回の開発はfirebaseというのもを使った行っている。
