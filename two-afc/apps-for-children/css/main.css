@@ -7,6 +7,7 @@ body{
   padding: 0;
   font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", メイリオ, Meiryo, "ＭＳ Ｐゴシック", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: #e6e6e6;
+  background: #3b4465;
 }
 
 header{
@@ -41,7 +42,7 @@ textarea{
 
 h1{
   margin: 0; padding: 0;
-  font-size: 20px;
+  font-size: 1.4rem;
 }
 
 a{
@@ -61,14 +62,16 @@ ul {
 
 li {
   margin: 0 0 0 15px;
-  font-size: 14px;
+  font-size: 1.2rem;
 }
+
 
 .Form {
   margin-top: 40px;
   margin-left: auto;
   margin-right: auto;
   max-width: 720px;
+  color: #fff;
 }
 
 
@@ -82,7 +85,7 @@ li {
   text-align: center;
   background: #5bc8ac;
   color: #fff;
-  font-size: 14px;
+  font-size: 1.2rem;
 }
 
 .Form-Btn{
@@ -98,7 +101,7 @@ li {
   background: #5bc8ac;
   color: #fff;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 1.2rem;
 }
 
 .Form-Item-Textarea {
@@ -112,7 +115,7 @@ li {
   width: 100%;
   max-width: 410px;
   background: #eaedf2;
-  font-size: 20px;
+  font-size: 1.2rem;
 }
 
 .Form-Item-Label {
@@ -120,7 +123,7 @@ li {
   max-width: 248px;
   letter-spacing: 0.05em;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 1.22rem;
 }
 
 .Form-Item:nth-child(5) {
