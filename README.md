@@ -23,3 +23,11 @@ $ git add . && git commit -m "hoge" <br>
 $ git push origin hoge //githubに反映させる。<br>
 githubのPull requestタブをクリック。New pull requestをクリック。<br>
 base:をdevelop,compare:をSTEP1で作成したhogeにする。<br>
+Creat pull requestを押す。右下のCreat pull requestを押す。<br>
+Merge pull requestを押す。Confirm mergeを押す。<br>
+編集を終了する時は、Delete branchを押してhogeを消す。
+
+STEP++:他の人が編集し、githubに反映させた後に自分の実行環境にほかの人の編集内容を反映させる。<br>
+$ git fetch origin //githubの変更内容を取得する<br>
+$ git merge origin/develop //githubの変更内容を反映させる。<br>
+※うまくmergeされない時がある。その時は自分でファイルを編集し、反映させる。
