@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja" class="mdl-js">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/login.css" />
-    <script src="../js/login.js" defer></script>
+    <link rel="stylesheet" href="../css/main.css" />
     <script src="../js/current-header.js" defer></script>
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+  <link href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" rel="stylesheet" type="text/css">
+
     <title>子供アプリ</title>
   </head>
   <body>
@@ -24,53 +27,89 @@
         </ul>
       </nav>
     </header>
-    <section class="forms-section">
-      <div class="forms">
-        <div class="form-wrapper is-active">
-          <button type="button" class="switcher switcher-login">
-            Login
-            <span class="underline"></span>
-          </button>
-          <form class="form form-login">
-            <fieldset>
-              <legend>Please, enter your email and password for login.</legend>
-              <div class="input-block">
-                <label for="login-email">E-mail</label>
-                <input id="login-email" type="email" required>
-              </div>
-              <div class="input-block">
-                <label for="login-password">Password</label>
-                <input id="login-password" type="password" required>
-              </div>
-            </fieldset>
-            <button type="submit" class="btn-login">Login</button>
-          </form>
-        </div>
-        <div class="form-wrapper">
-          <button type="button" class="switcher switcher-signup">
-            Sign Up
-            <span class="underline"></span>
-          </button>
-          <form class="form form-signup">
-            <fieldset>
-              <legend>Please, enter your email, password and password confirmation for sign up.</legend>
-              <div class="input-block">
-                <label for="signup-email">E-mail</label>
-                <input id="signup-email" type="email" required>
-              </div>
-              <div class="input-block">
-                <label for="signup-password">Password</label>
-                <input id="signup-password" type="password" required>
-              </div>
-              <div class="input-block">
-                <label for="signup-password-confirm">Confirm password</label>
-                <input id="signup-password-confirm" type="password" required>
-              </div>
-            </fieldset>
-            <button type="submit" class="btn-signup">Continue</button>
-          </form>
+    <main>
+      <div id="auth" lang="en">
+        <div class="firebaseui-container firebaseui-page-provider-sign-in firebaseui-id-page-provider-sign-in firebaseui-use-spinner">
+          <div class="firebaseui-card-content">
+            <form onsubmit="return false;">
+              <ul class="firebaseui-idp-list">
+                <li class="firebaseui-list-item">
+                  <button class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-google firebaseui-id-idp-button" data-provider-id="google.com" data-upgraded=",MaterialButton">
+                    <span class="firebaseui-idp-icon-wrapper">
+                      <img class="firebaseui-idp-icon" alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+                    </span>
+                    <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Google</span>
+                    <span class="firebaseui-idp-text firebaseui-idp-text-short">Google</span>
+                  </button>
+                </li>
+              </ul>
+            </form>
+          </div>
+          <div class="firebaseui-card-footer firebaseui-provider-sign-in-footer">
+            <p class="firebaseui-tos firebaseui-tospp-full-message">By continuing, you are indicating that you accept our 
+              <a href="javascript:void(0)" class="firebaseui-link firebaseui-tos-link" target="_blank">Terms of Service</a> and <a href="javascript:void(0)" class="firebaseui-link firebaseui-pp-link" target="_blank">Privacy Policy</a>.</p>
+          </div>
         </div>
       </div>
-    </section>
+     <script src="/__/firebase/7.16.0/fireabse-app.js"></script>
+     <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
+     <script src="/__/firebase/init.js"></script>
+     <script type="text/javascript" >
+      /*
+      Firebase Authentcation を使った認証サンプル 01
+      Firebase Authentication UI を使い、サインイン用のUIを生成
+      ポップアップウィンドウで認証画面を表示、サインイン後元の画面に移動
+      サインアウト ボタンと、Googleの表示名をウェルカムメッセージとして表示
+      サインアウト 用の関数「signOut」を定義
+      */
+
+      const ui = new firebaseui.auth.AuthUI(firebase.auth());
+      const uiConfig = {
+      callbacks: {
+        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+          return true;
+        },
+      },
+      signInFlow: 'popup',
+      signInSuccessUrl: 'auth-sample01.html',
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.google.com,
+      ],
+      tosUrl: 'sample01.html',
+      privacyPolicyUrl: 'auth-sample01.html'
+      };
+
+     ui.start('#auth', uiConfig);
+
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            const signOutMessage = `
+            <p>Hello, ${user.displayName}!<\/p>
+            <button type="submit"  onClick="signOut()">サインアウト<\/button>
+            `;
+            document.getElementById('auth').innerHTML =  signOutMessage;
+            console.log('ログインしています');
+
+        } 
+      });
+
+      function signOut() {
+      firebase.auth().onAuthStateChanged(user => {
+        firebase
+          .auth()
+          .signOut()
+          .then(() => {
+            console.log('ログアウトしました');
+            location.reload();
+          })
+          .catch((error) => {
+            console.log(`ログアウト時にエラーが発生しました (${error})`);
+          });
+      });
+      }
+     </script>
+     <iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="0" vspace="0" width="100%" id="I0_1722830828914" name="I0_1722830828914" src="https://todomanage.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBpsDFnHBigy3oyBMK_DkcJivLU1eKE1uk&amp;appName=%5BDEFAULT%5D-firebaseui-temp&amp;v=7.16.0&amp;fw=FirebaseUI-web&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.ja.IfFKYUfIZLk.O%2Fam%3DAAAg%2Fd%3D1%2Frs%3DAHpOoo_c5rNBC58cVDIPH1o37KDDt6N1dA%2Fm%3D__features__#id=I0_1722830828914&amp;_gfid=I0_1722830828914&amp;parent=https%3A%2F%2Ftodomanage.web.app&amp;pfname=&amp;rpctoken=37908497" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe>
+
+    </main>
   </body>
 </html>
