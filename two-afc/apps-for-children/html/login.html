@@ -2,20 +2,18 @@
 <html lang="ja" class="mdl-js">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/main.css" />
     <script src="../js/current-header.js" defer></script>
     <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-  <link href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" rel="stylesheet" type="text/css">
-
+    <link href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" rel="stylesheet" type="text/css">
     <title>子供アプリ</title>
   </head>
   <body>
     <header>
-      <!--<div class="logo">
-        <img src="" alt=""> 
-      </div>-->
       <h1><a href="index.html">児童保護</a></h1>
       <nav class="pc-nav">
         <ul class="header-nav">
@@ -51,26 +49,8 @@
           </div>
         </div>
       </div>
-     <script src="/__/firebase/7.16.0/firebase-app.js"></script>
-     <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
-     <script src="/__/firebase/init.js"></script>
-     <script type="text/javascript" >
-      /*
-      Firebase Authentcation を使った認証サンプル 01
-      Firebase Authentication UI を使い、サインイン用のUIを生成
-      ポップアップウィンドウで認証画面を表示、サインイン後元の画面に移動
-      サインアウト ボタンと、Googleの表示名をウェルカムメッセージとして表示
-      サインアウト 用の関数「signOut」を定義
-      */
-
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "firebase/app";
-      import { getAnalytics } from "firebase/analytics";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
-
+     <script>
       // Your web app's Firebase configuration
-      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
       const firebaseConfig = {
         apiKey: "AIzaSyAqFYLZnIX-K_BTnl2eVbwyyol2WIYXTr8",
         authDomain: "apps-for-children-b2c4a.firebaseapp.com",
@@ -82,56 +62,47 @@
       };
 
       // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
+      firebase.initializeApp(firebaseConfig);
 
+      // Initialize the FirebaseUI Widget using Firebase.
       const ui = new firebaseui.auth.AuthUI(firebase.auth());
+
       const uiConfig = {
-      callbacks: {
-        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-          return true;
+        callbacks: {
+          signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+            return true;
+          },
         },
-      },
-      signInFlow: 'popup',
-      signInSuccessUrl: 'auth-sample01.html',
-      signInOptions: [
-        firebase.auth.GoogleAuthProvider.google.com,
-      ],
-      tosUrl: 'sample01.html',
-      privacyPolicyUrl: 'auth-sample01.html'
+        signInFlow: 'popup',
+        signInSuccessUrl: 'auth-sample01.html',
+        signInOptions: [
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        ],
+        tosUrl: 'sample01.html',
+        privacyPolicyUrl: 'auth-sample01.html'
       };
 
-     ui.start('#auth', uiConfig);
+      ui.start('#auth', uiConfig);
 
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            const signOutMessage = `
+          const signOutMessage = `
             <p>Hello, ${user.displayName}!<\/p>
-            <button type="submit"  onClick="signOut()">サインアウト<\/button>
-            `;
-            document.getElementById('auth').innerHTML =  signOutMessage;
-            console.log('ログインしています');
-
-        } 
+            <button type="submit"  onClick="signOutUser()">サインアウト<\/button>
+          `;
+          document.getElementById('auth').innerHTML = signOutMessage;
+        }
       });
 
-      function signOut() {
-      firebase.auth().onAuthStateChanged(user => {
-        firebase
-          .auth()
-          .signOut()
-          .then(() => {
-            console.log('ログアウトしました');
-            location.reload();
-          })
-          .catch((error) => {
-            console.log(`ログアウト時にエラーが発生しました (${error})`);
-          });
-      });
+      function signOutUser() {
+        firebase.auth().signOut().then(() => {
+          console.log('ログアウトしました');
+          location.reload();
+        }).catch((error) => {
+          console.log(`ログアウト時にエラーが発生しました (${error})`);
+        });
       }
      </script>
-     <iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="0" vspace="0" width="100%" id="I0_1722830828914" name="I0_1722830828914" src="https://todomanage.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyBpsDFnHBigy3oyBMK_DkcJivLU1eKE1uk&amp;appName=%5BDEFAULT%5D-firebaseui-temp&amp;v=7.16.0&amp;fw=FirebaseUI-web&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.ja.IfFKYUfIZLk.O%2Fam%3DAAAg%2Fd%3D1%2Frs%3DAHpOoo_c5rNBC58cVDIPH1o37KDDt6N1dA%2Fm%3D__features__#id=I0_1722830828914&amp;_gfid=I0_1722830828914&amp;parent=https%3A%2F%2Ftodomanage.web.app&amp;pfname=&amp;rpctoken=37908497" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe>
-
     </main>
   </body>
 </html>
