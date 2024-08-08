@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "apps-for-children-b2c4a"
-  }
+    "firebase": "apps-for-children-b2c4a"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
