@@ -12,6 +12,18 @@ $ sudo apt install git //gitを入れる<br>
 $ mkdir hoge //作業用のディレクトリを作る<br>
 $ cd hoge<br>
 $ git clone https://github.com/ComonRaven/ChildApp.git //githubの中身を自分の実行環境にコピーする<br>
+上のcloneで行けなかった場合は、下のほうでやって<br> <br>
+$ sudo apt install git <br>
+$ mkdir hoge <br>
+$ cd ~/.ssh //デフォルトでなければ作成 <br>
+$ ssh-keygen -t rsa //なんか聞かれたらEnterを連打 <br>
+$ less id_rsa.pub //最後のメールアドレス以外をコピー <br>
+githubを開き、自分のアイコン→settings→SSH and GPG keys→New SSH key <br>
+titleは適当でいい。typeはAuthentication Key。Keyに先ほどコピーしたid_rsa.pubをペースト。Add SSH keyをクリック。<br>
+接続確認 <br>
+$ cd hoge <br>
+$ ssh -T git@github.com //Hi ユーザー名! You've successfully authenticated, but GitHub does not provide shell access.って表示されたらok <br>
+$ git clone git@github.com:ComonRaven/ChildApp.git <br>
 <br>
 STEP1:自分の実行環境でコード等の編集を行う。<br>
 $ git checkout -b develop //developという役割を作成し、developに変更する。デフォルトではmainになっているはず。<br>
