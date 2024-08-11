@@ -24,9 +24,9 @@
       </nav>
     </header>
     <main>
-      <h1>Firebase Authenction Sample 01</h1>
+      
       <div id="auth" lang="en">
-        <div class="firebaseui-container firebaseui-page-provider-sign-in firebaseui-id-page-provider-sign-in firebaseui-use-spinner"><div class="firebaseui-card-content">
+<!--        <div class="firebaseui-container firebaseui-page-provider-sign-in firebaseui-id-page-provider-sign-in firebaseui-use-spinner"><div class="firebaseui-card-content">
           <form onsubmit="return false;">
             <ul class="firebaseui-idp-list">
               <li class="firebaseui-list-item">
@@ -44,9 +44,9 @@
         <div class="firebaseui-card-footer firebaseui-provider-sign-in-footer">
           <p class="firebaseui-tos firebaseui-tospp-full-message">By continuing, you are indicating that you accept our 
             <a href="javascript:void(0)" class="firebaseui-link firebaseui-tos-link" target="_blank">Terms of Service</a> and <a href="javascript:void(0)" class="firebaseui-link firebaseui-pp-link" target="_blank">Privacy Policy</a>.</p>
-          </div>
-        </div>
-      </div>
+          </div> 
+        </div> -->
+      </div> 
   <script src="/__/firebase/7.16.0/firebase-app.js"></script> 
   <script src="/__/firebase/7.16.0/firebase-auth.js"></script> 
   <script src="/__/firebase/init.js"></script> 
@@ -70,9 +70,9 @@
   },
   signInFlow: 'popup',
   signInSuccessUrl: 'auth-sample01.html',
-  signInOptions: [
+  /*signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-  ],
+  ],*/
   tosUrl: 'sample01.html',
   privacyPolicyUrl: 'auth-sample01.html'
   };
@@ -81,7 +81,8 @@
 
   ui.start('#firebaseui-auth-container', {
     signInOptions: [
-      firebase.auth.EmailAuthProvider.PROVIDER_ID
+      firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID
     ],
     // Other config options...
   });
