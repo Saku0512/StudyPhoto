@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "apps-for-children-b2c4a",
+    "site": "apps-for-children",
     "public": "apps-for-children",
     "ignore": [
       "firebase.json",
