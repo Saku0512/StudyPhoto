@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter/widgets.dart' show TargetPlatform;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -30,8 +31,7 @@ class DefaultFirebaseOptions {
         return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+          'DefaultFirebaseOptions are not supported for this platform.',
         );
       default:
         throw UnsupportedError(
@@ -85,5 +85,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'flutter-childapp.appspot.com',
     measurementId: 'G-D8Z7XS0TMQ',
   );
-
 }
