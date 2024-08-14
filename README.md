@@ -6,6 +6,7 @@ two-afcディレクトリの中の、apps-for-childrenディレクトリで基�
 随時更新するので必ず読んでほしい。<br>
 <br>
 <git,githubの使い方><br>
+詳しくは右のサイト→ https://qiita.com/renesisu727/items/248cb9468a402c622003 <br>
 <br>
 STEP0:githubのコードを自分の作業環境に持ってくる<br>
 $ sudo apt install git //gitを入れる<br>
