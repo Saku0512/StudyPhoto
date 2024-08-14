@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "apps-for-children",
+    "public": "apps-for-children",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
