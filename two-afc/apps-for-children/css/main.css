@@ -161,6 +161,7 @@ li {
   border: 4px solid #f50000;
 }
 
+/*ポップアップ操作*/
 .popup{
   display: none;
   position: fixed;
