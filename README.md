@@ -6,15 +6,15 @@ two-afcディレクトリの中の、apps-for-childrenディレクトリで基�
 随時更新するので必ず読んでほしい。<br>
 <br>
 進捗<br>
-<del> ・Google認証 </del> <br>
-・課金画面 <br>
-・ホーム画面 <br>
-・私たちについて <br>
-・サービス <br>
-・クイズ画面 <br>
-・クイズ実装 <br>
-<del> ・お問い合わせ </del> <br>
-<del> ・ログアウト </del> <br>
+・<del> Google認証 </del> <br>
+・ 課金画面 <br>
+・ ホーム画面 <br>
+・ 私たちについて <br>
+・ サービス <br>
+・ クイズ画面 <br>
+・ クイズ実装 <br>
+・<del> お問い合わせ </del> <br>
+・<del> ログアウト </del> <br>
 <br>
 <git,githubの使い方><br>
 詳しくは右のサイト→ https://qiita.com/renesisu727/items/248cb9468a402c622003 <br>
