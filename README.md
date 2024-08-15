@@ -11,8 +11,6 @@ two-afcディレクトリの中の、apps-for-childrenディレクトリで基�
 ・ ホーム画面 <br>
 ・ 私たちについて <br>
 ・ サービス <br>
-・ クイズ画面 <br>
-・ クイズ実装 <br>
 ・<del> お問い合わせ </del> <br>
 ・<del> ログアウト </del> <br>
 <br>
