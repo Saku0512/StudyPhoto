@@ -54,7 +54,7 @@ Merge pull requestを押す。Confirm mergeを押す。<br>
 編集を終了する時は、Delete branchを押してhogeを消す。<br>
 
 STEP++:他の人が編集し、githubに反映させた後に自分の実行環境にほかの人の編集内容を反映させる。<br>
-<strong>この二つのコマンドは作業する前に必ず打ってほしい </strong> <br>
+<strong color="red">この二つのコマンドは作業する前に必ず打ってほしい </strong> <br>
 $ git fetch origin //githubの変更内容を取得する<br>
 $ git merge origin/main //githubの変更内容を反映させる。<br>
 ※うまくmergeされない時がある。その時は自分でファイルを編集し、反映させる。<br>
