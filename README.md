@@ -57,4 +57,8 @@ $ git merge origin/develop //githubの変更内容を反映させる。<br>
 
 <firebaseの使い方><br>
 今回の開発はfirebaseというのもを使った行っている。<br>
-詳しくはまだ俺も分からないから、色々調べがついたら更新する。<br>
+$ sudo apt install npm<br>
+$ npm install -g firebase-tools <br>
+$ npm install node <br>
+ChildApp/two-afcに移動 <br>
+$ 
