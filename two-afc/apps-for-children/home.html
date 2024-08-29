@@ -10,29 +10,62 @@
     <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js" defer></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
     <title>ホーム</title>
+    <style>
+      .logo, .contents, .footer {
+        text-align: center;
+        border-color: black;
+      }
+      .contents {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .contents button {
+        height: 10vh;
+        width: 50vw;
+        font-size: 40px;
+        border-radius: 15px;
+      }
+      .study {
+        margin-top: 10vh;
+        margin-bottom: 10px;
+      }
+      .note {
+        margin-top: 10px;
+        margin-bottom: 10vh;
+      }
+      .footer{
+        margin-top: auto;
+      }
+      .setting {
+        border-radius: 50%;
+        height: 50px;
+        width: 50px;
+        padding: 0;
+        font-size: 16px;
+      }
+    </style>
   </head>
   <body>
     <script src="/__/firebase/7.16.0/firebase-app.js"></script>
     <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
     <script src="/__/firebase/init.js"></script>
-    <!--
-    <header>
-      <h1><a href="home.html">スタディフォト</a></h1>
-      <nav class="pc-nav">
-        <ul class="header-nav">
-          <li class="header-nav_item"><a href="home.html">ホーム</a></li>
-          <li class="header-nav_item"><a href="about.html">私たちについて</a></li>
-          <li class="header-nav_item"><a href="service.html">サービス</a></li>
-          <li class="header-nav_item"><a href="contact.html">お問い合わせ</a></li>
-          <li class="header-nav_item"><button id="openPopup">ログアウト</button></li>
-        </ul>
-      </nav>
-    </header>
-    -->
     <main>
-      
+      <div class="logo">
+        <img src="logo" alt="logo">
+      </div>
+      <div class="contents" >
+        <button type="button" class="study">勉強する</button>
+        <button type="button" class="note">勉強記録を見る</button>
+      </div>
+      <div class="footer" type="button">
+        <button class="setting">設定</button>
+        <button class="contact">問い合わせ</button>
+      </div>
     </main>
-      
       <!--
       <div class="overlay" id="overlay"></div>
       <div class="popup" id="popup">
