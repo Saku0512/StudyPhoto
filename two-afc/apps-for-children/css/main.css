@@ -9,7 +9,7 @@ body{
   background-color: #e6e6e6;
   background: #3b4465;
 }
-
+/*
 header{
   padding: 30px 4% 10px;
   position: fixed;
@@ -19,10 +19,13 @@ header{
   display: flex;
   align-items: center;
 }
-
+*/
 main{
   padding: 80px;
 }
+
+/* home画面 */
+
 
 input, textarea{
   border-width: 5px;
