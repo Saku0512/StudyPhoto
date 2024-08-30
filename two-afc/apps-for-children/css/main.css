@@ -47,10 +47,16 @@ h1{
   margin: 0; padding: 0;
   font-size: 1.4rem;
 }
-
+p {
+  text-shadow: 
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black;
+}
 a{
   text-decoration: none;
-  color: #4b4b4b;
+  color: black;
 }
 
 nav{
