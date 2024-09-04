@@ -19,6 +19,17 @@
         text-align: center;
         border-color: black;
       }
+      .logo{
+        display: flex;
+        justify-content: center;
+        margin: 0 auto 20px;
+        height: 398px;
+        width: 450px;
+      }
+      .logo image{
+        width: 100%;
+        height: 100%;
+      }
       .contents {
         display: flex;
         flex-direction: column;
@@ -34,7 +45,7 @@
         border-radius: 15px;
       }
       .study {
-        margin-top: 10vh;
+        margin-top: 5vh;
         margin-bottom: 10px;
       }
       .space-h {
@@ -72,12 +83,12 @@
     <script src="/__/firebase/init.js"></script>
     <main>
       <div class="logo">
-        <img src="logo" alt="logo">
+        <img src="ui_image/logo.png" alt="logo" title="logo">
       </div>
       <div class="contents" >
-        <button type="button" class="study">勉強する</button>
+        <button type="button" class="study"><a href="html/study.html">勉強する</a></button>
         <div class="space-h"></div>
-        <button type="button" class="note">勉強記録を見る</button>
+        <button type="button" class="note"><a href="html/record.html">記録する</a></button>
       </div>
       <div class="footer" type="button">
         <button class="setting">設定</button>
