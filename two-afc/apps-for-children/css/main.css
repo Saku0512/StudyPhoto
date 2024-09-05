@@ -21,11 +21,16 @@ header{
 }
 */
 main{
-  padding: 80px;
+  margin: 0;
+  padding: 0;
 }
 
 /* home画面 */
 
+.auth {
+  height: 20vh;
+  width: auto;
+}
 
 input, textarea{
   border-width: 5px;
