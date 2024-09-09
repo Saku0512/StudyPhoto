@@ -3,11 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
-    <link rel="stylesheet" href="css/main.css" />
-    <script src="js/contact.js" defer></script>
-    <script src="js/current-header.js" defer></script>
-    <script src="js/popup.js" defer></script>
-    <script src="js/signout.js" defer></script>
+    <link rel="stylesheet" href="../css/main.css" />
+    <script src="../js/contact.js" defer></script>
+    <script src="../js/current-header.js" defer></script>
+    <script src="../js/signout.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js" defer></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
     <!--<script type="module" src="js/logined.js" defer></script>
@@ -49,13 +48,6 @@
       </div>
       <form method="post" action="">
       <div class="Form">
-        <div class="err-msg-com"></div>
-        <div class="Form-Item">
-          <p class="Form-Item-Label">
-            <span class="Form-Item-Label-Required">必須</span>会社名
-          </p>
-          <input type="text" id="company" class="Form-Item-Input" placeholder="例）株式会社令和">
-        </div>
         <div class="err-msg-name"></div>
         <div class="Form-Item">
           <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>氏名</p>
@@ -76,8 +68,8 @@
           <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>お問い合わせ内容</p>
           <textarea id="text" class="Form-Item-Textarea"></textarea>
         </div>
-        <input id="save" type="submit" class="Form-Btn" value="確認する">
-        <input id="cancel" type="reset" class="Form-Btn" value="キャンセル">
+        <input id="save" type="submit" class="save" value="確認する">
+        <input id="cancel" type="reset" class="cancel" value="キャンセル">
       </div>
       </form>
     </main>

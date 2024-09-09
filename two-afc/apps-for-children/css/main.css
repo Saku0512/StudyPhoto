@@ -26,7 +26,6 @@ main{
 }
 
 /* home画面 */
-
 .auth {
   height: 20vh;
   width: auto;
@@ -41,13 +40,11 @@ input, textarea{
   height: 44px;
   -webkit-appearance: none;
 }
-
 textarea{
   height: 80px;
   width: 100%;
   max-width: 248px;
 }
-
 h1{
   margin: 0; padding: 0;
   font-size: 1.4rem;
@@ -63,29 +60,33 @@ a{
   text-decoration: none;
   color: black;
 }
-
 nav{
   margin: 0 0 0 auto;
 }
-
 ul {
   list-style: none;
   margin: 0;
   display: flex;
 }
-
 li {
   margin: 0 0 0 15px;
   font-size: 1.2rem;
 }
-
-
+/* フォーム */
 .Form {
   margin-top: 40px;
   margin-left: auto;
   margin-right: auto;
   max-width: 720px;
   color: #fff;
+}
+.Form-Item {
+  border-top: 1px solid #ddd;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 .Form-Item-Label-Required{
   border-radius: 6px;
@@ -99,7 +100,7 @@ li {
   color: #fff;
   font-size: 1.2rem;
 }
-.Form-Btn{
+.save, .cancel {
   border-radius: 6px;
   margin-top: 32px;
   margin-left: auto;
@@ -146,6 +147,15 @@ li {
     margin-top: 0;
   }
 }
+.form-invalid{
+  color: #f50000;
+  font-size: 12px;
+  padding-left: 12px;
+  padding-top: 60px;
+}
+.input-invalid{
+  border: 4px solid #f50000;
+}
 
 /* カレントのヘッダー色表示 */
 /* 通常 */
@@ -155,17 +165,6 @@ li {
 /* カレント表示 */
 .header-nav_item.current a{
   color: blue;
-}
-
-
-.form-invalid{
-  color: #f50000;
-  font-size: 12px;
-  padding-left: 12px;
-  padding-top: 60px;
-}
-.input-invalid{
-  border: 4px solid #f50000;
 }
 
 /*ポップアップ操作*/
