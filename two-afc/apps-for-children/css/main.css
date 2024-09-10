@@ -1,5 +1,6 @@
 *{
   box-sizing: border-box;
+  padding-top: 80;
 }
 
 body{
@@ -74,11 +75,10 @@ li {
 }
 /* フォーム */
 .Form {
-  margin-top: 40px;
+  margin-top: 80px;
   margin-left: auto;
   margin-right: auto;
-  max-width: 720px;
-  color: #fff;
+  max-width: 80vw;
 }
 .Form-Item {
   border-top: 1px solid #ddd;
@@ -87,18 +87,63 @@ li {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
-.Form-Item-Label-Required{
+.Form-Item-Label {
+  width: 100%;
+  max-width: 40vw;
+  letter-spacing: 0.05em;
+  color: white;
+  font-size: 3vw;
+}
+.Form-Item-Label.isMsg {
+  margin-top: 8px;
+  margin-bottom: auto;
+}
+.Form-Item-Label-Required {
   border-radius: 6px;
   margin-right: 8px;
   padding-top: 8px;
   padding-bottom: 8px;
-  width: 48px;
+  width: 8vw;
   display: inline-block;
   text-align: center;
   background: #5bc8ac;
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 30px;
+}
+.Form-Item-Input {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-left: 40px;
+  padding-left: 1em;
+  padding-right: 1em;
+  height: 48px;
+  flex: 1;
+  width: 100%;
+  max-width: 410px;
+  background: #eaedf2;
+  font-size: 18px;
+}
+.Form-Item-Textarea {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-left: 40px;
+  padding-left: 1em;
+  padding-right: 1em;
+  height: 216px;
+  flex: 1;
+  width: 100%;
+  max-width: 410px;
+  background: #eaedf2;
+  font-size: 18px;
+}
+.form-invalid{
+  color: #f50000;
+  font-size: 12px;
+}
+.input-invalid{
+  border: 4px solid #f50000;
 }
 .save, .cancel {
   border-radius: 6px;
@@ -115,48 +160,6 @@ li {
   font-weight: bold;
   font-size: 1.2rem;
 }
-.Form-Item-Textarea {
-  border: 1px solid #ddd;
-  border-radius: 0px;
-  margin-left: 0px;
-  padding-left: 1em;
-  padding-right: 1em;
-  height: 216px;
-  flex: 1;
-  width: 100%;
-  max-width: 410px;
-  background: #eaedf2;
-  font-size: 1.2rem;
-}
-.Form-Item-Label {
-  width: 100%;
-  max-width: 248px;
-  letter-spacing: 0.05em;
-  font-weight: bold;
-  font-size: 1.22rem;
-}
-.Form-Item:nth-child(5) {
-  border-bottom: 1px solid #ddd;
-}
-.Form-Item-Label.isMsg{
-  margin-top: 8px;
-  margin-bottom: auto;
-}
-@media screen and (max-width: 480px) {
-  .Form-Item-Label.isMsg {
-    margin-top: 0;
-  }
-}
-.form-invalid{
-  color: #f50000;
-  font-size: 12px;
-  padding-left: 12px;
-  padding-top: 60px;
-}
-.input-invalid{
-  border: 4px solid #f50000;
-}
-
 /* カレントのヘッダー色表示 */
 /* 通常 */
 .header-nav_item a{
