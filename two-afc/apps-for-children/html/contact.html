@@ -11,12 +11,28 @@
     <script src="/__/firebase/7.16.0/firebase-app.js"></script> 
     <script src="/__/firebase/7.16.0/firebase-auth.js"></script> 
     <script src="/__/firebase/init.js"></script> -->
-    <title>子供アプリ</title>
+    <title>お問い合わせ</title>
     <style>
-      .back{
-        text-align: center;
+      .return {
+        position: absolute;
+        top: 10px;
+        left: 10px;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
+        width: 100%;
+      }
+      .return button {
+        font-size: 18px;
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 5px;
+        border: none;
+        background-color: #5bc8ac;
+        color: white;
+        cursor: pointer;
+      }
+      .return button:hover {
+        background-color: #45a29e;
       }
     </style>
   </head>
@@ -50,7 +66,7 @@
         <button id="closePopup">閉じる</button>
       </div>
       -->
-      <div class="Form-Item back">
+      <div class="return">
         <button type="button"><a href="../home.html">戻る</a></button>
       </div>
       <form method="post" action="../php/send_mail.php">

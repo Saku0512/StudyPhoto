@@ -1,39 +1,102 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width , initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/main.css" />
-    <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js" defer></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
-    <script src="/__/firebase/7.16.0/firebase-app.js"></script> 
-    <script src="/__/firebase/7.16.0/firebase-auth.js"></script> 
-    <script src="/__/firebase/init.js"></script>
-    <title>私たちについて</title>
-    <style>
-      .return {
-        text-align: center;
-        display: flex;
-        justify-content: center;
-      }
-    </style>
-  </head>
-  <body>
-    <script src="/__/firebase/7.16.0/firebase-app.js"></script>
-    <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
-    <script src="/__/firebase/init.js"></script>
-    <main>
-      <div class="return">
-        <button><a href="../home.html">戻る</a></button>
-      </div>
-<!--
-      <div class="overlay" id="overlay"></div>
-      <div class="popup" id="popup">
-        <h2>本当にログアウトしますか？</h2>
-        <button id="logout">ログアウト</button>
-        <button id="closePopup">閉じる</button>
-      </div>
--->
-    </main>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js" defer></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
+  <script src="/__/firebase/7.16.0/firebase-app.js"></script> 
+  <script src="/__/firebase/7.16.0/firebase-auth.js"></script> 
+  <script src="/__/firebase/init.js"></script>
+  <title>勉強する</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .return {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
+    }
+    .return button {
+      font-size: 18px;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+      background-color: #5bc8ac;
+      color: white;
+      cursor: pointer;
+    }
+    .return button:hover {
+      background-color: #45a29e;
+    }
+    .circle-timer {
+      position: relative;
+      width: 50vw;
+      height: 50vh;
+      max-width: 300px; /* 最大サイズを300pxに設定 */
+      max-height: 300px;
+      aspect-ratio: 1; /* 縦横比を1:1に保つ */
+      border-radius: 50%;
+      background: conic-gradient(#5bc8ac var(--percentage, 0%), #ddd 0%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 50px 0; /* Adjust the vertical margin as needed */
+    }
+    .circle-timer span {
+      position: absolute;
+      font-size: 24px;
+      color: #000;
+    }
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .button-container button {
+      display: block;
+      font-size: 18px;
+      padding: 10px 20px;
+      margin: 5px auto;
+      border-radius: 5px;
+      border: none;
+      background-color: #5bc8ac;
+      color: white;
+      cursor: pointer;
+    }
+    .button-container button:hover {
+      background-color: #45a29e;
+    }
+  </style>
+</head>
+<body>
+  <script src="/__/firebase/7.16.0/firebase-app.js"></script>
+  <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <main>
+    <div class="return">
+      <button><a href="../home.html">戻る</a></button>
+    </div>
+    <div class="circle-timer" id="circleTimer">
+      <span id="timerText">00:00:00</span>
+    </div>
+    <div class="button-container">
+      <button id="toggleButton">スタート</button>
+      <button id="endButton">終了</button>
+    </div>
+  </main>
+  <script src="../js/stopwatch.js" defer></script>
+</body>
 </html>
