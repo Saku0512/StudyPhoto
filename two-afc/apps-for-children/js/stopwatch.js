@@ -47,4 +47,3 @@ endButton.addEventListener('click', () => {
   localStorage.setItem('stopwatchTime', formatTime(timePassed));
   window.location.href = 'study-next.html';
 });
-
