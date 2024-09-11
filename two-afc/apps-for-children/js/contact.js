@@ -110,13 +110,39 @@ cancel.addEventListener('click',
 );
 
 //ポップアップの「送信する」ボタンを押したときの処理
-confirmSend.addEventListener('click',function(){
-  popup.style.display = 'none';
-  overlay.style.display = 'none';
-  //フォーム送信の処理を記述
-  window.alert('送信しました');
-  // 例：document.querySelector('form').submit();
-  window.location.href = 'contact.html';
+confirmSend.addEventListener('click',(e) => {
+  e.preventDefault();
+
+  // フォームのデータを収集
+  const data = {
+    name: document.querySelector('#name').value,
+    tell: document.querySelector('#tell').value,
+    mail: document.querySelector('#mail').value,
+    text: document.querySelector('#text').value
+  };
+
+  // Firebase Functions への POST リクエスト
+  fetch('https://us-central1-your-project-id.cloudfunctions.net/sendMail', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (response.ok) {
+      popup.style.display = 'none';
+      overlay.style.display = 'none';
+      window.alert('送信しました');
+      window.location.href = 'contact.html';
+    } else {
+      window.alert('送信に失敗しました');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    window.alert('エラーが発生しました');
+  });
 });
 //ポップアップの「キャンセル」ボタンを押したときの処理
 closePopup.addEventListener('click',function(){
