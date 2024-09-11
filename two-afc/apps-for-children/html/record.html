@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width , initial-scale=1.0" />
     <link rel="stylesheet" href="../css/main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> <!-- Date-fns adapter -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js"></script> <!-- date-fns CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js" defer></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
     <script src="/__/firebase/7.16.0/firebase-app.js"></script> 
@@ -11,11 +15,6 @@
     <script src="/__/firebase/init.js"></script>
     <title>記録を振り返る</title>
     <style>
-      .time-display {
-        text-align: center;
-        font-size: 24px;
-        margin: 20px 0;
-      }
       .button-container {
         text-align: center;
         margin-top: 20px;
@@ -33,26 +32,9 @@
       button:hover {
         background-color: #45a29e;
       }
-      .return {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        justify-content: flex-start;
-        width: 100%;
-      }
-      .return button {
-        font-size: 18px;
-        padding: 10px 20px;
-        margin: 5px;
-        border-radius: 5px;
-        border: none;
-        background-color: #5bc8ac;
-        color: white;
-        cursor: pointer;
-      }
-      .return button:hover {
-        background-color: #45a29e;
+      .chart-container {
+        width: 80%;
+        margin: 0 auto;
       }
     </style>
   </head>
@@ -60,14 +42,17 @@
     <script src="/__/firebase/7.16.0/firebase-app.js"></script>
     <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
     <script src="/__/firebase/init.js"></script>
+    <script src="../js/record.js"></script>
+    <script>
+      console.log('format:', window.dateFns?.format);
+    </script>
     <main>
-      <div class="time-display" id="recordTime">00:00:00</div>
-    <div class="button-container">
-      <div class="return">
+      <div class="button-container">
         <button id="backToHome">戻る</button>
       </div>
-    </div>
+      <div class="chart-container">
+        <canvas id="studyChart"></canvas>
+      </div>
     </main>
-    <script src="../js/record.js" defer></script>
   </body>
 </html>

@@ -37,18 +37,6 @@
       <button id="saveButton">保存</button>
     </div>
   </main>
-  <script>
-    document.getElementById('displayTime').textContent = localStorage.getItem('stopwatchTime') || '00:00:00';
-
-    document.getElementById('backButton').addEventListener('click', () => {
-      localStorage.removeItem('stopwatchTime'); // Clear stored time
-      window.location.href = 'study.html';
-    });
-
-    document.getElementById('saveButton').addEventListener('click', () => {
-      localStorage.setItem('recordTime', localStorage.getItem('stopwatchTime')); // Save time to be displayed on record.html
-      window.location.href = 'record.html';
-    });
-  </script>
+  <script src="../js/study-next.js" defer></script>
 </body>
 </html>
