@@ -1,3 +1,12 @@
+//テキストを20文字ごとに改行する関数
+function formatText(text, lineLength) {
+  let formatText = '';
+  for (let i = 0; i < text.length; i += lineLength) {
+    formatText += text.slice(i, i + lineLength) + '<br>';
+  }
+  return formatText;
+}
+
 //ポップアップ関連の要素を取得
 const overlay = document.getElementById('overlay');
 const popup = document.getElementById('popup');
@@ -30,12 +39,18 @@ save.addEventListener('click',
     }
     //電話
     const tell = document.querySelector('#tell');
-    const errMsgTell = document.querySelector('.err-msg-tel');
+    const errMsgTell = document.querySelector('.err-msg-tell');
+    const tellPattern = /^\d{3}-\d{3,4}-\d{4}$/;
     if(!tell.value){
       errMsgTell.classList.add('form-invalid');
       tell.classList.add('input-invalid');
       isValid = false;
-    }else{
+    }else if (!tellPattern.test(tell.value)){
+      errMsgTell.classList.add('form-invalid');
+      tell.classList.add('input-invalid');
+      errMsgTell.textContent = '電話番号の形式が正しくありません';
+      isValid = false;
+    } else{
       errMsgTell.classList.remove('form-invalid');
       errMsgTell.textContent = '';
       tell.classList.remove('input-invalid');
@@ -43,9 +58,15 @@ save.addEventListener('click',
     //メール
     const mail = document.querySelector('#mail');
     const errMsgMail = document.querySelector('.err-msg-mail');
+    const mailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!mail.value){
       errMsgMail.classList.add('form-invalid');
       mail.classList.add('input-invalid');
+      isValid = false;
+    }else if (!mailPattern.test(mail.value)) {
+      errMsgMail.classList.add('form-invalid');
+      mail.classList.add('input-invalid');
+      errMsgMail.textContent = 'メールアドレスの形式が正しくありません';
       isValid = false;
     }else{
       errMsgMail.classList.remove('form-invalid');
@@ -73,7 +94,7 @@ save.addEventListener('click',
       confirmName.textContent = name.value;
       confirmTell.textContent = tell.value;
       confirmMail.textContent = mail.value;
-      confirmText.textContent = text.value;
+      confirmText.innerHTML = formatText(text.value, 30); //30文字ごとに改行
       //ポップアップを表示
       overlay.style.display = 'block';
       popup.style.display = 'block';
