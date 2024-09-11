@@ -89,13 +89,36 @@ li {
   width: 100%;
   max-width: 40vw;
   letter-spacing: 0.05em;
-  color: white;
+  color: black;
   font-size: 3vw;
   margin-bottom: 4px;
 }
 .Form-Item-Label.isMsg {
   margin-top: 8px;
   margin-bottom: auto;
+}
+.back{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 40px;
+  margin-bottom: 24px;
+  padding-top: 24px;
+  width: 100%;
+}
+.back button {
+  border-radius: 6px;
+  background: #5bc8ac;
+  color: black;
+  font-weight: bold;
+  font-size: 30px;
+  padding: 10px 20px;
+  width: 150px;
+  text-align: center;
+}
+.back a{
+  color: black;
+  text-decpration: none;
 }
 .Form-Item-Label-Required {
   border-radius: 6px;
@@ -106,7 +129,7 @@ li {
   display: inline-block;
   text-align: center;
   background: #5bc8ac;
-  color: #fff;
+  color: black;
   font-size: 30px;
 }
 .Form-Item-Input {
@@ -153,7 +176,7 @@ li {
   display: block;
   letter-spacing: 0.05em;
   background: #5bc8ac;
-  color: #fff;
+  color: black;
   font-weight: bold;
   font-size: 1.2rem;
 }
