@@ -110,7 +110,7 @@ cancel.addEventListener('click',
 );
 
 //ポップアップの「送信する」ボタンを押したときの処理
-confirmSend.addEventListener('click',(e) => {
+confirmSend.addEventListener('click', (e) => {
   e.preventDefault();
 
   // フォームのデータを収集
@@ -122,11 +122,12 @@ confirmSend.addEventListener('click',(e) => {
   };
 
   // Firebase Functions への POST リクエスト
-  fetch('https://us-central1-your-project-id.cloudfunctions.net/sendMail', {
+  fetch('https://us-central1-apps-for-children-b2c4a.cloudfunctions.net/sendMail', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
+    mode: 'cors', // CORSを明示的に指定
     body: JSON.stringify(data)
   })
   .then(response => {
@@ -136,16 +137,12 @@ confirmSend.addEventListener('click',(e) => {
       window.alert('送信しました');
       window.location.href = 'contact.html';
     } else {
+      console.error('Failed to send email:', response.status, response.statusText);
       window.alert('送信に失敗しました');
     }
   })
   .catch(error => {
-    console.error('Error:', error);
+    console.error('Error occurred during fetch:', error);
     window.alert('エラーが発生しました');
   });
-});
-//ポップアップの「キャンセル」ボタンを押したときの処理
-closePopup.addEventListener('click',function(){
-  popup.style.display = 'none';
-  overlay.style.display = 'none';
 });
