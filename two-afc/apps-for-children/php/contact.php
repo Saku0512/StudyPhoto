@@ -96,47 +96,53 @@
     <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
     <script src="/__/firebase/init.js"></script>
     <main>
-      <div class="return">
-        <button type="button"><a href="../home.html">戻る</a></button>
-      </div>
-      <form method="post" action="">
-        <div class="Form">
-          <div class="Form-Item">
-            <div class="err-msg-name"></div>
-            <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>氏名</p>
-            <input type="text" id="name" class="Form-Item-Input" placeholder="例）山田太郎">
-          </div>
-          <div class="Form-Item">
-            <div class="err-msg-tell"></div>
-            <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>電話番号</p>
-            <input type="tel" id="tell" class="Form-Item-Input" placeholder="例）000-0000-0000">
-          </div>
-          <div class="Form-Item">
-            <div class="err-msg-mail"></div>
-            <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>メールアドレス</p>
-            <input type="email" id="mail" class="Form-Item-Input" placeholder="例）example@gmail.com">
-          </div>
-          <div class="Form-Item">
-            <div class="err-msg-content"></div>
-            <p class="Form-Item-Label isMsg"><span class="Form-Item-Label-Required">必須</span>お問い合わせ内容</p>
-            <textarea class="Form-Item-Textarea" id="text"></textarea>
-          </div>
-          <input type="submit" id="save" class="save" value="確認する">
-          <input type="reset" id="cancel" class="cancel" value="リセット">
+      <?php if($mode == 'input'){ ?>
+        <!-- 入力画面 -->
+        <?php
+          if($errmessage){
+            echo '<div style="color:red">';
+            echo implode('<br>', $errmessage);
+            echo '</div>';
+          }
+        ?>
+        <div class="return">
+          <button type="button"><a href="../home.html">戻る</a></button>
         </div>
-      </form>
-      <div class="overlay" id="overlay" style="display: none;"></div>
-      <div class="popup" id="popup" style="display: none;">
-        <h2>内容を確認して送信しますか？</h2>
-        <div id="confirmDetails">
-          <p><strong>氏名:</strong> <span id="confirmName"></span> </p>
-          <p><strong>電話番号:</strong> <span id="confirmTell"></span></p>
-          <p><strong>メールアドレス:</strong> <span id="confirmMail"></span></p>
-          <p><strong>お問い合わせ内容:</strong><br> <span id="confirmText"></span></p>
-        </div>
-        <button id="closePopup">キャンセル</button>
-        <button id="confirmSend">送信</button>
-      </div>
+        <form method="post" action="./contact.php">
+          <div class="Form">
+            <div class="Form-Item">
+              <div class="err-msg-name"></div>
+              <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>氏名</p>
+              <input type="text" name="fullname" id="name" class="Form-Item-Input" value="<?php echo $_SESSION['fullname']; ?>">
+            </div>
+            <div class="Form-Item">
+              <div class="err-msg-mail"></div>
+              <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>メールアドレス</p>
+              <input type="email" name="email" id="mail" class="Form-Item-Input" value="<?php echo $_SESSION['email']; ?>">
+            </div>
+            <div class="Form-Item">
+              <div class="err-msg-content"></div>
+              <p class="Form-Item-Label isMsg"><span class="Form-Item-Label-Required">必須</span>お問い合わせ内容</p>
+              <textarea class="Form-Item-Textarea" name="message"  id="text"><?php echo $_SESSION['message']; ?></textarea>
+            </div>
+            <input type="submit" name="confirm" id="save" class="save" value="確認する">
+            <input type="reset" id="cancel" class="cancel" value="リセット">
+          </div>
+        </form>
+      <?php } else if($mode == 'confirm'){ ?>
+        <!-- 確認画面 -->
+        <form action="./contact.php" method="post">
+          名前 <?php echo $_SESSION['fullname']; ?><br>
+          Eメール <?php echo $_SESSION['email']; ?><br>
+          お問い合わせ内容<br>
+          <?php echo nl2br($_SESSION['message']); ?><br>
+          <input type="submit" name="back" value="戻る" />
+          <input type="submit" name="send" value="送信" />
+        </form>
+      <?php } else { ?>
+        <!-- 送信完了 -->
+        お問い合わせを受け付けました。<br>
+      <?php } ?>
     </main>
   </body>
 </html>
