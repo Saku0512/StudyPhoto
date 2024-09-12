@@ -6,7 +6,15 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "rewrites": [{
+      "source": "/sendMail",
+      "function": {
+        "functionIDd": "sendMail",
+        "region": "us-central1",
+        "pinTag": true
+      }
+    }]
   },
   "functions": [
     {
