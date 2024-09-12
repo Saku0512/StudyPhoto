@@ -1,10 +1,65 @@
+<?php
+  session_start();
+  $mode = 'input';
+  $errmessage = array();
+  $mymail = 'comonraven113@gmail.com';
+  if(isset($_POST['back']) && $_POST['back']){
+    // 何もしない
+  } else if(isset($_POST['confirm']) && $_POST['confirm']){
+    // 確認画面
+    if(!$_POST['fullname']){
+      $errmessage[] = 'お名前を入力してください';
+    } else if(mb_strlen($_POST['fullname']) > 100){
+      $errmessage[] = 'お名前は100文字以内にしてください';
+    }
+    $_SESSION['fullname'] = htmlspecialchars($_POST['fullname'], ENT_QUOTES);
+
+    if(!$_POST['email']){
+      $errmessage[] = 'メールアドレスを入力してください';
+    } else if(mb_strlen($_POST['email']) > 200){
+      $errmessage = 'メールアドレスは200文字以内にしてください';
+    } else if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
+      $errmessage[] = 'メールアドレスが不正です';
+    }
+    $_SESSION['email'] = htmlspecialchars($_POST['email'], ENT_QUOTES);
+
+    if(!$_POST['message']){
+      $errmessage[] = 'お問い合わせ内容を入力してください';
+    } else if(mb_strlen($_POST['message']) > 500){
+      $errmessage[] = 'お問い合わせ内容は500文字以内にしてください';
+    }
+    $_SESSION['message' ] = htmlspecialchars($_POST['message'], ENT_QUOTES);
+
+    if($errmessage){
+      $mode = 'input';
+    } else{
+      $mode = 'confirm';
+    }
+  } else if(isset($_POST['send']) && $_POST['send']){
+    //　送信ボタンを押したとき
+    $massage = 
+      "お問い合わせを受け付けました。\r\n"
+      . "お名前: " . $_SESSION['fullname'] . "\r\n"
+      . "email: " . $_SESSION['email'] . "\r\n"
+      . "お問い合わせ内容:\r\n"
+      . preg_replace("/\r\n|\n/", "\r\n", $_SESSION['message']);
+    mail($_SESSION['email'], 'お問い合わせありがとうございます。', $massage);
+    mail($mymail, 'スタディフォトからのお問い合わせ受付', $massage);
+    $_SESSION = array();
+    $mode = 'send';
+  } else{
+    $_SESSION['fullname'] = "";
+    $_SESSION['email'] = "";
+    $_SESSION['message'] = "";
+  }
+?>
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
     <link rel="stylesheet" href="../css/main.css" />
-    <script src="../js/contact.js" defer></script>
+<!--    <script src="../js/contact.js" defer></script> -->
     <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js" defer></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
     <!--<script type="module" src="js/logined.js" defer></script>
@@ -40,32 +95,7 @@
     <script src="/__/firebase/7.16.0/firebase-app.js"></script>
     <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
     <script src="/__/firebase/init.js"></script>
-    <!--
-    <header>
-      <div class="logo">
-        <img src="" alt=""> 
-      </div>
-      <h1><a href="home.html">児童保護</a></h1>
-      <nav class="pc-nav">
-        <ul class="header-nav">
-          <li class="header-nav_item"><a href="home.html">ホーム</a></li>
-          <li class="header-nav_item"><a href="about.html">私たちについて</a></li>
-          <li class="header-nav_item"><a href="service.html">サービス</a></li>
-          <li class="header-nav_item"><a href="contact.html">お問い合わせ</a></li>
-          <li class="header-nav_item"><button id="openPopup">ログアウト</button></li>
-        </ul>
-      </nav>
-    </header>
-    -->
     <main>
-      <!--
-      <div class="overlay" id="overlay"></div>
-      <div class="popup" id="popup">
-        <h2>本当にログアウトしますか？</h2>
-        <button id="logout">ログアウト</button>
-        <button id="closePopup">閉じる</button>
-      </div>
-      -->
       <div class="return">
         <button type="button"><a href="../home.html">戻る</a></button>
       </div>
