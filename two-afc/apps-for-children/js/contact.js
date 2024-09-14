@@ -121,7 +121,7 @@ confirmSend.addEventListener('click', (e) => {
     text: document.querySelector('#text').value
   };
 
-  // Firebase Functions への POST リクエスト
+  /* Firebase Functions への POST リクエスト
   fetch('https://us-central1-apps-for-children-b2c4a.cloudfunctions.net/sendMail', {
     method: 'POST',
     headers: {
@@ -144,5 +144,5 @@ confirmSend.addEventListener('click', (e) => {
   .catch(error => {
     console.error('Error occurred during fetch:', error);
     window.alert('エラーが発生しました');
-  });
+  }); */
 });

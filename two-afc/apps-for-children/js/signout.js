@@ -1,6 +1,6 @@
-const logout = document.getElementById("logout");
+const logout = $("#logout");
 
-logout.addEventListener('click', () => {
+logout.on('click', () => {
   signOut();
 });
 
@@ -17,4 +17,4 @@ function signOut() {
         console.log(`ログアウト時にエラーが発生しました (${error})`);
       });
   });
-  }
+}

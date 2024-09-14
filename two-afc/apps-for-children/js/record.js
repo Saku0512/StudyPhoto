@@ -22,7 +22,7 @@ const formattedDates = Array.from(dateTimeMap.keys()).map(date => new Date(date)
 const totalTimes = Array.from(dateTimeMap.values());
 
 // グラフの作成
-const ctx = document.getElementById('studyChart').getContext('2d');
+const ctx = $('#studyChart')[0].getContext('2d');
 const studyChart = new Chart(ctx, {
   type: 'bar', // 棒グラフを表示
   data: {
@@ -41,7 +41,7 @@ const studyChart = new Chart(ctx, {
     scales: {
       y: {
         beginAtZero: true,
-        max: 1, // 最大値を1時間に設定
+        max: 12, // 最大値を12時間に設定
         ticks: {
           stepSize: 0.5, // 目盛り間隔を0.5時間に設定
           callback: function(value) {
@@ -71,6 +71,6 @@ const studyChart = new Chart(ctx, {
 });
 
 // 戻るボタンの設定
-document.getElementById('backToHome').addEventListener('click', () => {
+$('#backToHome').on('click', () => {
   window.location.href = '../home.html';
 });
