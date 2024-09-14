@@ -4,17 +4,6 @@ two-afcディレクトリの中の、apps-for-childrenディレクトリで基�
 <br>
 随時更新するので必ず読んでほしい。<br>
 <br>
-進捗<br>
-・<del> Google認証 </del> <br>
-・ 課金画面 <br>
-・ ホーム画面 <br>
-・ 私たちについて <br>
-・ サービス <br>
-・タイマー画面 <br>
-・学習内容の画像を選択する <br>
-・保護者に共有する仕組み <br>
-・<del> お問い合わせ </del> <br>
-・<del> ログアウト </del> <br>
 <br>
 <git,githubの使い方><br>
 詳しくは右のサイト→ https://qiita.com/renesisu727/items/248cb9468a402c622003 <br>
