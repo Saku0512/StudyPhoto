@@ -1,22 +1,22 @@
-const openPopupButton = document.getElementById("openPopup");
-const closePopupButton = document.getElementById("closePopup");
-const overlay = document.getElementById("overlay");
-const popup = document.getElementById("popup");
+const openPopupButton = $("#openPopup");
+const closePopupButton = $("#closePopup");
+const overlay = $("#overlay");
+const popup = $("#popup");
 
-if (openPopupButton && closePopupButton && overlay && popup) {
-    openPopupButton.addEventListener("click", () => {
-        overlay.style.display = "block";
-        popup.style.display = "block";
+if (openPopupButton.length && closePopupButton.length && overlay.length && popup.length) {
+    openPopupButton.on("click", () => {
+        overlay.show();
+        popup.show();
     });
 
-    closePopupButton.addEventListener("click", () => {
-        overlay.style.display = "none";
-        popup.style.display = "none";
+    closePopupButton.on("click", () => {
+        overlay.hide();
+        popup.hide();
     });
 
-    overlay.addEventListener("click", () => {
-        overlay.style.display = "none";
-        popup.style.display = "none";
+    overlay.on("click", () => {
+        overlay.hide();
+        popup.hide();
     });
 } else {
     console.error("One or more elements not found");

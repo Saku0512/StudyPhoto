@@ -1,4 +1,4 @@
-document.getElementById('saveButton').addEventListener('click', () => {
+$('#saveButton').on('click', () => {
   // 現在の日付を取得し、YYYY-MM-DD形式で保存
   const now = new Date();
   const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD形式
