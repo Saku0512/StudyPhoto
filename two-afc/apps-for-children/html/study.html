@@ -29,19 +29,22 @@
       justify-content: flex-start;
       width: 100%;
     }
-    .return button {
+    .return a{
       font-size: 18px;
+      height: 40px;
+      width: 40px;
       padding: 10px 20px;
       margin: 5px;
       border-radius: 5px;
       border: none;
-      background-color: #5bc8ac;
-      color: white;
       cursor: pointer;
     }
-    .return button:hover {
-      background-color: #45a29e;
+    .return a img{
+      height: 40px;
+      width: 40px;
     }
+    
+    
     .circle-timer {
       position: relative;
       width: 50vw;
@@ -87,14 +90,17 @@
   <script src="/__/firebase/init.js"></script>
   <main>
     <div class="return">
-      <button><a href="../home.html">戻る</a></button>
+      <a href="../home.html"><img src="../ui_image/return.png"></a>
     </div>
     <div class="circle-timer" id="circleTimer">
       <span id="timerText">00:00:00</span>
     </div>
-    <div class="button-container">
-      <button id="toggleButton">スタート</button>
-      <button id="endButton">終了</button>
+    <div class="timer-container">
+      <h1 id="timer-display">00:00:00</h1>
+    <div class="start-container">
+      <button id="start-btn"></button>
+    </div>
+      <button id="stop-btn" disabled>ストップ</button>
     </div>
   </main>
   <script src="../js/stopwatch.js" defer></script>
