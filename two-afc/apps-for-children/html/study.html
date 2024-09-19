@@ -39,9 +39,9 @@
       border: none;
       cursor: pointer;
     }
-    .return a img{
-      height: 40px;
-      width: 40px;
+    .return a img {
+      height: 60px;
+      width: 50px;
     }
     
     
@@ -68,6 +68,31 @@
       text-align: center;
       margin-top: 20px;
     }
+    .timer-container h1 img {
+      text-align: center;
+      width: 60px;
+      height: 60px;
+    }
+
+    .start-container button img {
+      text-align: center;
+      width: 30px;
+      height: 30px;
+    }
+
+    .stop-container button img {
+      text-align: center;
+      width: 30px;
+      height: 30px;
+    
+    }
+    #stop-btn {
+    
+   
+    display: none; /* 最初は見えないように設定 */
+    }
+
+
     .button-container button {
       display: block;
       font-size: 18px;
@@ -92,17 +117,20 @@
     <div class="return">
       <a href="../home.html"><img src="../ui_image/return.png"></a>
     </div>
-    <div class="circle-timer" id="circleTimer">
-      <span id="timerText">00:00:00</span>
-    </div>
-    <div class="timer-container">
+   
+    <div class=".timer-container">
       <h1 id="timer-display">00:00:00</h1>
     <div class="start-container">
-      <button id="start-btn"></button>
+      <button id="start-btn"><img src="../ui_image/start.png"></button>
     </div>
-      <button id="stop-btn" disabled>ストップ</button>
+    <div class="stop-container">
+    <button id="stop-btn"><img src="../ui_image/stop.png"></button>
     </div>
   </main>
   <script src="../js/stopwatch.js" defer></script>
 </body>
 </html>
+
+
+
+
