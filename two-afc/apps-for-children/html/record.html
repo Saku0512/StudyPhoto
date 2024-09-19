@@ -12,9 +12,23 @@
   <script src="/__/firebase/init.js"></script>
   <title>記録を振り返る</title>
   <style>
-    .button-container {
-      text-align: center;
-      margin-top: 20px;
+    .return {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
+    }
+    .return button {
+      font-size: 18px;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+      background-color: #5bc8ac;
+      color: white;
+      cursor: pointer;
     }
     button {
       font-size: 18px;
@@ -38,8 +52,8 @@
 </head>
 <body>
   <main>
-    <div class="button-container">
-      <button id="backToHome">戻る</button>
+    <div class="return">
+      <a href="../home.html"><button type="button">戻る</button></a>
     </div>
     <div class="chart-container">
       <canvas id="studyChart"></canvas>
