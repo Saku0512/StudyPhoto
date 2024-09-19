@@ -69,8 +69,3 @@ const studyChart = new Chart(ctx, {
     }
   }
 });
-
-// 戻るボタンの設定
-$('#backToHome').on('click', () => {
-  window.location.href = '../home.html';
-});
