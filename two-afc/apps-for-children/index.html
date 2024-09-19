@@ -2,32 +2,55 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/main.css" />
+
+    <!-- Firebase SDKをCDNから読み込む (compat バージョン) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+
+    <script>
+      // Firebase 初期化設定
+      const firebaseConfig = {
+        apiKey: "AIzaSyAqFYLZnIX-K_BTnl2eVbwyyol2WIYXTr8",
+        authDomain: "apps-for-children-b2c4a.firebaseapp.com",
+        projectId: "apps-for-children-b2c4a",
+        storageBucket: "apps-for-children-b2c4a.appspot.com",
+        messagingSenderId: "116966769056",
+        appId: "1:116966769056:web:e523390f30fc7f0c0aa4c5",
+        measurementId: "G-14FP9LRRQP"
+      };
+
+      // Firebase 初期化
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+      const auth = firebase.auth();
+    </script>
+
+    <!-- Firebase UI for Authentication -->
     <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
-    <!--<script src="/__/firebase/7.16.0/firebase-app.js"></script> 
-    <script src="/__/firebase/7.16.0/firebase-auth.js"></script> 
-    <script src="/__/firebase/init.js"></script>--> 
+
     <title>子供アプリ</title>
     <style>
-      .logo{
+      .logo {
         display: flex;
         justify-content: center;
         margin: 0 auto 0;
         height: 400px;
         width: 400px;
       }
-      .logo img{
+      .logo img {
         width: 100%;
         height: 100%;
       }
-      .text{
+      .text {
         display: flex;
         justify-content: center;
         margin-top: 40px;
       }
-      .home{
+      .home {
         display: flex;
         justify-content: center;
         margin-bottom: 2vh;
@@ -41,83 +64,34 @@
         <img src="./ui_image/logo.png" alt="logo" title="logo">
       </div>
       <div class="text">
-        <h3>以下のいづれかの方法でログインしてください。</h3>
+        <h3>以下のいずれかの方法でログインしてください。</h3>
       </div>
-      <div class="auth" id="auth" lang="en"></div>
-      <div>
-        <a href="home.html" class="home"><button type="button">ホームへ移動</button></a>
-      </div>
+      <div id="firebaseui-auth-container"></div>
     </main>
-    <script src="/__/firebase/7.16.0/firebase-app.js"></script> 
-    <script src="/__/firebase/7.16.0/firebase-auth.js"></script> 
-    <script src="/__/firebase/init.js"></script> 
+
     <script type="text/javascript">
-
-      /*
-      Firebase Authentcation を使った認証サンプル 01
-      Firebase Authentication UI を使い、サインイン用のUIを生成
-      ポップアップウィンドウで認証画面を表示、サインイン後元の画面に移動
-      サインアウト ボタンと、Googleの表示名をウェルカムメッセージとして表示
-      サインアウト 用の関数「signOut」を定義
-      */
-
-      const ui = new firebaseui.auth.AuthUI(firebase.auth());
-      const uiConfig = {
-      callbacks: {
-        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-        window.location.href = "home.html";
-        return true;
-        },
-        },
-      signInFlow: 'popup',
-      //signInSuccessUrl: 'auth-sample01.html',
-      //signInSuccessWithAuthResult: 
-      /*signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      ],*/
-      //tosUrl: 'sample01.html',
-      //privacyPolicyUrl: 'auth-sample01.html'
-      };
-
-      ui.start('#auth', uiConfig);
-
-      ui.start('#firebaseui-auth-container', {
-        signInOptions: [
-          firebase.auth.EmailAuthProvider.PROVIDER_ID,
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID
-        ],
-        // Other config options...
+      auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL) .then(() => {
+        const ui = new firebaseui.auth.AuthUI(auth);
+        const uiConfig = {
+          callbacks: {
+            signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+              // サインイン後にリダイレクトする
+              window.location.href = "home.html";
+              return false; // 自動リダイレクトは行わない
+            }
+          },
+          signInFlow: 'popup',
+          signInOptions: [
+            firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID
+          ],
+        };
+        ui.start('#firebaseui-auth-container', uiConfig);
+      })
+      .catch(error => {
+        console.error('エラーが発生しました:', error);
       });
-
-      /*
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            const signOutMessage = `
-            <p>Hello, ${user.displayName}!<\/p>
-            <button type="submit"  onClick="signOut()">サインアウト<\/button>
-            `;
-            document.getElementById('auth').innerHTML =  signOutMessage;
-            console.log('ログインしています');
-        } 
-      });
-      */
-      /*
-      function signOut() {
-      firebase.auth().onAuthStateChanged(user => {
-        firebase
-          .auth()
-          .signOut()
-          .then(() => {
-            console.log('ログアウトしました');
-            location.reload();
-          })
-          .catch((error) => {
-            console.log(`ログアウト時にエラーが発生しました (${error})`);
-          });
-        });
-      }
-      }
-      */
+      // FirebaseUIの初期化と設定
     </script>
   </body>
 </html>

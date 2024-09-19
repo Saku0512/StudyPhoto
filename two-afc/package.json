@@ -3,7 +3,7 @@
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "firebase": "^10.12.5",
-    "firebase-tools": "^13.16.0",
+    "firebase-tools": "^13.17.0",
     "node": "^22.8.0",
     "npm": "^10.8.3"
   },
