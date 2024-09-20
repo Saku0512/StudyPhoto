@@ -9,36 +9,37 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js"></script> <!-- date-fns CDN -->
   <title>記録を振り返る</title>
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+      text-align: center;
+    }
     .return {
       position: absolute;
-      top: 10px;
-      left: 10px;
       display: flex;
       justify-content: flex-start;
-      width: 100%;
+      width: 100vw;
+      height: 10vh;
+      position: relative;
     }
-    .return button {
+    .return a{
       font-size: 18px;
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 5px;
+      height: 60px;
+      width: 60px;
       border: none;
-      background-color: #5bc8ac;
-      color: white;
       cursor: pointer;
+      display: inline-block;
+      position: absolute;
     }
-    button {
-      font-size: 18px;
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 5px;
-      border: none;
-      background-color: #5bc8ac;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a29e;
+    .return a img {
+      display: block;
+      height: 60px;
+      width: 60px;
     }
     .chart-container {
       width: 90%; /* グラフの幅を90%に設定 */
@@ -50,7 +51,7 @@
 <body>
   <main>
     <div class="return">
-      <a href="../home.html"><button type="button">戻る</button></a>
+      <a href="../home.html"><img src="../ui_image/return.png"></a>
     </div>
     <div class="chart-container">
       <canvas id="studyChart"></canvas>
