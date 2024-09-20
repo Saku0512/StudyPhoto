@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
     <link rel="stylesheet" href="css/main.css" />
-    <script src="js/firebase.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js" defer></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
     <title>ホーム</title>
     <style>
       main {
@@ -20,7 +17,7 @@
       .logo{
         display: flex;
         justify-content: center;
-        margin: 0 auto 20px;
+        margin: 0 auto 0;
         height: 600px;
         width: 600px;
       }
@@ -32,15 +29,18 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        text-align: center;
         justify-content: center;
-        margin-left: auto;
-        margin-right: auto;
       }
-      .contents button {
+      .contents a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         height: 10vh;
         width: 50vw;
-        font-size: 40px;
-        border-radius: 15px;
+        text-align: center;
+        font-size: 60px;
+        text-decoration: none;
       }
 
       .study {
@@ -55,32 +55,32 @@
       }
       .note {
         margin-top: 10px;
-        margin-bottom: 10vh;
+        margin-bottom: 5vh;
         background-color: #4870BD;
         color: white;
       }
       .footer {
         margin-top: auto;
         padding: 0;
+        display: flex;
+        justify-content: center;
+        gap: 10vw;
       }
-      .footer button {
-        font-size: 40px;
-        margin-left: 10vw;
-        margin-right: 10vw;
+      .footer a , .footer button{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 60px;
+        background-color: #4870BD;
+        color: white;
       }
       .setting {
-        height: 150px;
-        width: 150px;
-        border-radius: 50%;
-        padding: 0;
-        background-color: #4870BD;
-        color: white;
+        height: 7vh;
+        width: 35vw;
       }
       .contact {
-        margin-top: 10px;
-        margin-bottom: 10vh;
-        background-color: #4870BD;
-        color: white;
+        height: 7vh;
+        width: 35vw;
       }
     </style>
   </head>
@@ -93,13 +93,13 @@
         <img src="./ui_image/logo.png" alt="logo" title="logo">
       </div>
       <div class="contents" >
-        <a href="html/study.html"><button type="button" class="study">勉強する</button></a>
+        <a href="html/study.html" class="study">勉強する</a>
         <div class="space-h"></div>
-        <a href="html/record.html"><button type="button" class="note">記録する</button></a>
+        <a href="html/record.html" class="note">記録する</a>
       </div>
       <div class="footer" type="button">
         <button class="setting">設定</button>
-        <a href="./php/contact.php"><button class="contact">問い合わせ</button></a>
+        <a href="./php/contact.php" class="contact">問い合わせ</a>
       </div>
     </main>
   </body>
