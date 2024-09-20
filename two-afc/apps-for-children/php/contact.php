@@ -57,72 +57,169 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width , initial-scale=1.0" />
     <link rel="stylesheet" href="../css/main.css" />
-<!--    <script src="../js/contact.js" defer></script> -->
-    <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js" defer></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
-    <!--<script type="module" src="js/logined.js" defer></script>
-    <script src="/__/firebase/7.16.0/firebase-app.js"></script> 
-    <script src="/__/firebase/7.16.0/firebase-auth.js"></script> 
-    <script src="/__/firebase/init.js"></script> -->
     <title>お問い合わせ</title>
     <style>
-      .return {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        justify-content: flex-start;
-        width: 100%;
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+    }
+
+    main {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: none;
+    }
+
+    .return {
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
+      padding: auto;
+      margin: auto;
+    }
+
+    .return a {
+      display: block;
+      height: 50px;
+      width: 50px;
+    }
+
+    .return a img {
+      height: 100%;
+      width: 100%;
+    }
+
+    .Form {
+      width: 100%;
+      margin: 20px;
+    }
+
+    .Form-Item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    .Form-Item-Label {
+      display: inline;
+      align-items: flex-start;
+      font-size: 20px;
+      margin-bottom: 20px;
+      white-space: nowrap; /* 改行を防ぐ */
+    }
+    @media (max-width: 600px) { /* 600px以下のデバイス向けのスタイル */
+      .Form-Item {
+        align-items: flex-start; /* 小さいデバイスでも左揃え */
       }
-      .return button {
-        font-size: 18px;
-        padding: 10px 20px;
-        margin: 5px;
-        border-radius: 5px;
-        border: none;
-        background-color: #5bc8ac;
-        color: white;
-        cursor: pointer;
+      .Form-Item-Input, .Form-Item-Textarea {
+        max-width: 80%;
       }
-      .return button:hover {
-        background-color: #45a29e;
-      }
+    }
+
+    .Form-Item-Label-Required {
+      background-color: #4870BD;
+      color: white;
+      padding: 2px 6px;  /* パディングを少し狭く調整 */
+      border-radius: 4px;
+      font-size: 30px;
+      line-height: 1;
+      display: inline;  /* inlineにして文字が横に並ぶように設定 */
+      margin-right: 5px;
+      text-shadow: none;
+    }
+    .Form-Item-Input,
+    .Form-Item-Textarea {
+      width: 80%;
+      max-width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+
+    .Form-Item-Textarea {
+      min-height: 150px;
+    }
+
+    .save, .cancel {
+      width: 48%;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .save {
+      background-color: #4870BD;
+      color: white;
+    }
+
+    .cancel {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .save:hover, .cancel:hover {
+      opacity: 0.8;
+    }
+
+    .err-msg-name, .err-msg-mail, .err-msg-content {
+      color: red;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
     </style>
   </head>
   <body>
-    <script src="/__/firebase/7.16.0/firebase-app.js"></script>
-    <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
-    <script src="/__/firebase/init.js"></script>
     <main>
       <?php if($mode == 'input'){ ?>
         <!-- 入力画面 -->
         <?php
           if($errmessage){
             echo '<div style="color:red">';
-            echo implode('<br>', $errmessage);
+            echo implode(separator: '<br>', array: $errmessage);
             echo '</div>';
           }
         ?>
         <div class="return">
-          <button type="button"><a href="../home.html">戻る</a></button>
+          <a href="../home.html"><img src="../ui_image/return.png"></a>
         </div>
         <form method="post" action="./contact.php">
           <div class="Form">
             <div class="Form-Item">
               <div class="err-msg-name"></div>
-              <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>氏名</p>
+              <div class="Form-Item-Label">
+                <span class="Form-Item-Label-Required">必須</span>名前
+              </div>
               <input type="text" name="fullname" id="name" class="Form-Item-Input" value="<?php echo $_SESSION['fullname']; ?>">
             </div>
             <div class="Form-Item">
               <div class="err-msg-mail"></div>
-              <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>メールアドレス</p>
+              <div class="Form-Item-Label">
+                <span class="Form-Item-Label-Required">必須</span>メールアドレス
+              </div>
               <input type="email" name="email" id="mail" class="Form-Item-Input" value="<?php echo $_SESSION['email']; ?>">
             </div>
             <div class="Form-Item">
               <div class="err-msg-content"></div>
-              <p class="Form-Item-Label isMsg"><span class="Form-Item-Label-Required">必須</span>お問い合わせ内容</p>
+              <div class="Form-Item-Label">
+                <span class="Form-Item-Label-Required">必須</span>お問い合わせ内容
+              </div>
               <textarea class="Form-Item-Textarea" name="message"  id="text"><?php echo $_SESSION['message']; ?></textarea>
             </div>
             <input type="submit" name="confirm" id="save" class="save" value="確認する">
