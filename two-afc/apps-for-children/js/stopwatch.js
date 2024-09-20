@@ -1,49 +1,46 @@
-let timePassed = 0;
-let stopwatchId = null;
+let timer;
+let elapsedSeconds = 0;
 let isRunning = false;
 
-const timerElement = $("#circleTimer");
-const timerText = $("#timerText");
-const toggleButton = $("#toggleButton");
-const endButton = $("#endButton");
+// 時間表示を更新する関数
+function updateTimeDisplay() {
+    const hours = Math.floor(elapsedSeconds / 3600);
+    const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+    const seconds = elapsedSeconds % 60;
 
-function formatTime(seconds) {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    // 2桁表示のためにゼロ埋めする
+    document.getElementById('time-display').textContent = 
+        String(hours).padStart(2, '0') + ':' +
+        String(minutes).padStart(2, '0') + ':' +
+        String(seconds).padStart(2, '0');
 }
 
-function updateStopwatch() {
-  timePassed++;
-  const percentage = (timePassed / 3600) * 100; // Limit to one hour for demonstration
-  timerElement.css("--percentage", `${percentage}%`);
-  timerText.html(formatTime(timePassed));
-  stopwatchId = setTimeout(updateStopwatch, 1000);
+// タイマーを開始する関数
+function startTimer() {
+    if (!isRunning) {
+        isRunning = true;  // タイマーが動作中であることを記録
+        document.getElementById('start-btn').style.display = 'none';  // スタートボタンを隠す
+        document.getElementById('stop-btn').style.display = 'inline';  // ストップボタンを表示する
+
+        // タイマーを1秒ごとに更新
+        timer = setInterval(() => {
+            elapsedSeconds++;
+            updateTimeDisplay();  // 表示を更新
+        }, 1000);
+    }
 }
 
-function startStopwatch() {
-  isRunning = true;
-  toggleButton.html("ストップ");
-  updateStopwatch();
+// タイマーを停止する関数
+function stopTimer() {
+    if (isRunning) {
+        isRunning = false;  // タイマーが停止したことを記録
+        clearInterval(timer);  // タイマーを停止
+
+        document.getElementById('start-btn').style.display = 'inline';  // スタートボタンを表示する
+        document.getElementById('stop-btn').style.display = 'none';  // ストップボタンを隠す
+    }
 }
 
-function stopStopwatch() {
-  isRunning = false;
-  clearTimeout(stopwatchId);
-  toggleButton.html("スタート");
-}
-
-toggleButton.on('click', () => {
-  if (isRunning) {
-    stopStopwatch();
-  } else {
-    startStopwatch();
-  }
-});
-
-endButton.on('click', () => {
-  stopStopwatch();
-  localStorage.setItem('stopwatchTime', formatTime(timePassed));
-  window.location.href = 'study-next.html';
-});
+// イベントリスナーを追加
+document.getElementById('start-btn').addEventListener('click', startTimer);
+document.getElementById('stop-btn').addEventListener('click', stopTimer);
