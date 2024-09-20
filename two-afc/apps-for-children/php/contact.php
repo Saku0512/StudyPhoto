@@ -72,7 +72,6 @@
       font-family: Arial, sans-serif;
       background-color: #f7f7f7;
     }
-
     main {
       width: 100%;
       max-width: 600px;
@@ -82,7 +81,6 @@
       border-radius: 8px;
       box-shadow: none;
     }
-
     .return {
       display: flex;
       justify-content: flex-start;
@@ -90,29 +88,24 @@
       padding: auto;
       margin: auto;
     }
-
     .return a {
       display: block;
       height: 50px;
       width: 50px;
     }
-
     .return a img {
       height: 100%;
       width: 100%;
     }
-
     .Form {
       width: 100%;
       margin: 20px;
     }
-
     .Form-Item {
       display: flex;
       flex-direction: column;
       margin-bottom: 20px;
     }
-
     .Form-Item-Label {
       display: inline;
       align-items: flex-start;
@@ -128,7 +121,6 @@
         max-width: 80%;
       }
     }
-
     .Form-Item-Label-Required {
       background-color: #4870BD;
       color: white;
@@ -149,11 +141,9 @@
       margin-top: 10px;
       box-sizing: border-box;
     }
-
     .Form-Item-Textarea {
       min-height: 150px;
     }
-
     .save, .cancel {
       width: 48%;
       padding: 10px;
@@ -162,27 +152,22 @@
       border-radius: 4px;
       cursor: pointer;
     }
-
     .save {
       background-color: #4870BD;
       color: white;
     }
-
     .cancel {
       background-color: #f44336;
       color: white;
     }
-
     .save:hover, .cancel:hover {
       opacity: 0.8;
     }
-
     .err-msg-name, .err-msg-mail, .err-msg-content {
       color: red;
       margin-bottom: 10px;
       font-size: 14px;
     }
-
     </style>
   </head>
   <body>
