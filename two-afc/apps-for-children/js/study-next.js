@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // localStorage から保存された秒数を取得
   const elapsedSeconds = parseInt(localStorage.getItem('stopwatchTime'), 10) || 0;
+  console.log(elapsedSeconds); // デバッグ用
 
   // 秒を時間：分：秒形式に変換
   const hours = Math.floor(elapsedSeconds / 3600);
@@ -17,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('timer-display').textContent = timeString;
 });
 
-$('#saveButton').on('click', () => {
+document.getElementById('saveButton').addEventListener('click', () => {
   // 現在の日付を取得し、YYYY-MM-DD形式で保存
   const now = new Date();
   const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD形式
@@ -26,7 +27,10 @@ $('#saveButton').on('click', () => {
   const timeString = localStorage.getItem('stopwatchTime') || '00:00:00';
   console.log("Saving to record:", timeString); // デバッグ用
 
-  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+  const elapsedSeconds = parseInt(timeString, 10) || 0;
+  const hours = Math.floor(elapsedSeconds / 3600);
+  const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+  const seconds = elapsedSeconds % 60;
   const totalHours = hours + minutes / 60 + seconds / 3600;
 
   // データを保存
