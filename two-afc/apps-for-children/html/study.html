@@ -50,45 +50,18 @@
       height: 10vh;
       width: 80vw;
     }
-    .button-container {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .start-container {
+    .start-stop-container {
       align-items: center;
       margin: auto;
       height: 20vh;
       width: 20vh;
     }
-    .start-container img {
+    .start-stop-container img {
       width: 20vh;
       height: 20vh;
-    }
-    .stop-container {
-      align-items: center;
-      margin: auto;
-      height: 20vh;
-      width: 20vh;
-    }
-    .stop-container img {
-      text-align: center;
-      width: 20vh;
-      height: 20vh;
-    
     }
     #stop-btn {
       display: none; /* 最初は見えないように設定 */
-    }
-
-
-    .button-container button {
-      display: block;
-      font-size: 18px;
-      padding: 10px 20px;
-      margin: 5px auto;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
     }
     .finish-btn {
       padding: 2px 6px;
@@ -106,10 +79,8 @@
    
     <div class=".timer-container">
       <h1 id="timer-display" class="timer">00:00:00</h1>
-      <div class="start-container">
-        <img src="../ui_image/start.png" id="start-btn" name="start_stop_botton">
-      </div>
-      <div class="stop-container">
+      <div class="start-stop-container">
+        <img src="../ui_image/start.png" id="start-btn">
         <img src="../ui_image/stop.png" id="stop-btn">
       </div>
     </div>

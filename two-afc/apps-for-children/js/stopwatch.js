@@ -19,9 +19,8 @@ function updateTimeDisplay() {
 function startTimer() {
     if (!isRunning) {
         isRunning = true;  // タイマーが動作中であることを記録
-        document.start_stop_botton.src = '../ui_image/stop.png';
-        //document.getElementById('start-btn').style.display = 'none';  // スタートボタンを隠す
-        //document.getElementById('stop-btn').style.display = 'inline';  // ストップボタンを表示する
+        document.getElementById('start-btn').style.display = 'none';  // スタートボタンを隠す
+        document.getElementById('stop-btn').style.display = 'inline';  // ストップボタンを表示する
 
         // タイマーを1秒ごとに更新
         timer = setInterval(() => {
@@ -36,9 +35,8 @@ function stopTimer() {
     if (isRunning) {
         isRunning = false;  // タイマーが停止したことを記録
         clearInterval(timer);  // タイマーを停止
-        document.start_stop_botton.src = '../ui_image/start.png';
-        //document.getElementById('start-btn').style.display = 'inline';  // スタートボタンを表示する
-        //document.getElementById('stop-btn').style.display = 'none';  // ストップボタンを隠す
+        document.getElementById('start-btn').style.display = 'inline';  // スタートボタンを表示する
+        document.getElementById('stop-btn').style.display = 'none';  // ストップボタンを隠す
     }
 }
 
