@@ -37,6 +37,9 @@ function stopTimer() {
         clearInterval(timer);  // タイマーを停止
         document.getElementById('start-btn').style.display = 'inline';  // スタートボタンを表示する
         document.getElementById('stop-btn').style.display = 'none';  // ストップボタンを隠す
+
+        // 経過時間を記録
+        localStorage.setItem('stopwatchTime', elapsedSeconds);
     }
 }
 
