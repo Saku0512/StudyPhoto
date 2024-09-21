@@ -15,6 +15,18 @@ function updateTimeDisplay() {
         String(seconds).padStart(2, '0');
 }
 
+// ページ読み込み時にタイマーを復元する関数
+function restoreTimer() {
+    const savedElapsedSeconds = parseInt(localStorage.getItem('stopwatchTime'), 10) || 0;
+    elapsedSeconds = savedElapsedSeconds; // 保存された秒数を復元
+    updateTimeDisplay();
+
+    // タイマーがスタートしていたかどうかも確認する
+    if(localStorage.getItem('isRunning') === 'turue') {
+       startTimer(); // 以前動いていた場合は再スタート
+    }
+}
+
 // タイマーを開始する関数
 function startTimer() {
     if (!isRunning) {
@@ -27,6 +39,9 @@ function startTimer() {
             elapsedSeconds++;
             updateTimeDisplay();  // 表示を更新
         }, 1000);
+
+        // タイマーが動作中であることを保存
+        localStorage.setItem('isRunning', 'true');
     }
 }
 
@@ -40,6 +55,7 @@ function stopTimer() {
 
         // 経過時間を記録
         localStorage.setItem('stopwatchTime', elapsedSeconds);
+        localStorage.setItem('isRunning', 'false'); // 停止したことを保存
     }
 }
 
@@ -53,3 +69,6 @@ document.getElementById('stop-btn').addEventListener('click', () => {
 document.getElementById('finish-btn').addEventListener('click', () => {
     stopTimer();
 });
+
+// ページロード時にタイマーを復元する
+window.onload = restoreTimer;
