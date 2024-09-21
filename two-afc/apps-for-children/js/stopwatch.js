@@ -9,7 +9,7 @@ function updateTimeDisplay() {
     const seconds = elapsedSeconds % 60;
 
     // 2桁表示のためにゼロ埋めする
-    document.getElementById('time-display').textContent = 
+    document.getElementById('timer-display').textContent = 
         String(hours).padStart(2, '0') + ':' +
         String(minutes).padStart(2, '0') + ':' +
         String(seconds).padStart(2, '0');
