@@ -101,5 +101,11 @@
         <a href="./php/contact.php" class="contact">問い合わせ</a>
       </div>
     </main>
+    <script type="text/javascript"defer>
+      document.querySelector('a[href="html/study.html"]').addEventListener('click', () => {
+        localStorage.removeItem('stopwatchTime');
+        localStorage.removeItem('isRunning');
+      });
+    </script>
   </body>
 </html>
