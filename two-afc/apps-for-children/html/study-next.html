@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/main.css" />
+  <script src="../js/addcategory.js"></script>
   <title>Stopwatch Next</title>
   <style>
     body {
@@ -14,9 +15,12 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      width: 100vw;
       text-align: center;
     }
     main {
+      align-items: center;
+      justify-content: center;
       height: 100vh;
       width: 100vw;
     }
@@ -45,7 +49,8 @@
     .timer {
       text-align: center;
       font-size: 60px;
-      margin-top: 11vh;
+      margin-top: 7.5vh;
+
     }
     .button-container {
       display: flex;
@@ -53,7 +58,7 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      margin-top: 20px;
+      
     }
     #saveButton, #homeButton {
       display: flex;
@@ -65,9 +70,72 @@
       background-color: #4870BD;
       color: white;
       height: 10vh;
-      width: 80vw;
+      width: 84vw;
       margin-top: 2.5vh;
       margin-bottom: 2.5vh;
+    }
+
+    .dropdown{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2.5vh;
+      gap: 2vw;   
+    }
+
+    #category{
+      height: 3vh;
+    }
+    .newSubject{
+      height: 3vh;
+      width: 37vw;
+      padding: 2px 6px;
+      text-align: center;
+      font-size: 13px;
+      background-color: #4870BD;
+      color: white;
+      border: none;
+    }
+
+    .photo{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2.5vh;
+      gap: 10vw;
+     
+    }
+    .photoSelect{
+      height: 7vh;
+      width: 37vw;
+      text-align: center;
+      font-size: 25px;
+      background-color: #4870BD;
+      color: white;
+      border: none;
+    }
+    .photoGraph{
+      height: 7vh;
+      width: 37vw;
+      padding: 2px 6px;
+      text-align: center;
+      font-size: 25px;
+      background-color: #4870BD;
+      color: white;
+      border: none;
+    }
+
+    .photoDisplay{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2.5vh;
+    }
+
+    #photoDisplay_id{
+      border: 1px solid #bfbfbf;
+      width: 84vw;
+      height: 50vh;
     }
   </style>
 </head>
@@ -77,9 +145,35 @@
       <a href="./study.html"><img src="../ui_image/return.png"></a>
     </div>
     <h1 class="timer" id="timer-display">00:00:00</h1>
+    
+    <div class="dropdown">
+      <select id="category" required="required">
+        <option>--教科を選択してください--</option>
+      </select>
+      <button class="newSubject" onclick="showPopup()">新しい教科を追加</button>
+    </div>
+  
+    <div class="overlay" id="overlay" onclick="hidePopup()"></div>
+    <div class="popup" id="popup">
+      <label for="optionName">新しいオプションの名前:</label>
+      <input type="text" id="optionName" placeholder="オプション名">
+      <button onclick="addOption()">追加</button>
+      <button onclick="hidePopup()">キャンセル</button>
+    </div>
+  
+    <div class="photo">
+      <button class="photoGraph">画像を撮影</button>
+      <button class="photoSelect">画像を選択</button>
+    </div>
+
+    <div class="photoDisplay">
+      <input id="photoDisplay_id" >
+    </div>
+    
     <div class="button-container">
       <a href="../home.html" id="saveButton">登録</a>
     </div>
+
   </main>
   <script src="../js/study-next.js" defer></script>
 </body>
