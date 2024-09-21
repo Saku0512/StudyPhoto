@@ -35,7 +35,6 @@ function stopTimer() {
     if (isRunning) {
         isRunning = false;  // タイマーが停止したことを記録
         clearInterval(timer);  // タイマーを停止
-
         document.getElementById('start-btn').style.display = 'inline';  // スタートボタンを表示する
         document.getElementById('stop-btn').style.display = 'none';  // ストップボタンを隠す
     }
