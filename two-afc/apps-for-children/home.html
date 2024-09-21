@@ -84,6 +84,7 @@
         height: 7vh;
         width: 37vw;
       }
+
     </style>
   </head>
   <body>
@@ -100,12 +101,28 @@
         <button class="setting">設定</button>
         <a href="./php/contact.php" class="contact">問い合わせ</a>
       </div>
+      <div id="myModal" class="modal">
+        <div class="popup-content">
+          <button class="close">閉じる</button>
+        </div>
     </main>
-    <script type="text/javascript"defer>
+    <script type="text/javascript" defer>
+      // タイマーをリセット
       document.querySelector('a[href="html/study.html"]').addEventListener('click', () => {
         localStorage.removeItem('stopwatchTime');
         localStorage.removeItem('isRunning');
       });
+
+      // 取得
+      var modal = document.getElementById('myModal');
+      var btn = document.querySelector('.setting');
+      var close = document.querySelector('.close');
+      btn.onclick = function() {
+        modal.style.display = 'flex';
+      }
+      close.onclick = function() {
+        modal.style.display = 'none';
+      }
     </script>
   </body>
 </html>
