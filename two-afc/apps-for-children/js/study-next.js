@@ -31,22 +31,24 @@ document.getElementById('saveButton').addEventListener('click', () => {
   const hours = Math.floor(elapsedSeconds / 3600);
   const minutes = Math.floor((elapsedSeconds % 3600) / 60);
   const seconds = elapsedSeconds % 60;
-  const totalHours = hours + minutes / 60 + seconds / 3600;
+  const totalCurrentHours = hours + minutes / 60 + seconds / 3600;
 
-  // データを保存
-  localStorage.setItem('recordTime', totalHours);
+  // 既存の totalTime を取得（なければ 0 を使用）
+  const previousTotalTime = parseInt(localStorage.getItem('totalTime')) || 0;
+
+  const newTotalTime = previousTotalTime + totalCurrentHours;
+  localStorage.setItem('totalTime', newTotalTime);
 
   // 現在の日付と時間を保存
   let dates = JSON.parse(localStorage.getItem('dates')) || [];
   let studyTimes = JSON.parse(localStorage.getItem('studyTimes')) || [];
 
   dates.push(currentDate);
-  studyTimes.push(totalHours);
+  studyTimes.push(totalCurrentHours);
 
   localStorage.setItem('dates', JSON.stringify(dates));
   localStorage.setItem('studyTimes', JSON.stringify(studyTimes));
 
   // タイマーをリセット
   localStorage.setItem('stopwatchTime', '00:00:00');
-  window.location.href = 'record.html';
 });
