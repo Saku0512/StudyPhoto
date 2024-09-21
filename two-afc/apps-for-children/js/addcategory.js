@@ -19,7 +19,6 @@ function addOption() {
         // optionタグを作成する
         const option = document.createElement("option");
         option.textContent=subject;
-        //select.insertBefore(option,select.lastElementChild);
         select.appendChild(option);
         hidePopup();
     }else{
