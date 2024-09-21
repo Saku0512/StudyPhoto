@@ -16,6 +16,10 @@
       height: 100vh;
       text-align: center;
     }
+    main{
+      height: 100vh;
+      width: 100vw;
+    }
     .return {
       position: absolute;
       top: 10px;
@@ -38,60 +42,44 @@
       height: 50px;
       width: 50px;
     }
-    
-    
-    .circle-timer {
-      position: relative;
-      width: 50vw;
-      height: 50vh;
-      max-width: 300px; /* 最大サイズを300pxに設定 */
-      max-height: 300px;
-      aspect-ratio: 1; /* 縦横比を1:1に保つ */
-      border-radius: 50%;
-      background: conic-gradient(#5bc8ac var(--percentage, 0%), #ddd 0%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 50px 0; /* Adjust the vertical margin as needed */
-    }
-    .circle-timer span {
-      position: absolute;
-      font-size: 24px;
-      color: #000;
+    .timer{
+      text-align: center;
+      margin-top: 40vh;
+      margin-left: 10vw;
+      font-size: 60px;
+      height: 10vh;
+      width: 80vw;
     }
     .button-container {
       text-align: center;
       margin-top: 20px;
     }
-    .timer-container h1 img {
-      text-align: center;
-      width: 70px;
-      height: 70px;
+    .start-container {
+      align-items: center;
+      margin: auto;
+      height: 20vh;
+      width: 20vh;
     }
-
-    .start-container button img {
-      text-align: center;
-      width: 30px;
-      height: 30px;
+    .start-container img {
+      width: 20vh;
+      height: 20vh;
     }
-
-    .stop-container button img {
+    .stop-container {
+      align-items: center;
+      margin: auto;
+      height: 20vh;
+      width: 20vh;
+    }
+    .stop-container img {
       text-align: center;
-      width: 30px;
-      height: 30px;
+      width: 20vh;
+      height: 20vh;
     
     }
     #stop-btn {
-    
-   
-    display: none; /* 最初は見えないように設定 */
+      display: none; /* 最初は見えないように設定 */
     }
 
-    .start-container button img {
-      
-      width: 50px;
-      height: 50px;
-    }
 
     .button-container button {
       display: block;
@@ -100,12 +88,13 @@
       margin: 5px auto;
       border-radius: 5px;
       border: none;
-      background-color: #5bc8ac;
-      color: white;
       cursor: pointer;
     }
-    .button-container button:hover {
-      background-color: #45a29e;
+    .finish-btn {
+      padding: 2px 6px;
+      font-size: 60px;
+      background-color: #4870BD;
+      color: white;
     }
   </style>
 </head>
@@ -116,14 +105,16 @@
     </div>
    
     <div class=".timer-container">
-      <h1 id="timer-display">00:00:00</h1>
-
-    <div class="start-container">
-      <button id="start-btn"><img src="../ui_image/start.png"></button>
+      <h1 id="timer-display" class="timer">00:00:00</h1>
+      <div class="start-container">
+        <img src="../ui_image/start.png" id="start-btn" name="start_stop_botton">
+      </div>
+      <div class="stop-container">
+        <img src="../ui_image/stop.png" id="stop-btn">
+      </div>
     </div>
-    <div class="stop-container">
-    <button id="stop-btn"><img src="../ui_image/stop.png"></button>
-
+    <div class="finish">
+      <a href="./study-next.html" class="finish-btn">終了する</a>
     </div>
   </main>
   <script src="../js/stopwatch.js" defer></script>
