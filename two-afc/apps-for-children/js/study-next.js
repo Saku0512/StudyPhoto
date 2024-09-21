@@ -46,5 +46,7 @@ document.getElementById('saveButton').addEventListener('click', () => {
   localStorage.setItem('dates', JSON.stringify(dates));
   localStorage.setItem('studyTimes', JSON.stringify(studyTimes));
 
+  // タイマーをリセット
+  localStorage.setItem('stopwatchTime', '00:00:00');
   window.location.href = 'record.html';
 });
