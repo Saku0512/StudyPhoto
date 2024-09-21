@@ -1,3 +1,22 @@
+document.addEventListener('DOMContentLoaded', () => {
+  // localStorage から保存された秒数を取得
+  const elapsedSeconds = parseInt(localStorage.getItem('stopwatchTime'), 10) || 0;
+
+  // 秒を時間：分：秒形式に変換
+  const hours = Math.floor(elapsedSeconds / 3600);
+  const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+  const seconds = elapsedSeconds % 60;
+
+  //表示用のテキストを作成
+  const timeString = 
+    String(hours).padStart(2, '0') + ':' +
+    String(minutes).padStart(2, '0') + ':' +
+    String(seconds).padStart(2, '0');
+
+    // 表示
+  document.getElementById('timer-display').textContent = timeString;
+});
+
 $('#saveButton').on('click', () => {
   // 現在の日付を取得し、YYYY-MM-DD形式で保存
   const now = new Date();

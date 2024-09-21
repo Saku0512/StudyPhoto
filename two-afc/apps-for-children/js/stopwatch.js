@@ -9,7 +9,7 @@ function updateTimeDisplay() {
     const seconds = elapsedSeconds % 60;
 
     // 2桁表示のためにゼロ埋めする
-    document.getElementById('time-display').textContent = 
+    document.getElementById('timer-display').textContent = 
         String(hours).padStart(2, '0') + ':' +
         String(minutes).padStart(2, '0') + ':' +
         String(seconds).padStart(2, '0');
@@ -37,6 +37,9 @@ function stopTimer() {
         clearInterval(timer);  // タイマーを停止
         document.getElementById('start-btn').style.display = 'inline';  // スタートボタンを表示する
         document.getElementById('stop-btn').style.display = 'none';  // ストップボタンを隠す
+
+        // 経過時間を記録
+        localStorage.setItem('stopwatchTime', elapsedSeconds);
     }
 }
 

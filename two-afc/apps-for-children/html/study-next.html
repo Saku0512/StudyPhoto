@@ -5,6 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stopwatch Next</title>
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    main {
+      height: 100vh;
+      width: 100vw;
+    }
+    .return {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
+    }
+    .return a{
+      font-size: 18px;
+      height: 40px;
+      width: 40px;
+      padding: 10px 20px;
+      margin-right: auto;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    .return a img {
+      height: 50px;
+      width: 50px;
+    }
     .button-container {
       text-align: center;
       margin-top: 20px;
@@ -22,18 +58,20 @@
     button:hover {
       background-color: #45a29e;
     }
-    .time-display {
+    .timer {
       text-align: center;
-      font-size: 24px;
-      margin: 20px 0;
+      font-size: 60px;
+      margin-top: 10vh;
     }
   </style>
 </head>
 <body>
   <main>
-    <div class="time-display" id="displayTime">00:00:00</div>
+    <div class="return">
+      <a href="./study.html"><img src="../ui_image/return.png"></a>
+    </div>
+    <h1 class="timer" id="timer-display">00:00:00</h1>
     <div class="button-container">
-      <button id="backButton">戻る</button>
       <button id="saveButton">保存</button>
     </div>
   </main>
