@@ -44,5 +44,12 @@ function stopTimer() {
 }
 
 // イベントリスナーを追加
-document.getElementById('start-btn').addEventListener('click', startTimer);
-document.getElementById('stop-btn').addEventListener('click', stopTimer);
+document.getElementById('start-btn').addEventListener('click', () => {
+    startTimer();
+});
+document.getElementById('stop-btn').addEventListener('click', () => {
+    stopTimer();
+});
+document.getElementById('finish-btn').addEventListener('click', () => {
+    stopTimer();
+});
