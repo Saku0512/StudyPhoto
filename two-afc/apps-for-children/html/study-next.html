@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/main.css" />
-  <script src="../js/addcategory.js"></script>
   <title>Stopwatch Next</title>
   <style>
     body {
@@ -86,6 +85,7 @@
     #category{
       height: 4vh;
       width: 40vw;
+      font-size: 13px;
       text-align: center;
     }
     #category option{
@@ -156,7 +156,10 @@
     */
     .popup {
       display: none;
-      height: 30vh;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
       width: 84vw;
     }
     .popup.active {
@@ -177,14 +180,31 @@
     }
     .form-section {
       display: none;
+      flex-direction: column;
+      align-items: center;
     }
     .form-section.active {
-      display: block;
+      display: flex;
     }
-    #addOptionName, #editOptionName, #deleteOptionName {
+    .optionlabel {
+      font-size: 20px;
+    }
+    #addOptionName{
+      height: 4vh;
+    }
+    #addOptionName, #editOptionName, #deleteOptionName,  #deleteOptionSelect, #editOptionSelect {
       margin-top: 2vh;
       margin-bottom: 2vh;
       border: 1px solid #bfbfbf;
+    }
+    #editSection, #deleteSection {
+      text-align: center;
+    }
+    #editOptionSelect, #deleteOptionSelect {
+      height: 4vh;
+      width: 40vw;
+      font-size: 13px;
+      text-align: center;
     }
     .popupbutton {
       margin-left: 0;
@@ -237,9 +257,9 @@
       </div>
 
       <!-- Add Section -->
-       <div id="addSection" class="form-section">
+       <div id="addSection" class="form-section add-popup">
         <label for="optionName" class="optionlabel">新しい教科名</label>
-        <input type="text" id="addOptionName" placeholder="オプション名">
+        <input type="text" id="addOptionName" placeholder="新しい教科名">
         <div class="popupbutton">
           <button onclick="hidePopup()" class="cancel">キャンセル</button>
           <button onclick="addOption()" class="add">追加</button>
@@ -247,9 +267,16 @@
       </div>
 
       <!-- Edit Section -->
-      <div id="editSection" class="form-section">
-        <label for="optionName" class="optionlabel">変更する教科名</label>
-        <input type="text" id="editOptionName" placeholder="オプション名">
+      <div id="editSection" class="form-section edit-popup">
+        <label for="optionSelect" class="optionlabel">変更する教科名</label>
+        <select id="editOptionSelect">
+          <option value="">--変更する教科を選択--</option>
+          <option>数学</option>
+          <option>英語</option>
+          <option>国語</option>
+        </select>
+        <label for="editOptionName" class="optionlabel">新しい教科名</label>
+        <input type="text" id="editOptionName" placeholder="新しい教科名">
         <div class="popupbutton">
           <button onclick="hidePopup()" class="cancel">キャンセル</button>
           <button onclick="editOption()" class="add">変更</button>
@@ -257,9 +284,14 @@
       </div>
 
       <!-- Delete Section -->
-      <div id="deleteSection" class="form-section">
-        <label for="optionName" class="optionlabel">削除する教科名</label>
-        <input type="text" id="deleteOptionName" placeholder="オプション名">
+      <div id="deleteSection" class="form-section delete-popup">
+        <label for="optionSelect" class="optionlabel">削除する教科名</label>
+        <select id="deleteOptionSelect">
+          <option value="">--削除する教科を選択--</option>
+          <option>数学</option>
+          <option>英語</option>
+          <option>国語</option>
+        </select>
         <div class="popupbutton">
           <button onclick="hidePopup()" class="cancel">キャンセル</button>
           <button onclick="deleteOption()" class="add">削除</button>
@@ -282,5 +314,6 @@
 
   </main>
   <script src="../js/study-next.js" defer></script>
+  <script src="../js/addcategory.js" defer></script>
 </body>
 </html>
