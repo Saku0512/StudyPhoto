@@ -135,18 +135,6 @@ h1{
   background: #eaedf2;
   font-size: 18px;
 }
-.save, .cancel {
-  border-radius: 6px;
-  margin-top: 32px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 10px;
-  padding-bottom: 40px;
-  width: 280px;
-  display: block;
-  letter-spacing: 0.05em;
-  font-size: 1.2rem;
-}
 /*ポップアップ操作*/
 .popup{
   display: none;

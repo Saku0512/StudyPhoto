@@ -60,7 +60,7 @@
       text-align: center;
       
     }
-    #saveButton, #homeButton {
+    #saveButton {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -80,15 +80,20 @@
       align-items: center;
       justify-content: center;
       margin-top: 2.5vh;
-      gap: 2vw;   
+      gap: 4vw;   
     }
 
     #category{
-      height: 3vh;
+      height: 4vh;
+      width: 40vw;
+      text-align: center;
+    }
+    #category option{
+      text-align: center;
     }
     .newSubject{
-      height: 3vh;
-      width: 37vw;
+      height: 4vh;
+      width: 40vw;
       padding: 2px 6px;
       text-align: center;
       font-size: 13px;
@@ -137,6 +142,35 @@
       width: 84vw;
       height: 50vh;
     }
+    .popup {
+      display: none;
+      height: 30vh;
+      width: 84vw;
+    }
+    #optionName {
+      margin-top: 2vh;
+      margin-bottom: 2vh;
+    }
+    .popupbutton {
+      margin-left: 0;
+      margin-right: 0;
+      display: flex;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      height: 5vh;
+      gap: 10vw;
+    }
+    .cancel, .add {
+      padding: 0;
+      margin-top: 0;
+      height: 5vh;
+      width: 30vw;
+      font-size: 20px;
+      background-color: #4870BD;
+      color: white;
+      border: none;
+    }
   </style>
 </head>
 <body>
@@ -148,17 +182,22 @@
     
     <div class="dropdown">
       <select id="category" required="required">
-        <option>--教科を選択してください--</option>
+        <option name="0">--教科を選択--</option>
+        <option>数学</option>
+        <option>英語</option>
+        <option>国語</option>
       </select>
-      <button class="newSubject" onclick="showPopup()">新しい教科を追加</button>
+      <button class="newSubject" onclick="showPopup()">教科を追加・変更・削除</button>
     </div>
   
     <div class="overlay" id="overlay" onclick="hidePopup()"></div>
     <div class="popup" id="popup">
-      <label for="optionName">新しいオプションの名前:</label>
+      <label for="optionName" class="optionlabel">新しいオプションの名前</label>
       <input type="text" id="optionName" placeholder="オプション名">
-      <button onclick="addOption()">追加</button>
-      <button onclick="hidePopup()">キャンセル</button>
+      <div class="popupbutton">
+        <button onclick="hidePopup()" class="cancel">キャンセル</button>
+        <button onclick="addOption()" class="add">追加</button>
+      </div>
     </div>
   
     <div class="photo">
