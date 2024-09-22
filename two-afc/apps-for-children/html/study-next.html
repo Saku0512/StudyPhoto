@@ -300,12 +300,12 @@
     </div>
   
     <div class="photo">
-      <button class="photoGraph">画像を撮影</button>
-      <button  class="photoSelect">画像を選択</button>
+      <button class="photoGraph" onclick="capturePhoto()">画像を撮影</button>
+      <button  class="photoSelect" onclick="selectPhoto()">画像を選択</button>
     </div>
 
     <div class="photoDisplay">
-      <input type="text" id="photoDisplay_id" >
+      <div type="text" id="photoDisplay_id"></div>
     </div>
     
     <div class="button-container">
@@ -315,5 +315,6 @@
   </main>
   <script src="../js/study-next.js" defer></script>
   <script src="../js/addcategory.js" defer></script>
+  <script src="../js/photoDisplay.js" defer></script>
 </body>
 </html>
