@@ -84,6 +84,52 @@
         height: 7vh;
         width: 37vw;
       }
+      .popup {
+        display: none;
+        position: fixed;
+        top: 30%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 84vw;
+        height: 30vh;
+      }
+      .popup.active {
+        display: block;
+      }
+      .popup .tab a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #4870BD;
+        text-align: center;
+        color: white;
+        cursor: pointer;
+        width: 60vw;
+        height: 10vh;
+        border: none;
+        border-radius: 15px;
+        margin: 5px 0;
+        text-decoration: none;
+        font-size: 60px;
+      }
+      .popup .tab {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: 1vh;
+        gap: 5vh;
+      }
+      .close-button {
+        margin-top: 10px;
+        background-color: white;
+        color: black;
+        cursor: pointer;
+        width: 20vw;
+        height: 20vh;
+        border: none;
+      }
 
     </style>
   </head>
@@ -95,11 +141,18 @@
       <div class="contents" >
         <a href="html/study.html" class="study">勉強する</a>
         <div class="space-h"></div>
-        <a href="html/record.html" class="note">記録する</a>
+        <a href="#" class="note" onclick="showPopup()">記録する</a>
       </div>
       <div class="footer" type="button">
         <button class="setting">設定</button>
         <a href="./php/contact.php" class="contact">問い合わせ</a>
+      </div>
+      <div class="overlay" id="overlay" onclick="hidePopup()"></div>
+      <div class="popup" id="popup">
+        <div class="tab">
+          <a href="html/record.html" class="me">自分の記録</a>
+          <a href="#" class="parent">保護者</a>
+        </div>
       </div>
     </main>
     <script type="text/javascript" defer>
@@ -108,6 +161,21 @@
         localStorage.removeItem('stopwatchTime');
         localStorage.removeItem('isRunning');
       });
+
+      function showPopup() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("popup").classList.add("active");
+      }
+
+      function hidePopup() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("popup").classList.remove("active");
+      }
+
+      function saveRecord() {
+        alert("記録が保存されました。");
+        hidePopup();
+      }
     </script>
   </body>
 </html>
