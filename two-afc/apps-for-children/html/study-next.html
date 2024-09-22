@@ -142,14 +142,49 @@
       width: 84vw;
       height: 50vh;
     }
+    /*
+    .overlay {
+      display: none; 
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); 
+      z-index: 999; 
+    }
+    */
     .popup {
       display: none;
       height: 30vh;
       width: 84vw;
     }
-    #optionName {
+    .popup.active {
+      display: block;
+    }
+    .tab {
+      display: flex;
+      justify-content: space-around;
+      border-bottom: 1px solid blue;
+    }
+    .tab button {
+      font-size: 18px;
+      background-color: white;
+      color: black;
+      cursor: pointer;
+      width: 20vw;
+      border: none;
+    }
+    .form-section {
+      display: none;
+    }
+    .form-section.active {
+      display: block;
+    }
+    #addOptionName, #editOptionName, #deleteOptionName {
       margin-top: 2vh;
       margin-bottom: 2vh;
+      border: 1px solid #bfbfbf;
     }
     .popupbutton {
       margin-left: 0;
@@ -160,6 +195,9 @@
       justify-content: center;
       height: 5vh;
       gap: 10vw;
+    }
+    #addSection, #editSection, #deleteSection {
+      margin-top: 2vh;
     }
     .cancel, .add {
       padding: 0;
@@ -192,21 +230,50 @@
   
     <div class="overlay" id="overlay" onclick="hidePopup()"></div>
     <div class="popup" id="popup">
-      <label for="optionName" class="optionlabel">新しいオプションの名前</label>
-      <input type="text" id="optionName" placeholder="オプション名">
-      <div class="popupbutton">
-        <button onclick="hidePopup()" class="cancel">キャンセル</button>
-        <button onclick="addOption()" class="add">追加</button>
+      <div class="tab">
+        <button onclick="showSection('addSection')">追加</button>
+        <button onclick="showSection('editSection')">変更</button>
+        <button onclick="showSection('deleteSection')">削除</button>
+      </div>
+
+      <!-- Add Section -->
+       <div id="addSection" class="form-section">
+        <label for="optionName" class="optionlabel">新しい教科名</label>
+        <input type="text" id="addOptionName" placeholder="オプション名">
+        <div class="popupbutton">
+          <button onclick="hidePopup()" class="cancel">キャンセル</button>
+          <button onclick="addOption()" class="add">追加</button>
+        </div>
+      </div>
+
+      <!-- Edit Section -->
+      <div id="editSection" class="form-section">
+        <label for="optionName" class="optionlabel">変更する教科名</label>
+        <input type="text" id="editOptionName" placeholder="オプション名">
+        <div class="popupbutton">
+          <button onclick="hidePopup()" class="cancel">キャンセル</button>
+          <button onclick="editOption()" class="add">変更</button>
+        </div>
+      </div>
+
+      <!-- Delete Section -->
+      <div id="deleteSection" class="form-section">
+        <label for="optionName" class="optionlabel">削除する教科名</label>
+        <input type="text" id="deleteOptionName" placeholder="オプション名">
+        <div class="popupbutton">
+          <button onclick="hidePopup()" class="cancel">キャンセル</button>
+          <button onclick="deleteOption()" class="add">削除</button>
+        </div>
       </div>
     </div>
   
     <div class="photo">
       <button class="photoGraph">画像を撮影</button>
-      <button class="photoSelect">画像を選択</button>
+      <button  class="photoSelect">画像を選択</button>
     </div>
 
     <div class="photoDisplay">
-      <input id="photoDisplay_id" >
+      <input type="text" id="photoDisplay_id" >
     </div>
     
     <div class="button-container">
