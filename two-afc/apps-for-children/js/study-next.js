@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // localStorage から保存された秒数を取得
   const elapsedSeconds = parseInt(localStorage.getItem('stopwatchTime'), 10) || 0;
-  console.log(elapsedSeconds); // デバッグ用
+  //console.log(elapsedSeconds); // デバッグ用
 
   // 秒を時間：分：秒形式に変換
   const hours = Math.floor(elapsedSeconds / 3600);
