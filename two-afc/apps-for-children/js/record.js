@@ -30,8 +30,8 @@ const studyChart = new Chart(ctx, {
     datasets: [{
       label: '勉強時間 (h)',
       data: totalTimes,
-      backgroundColor: '#5bc8ac', // 棒グラフの背景色
-      borderColor: '#3b9e8d', // 棒グラフの枠線色
+      backgroundColor: '#4870BD', // 棒グラフの背景色
+      borderColor: 'white', // 棒グラフの枠線色
       borderWidth: 1
     }]
   },
@@ -41,9 +41,9 @@ const studyChart = new Chart(ctx, {
     scales: {
       y: {
         beginAtZero: true,
-        max: 12, // 最大値を12時間に設定
+        max: 0.5, // 最大値を12時間に設定
         ticks: {
-          stepSize: 0.5, // 目盛り間隔を0.5時間に設定
+          stepSize: 0.05, // 目盛り間隔を0.5時間に設定
           callback: function(value) {
             return value + 'h'; // 時間を表示
           }
