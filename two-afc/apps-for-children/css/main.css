@@ -135,7 +135,7 @@ h1{
   background: #eaedf2;
   font-size: 18px;
 }
-/*ポップアップ操作*/
+/*ポップアップ操作
 .popup{
   display: none;
   position: fixed;
@@ -157,3 +157,4 @@ h1{
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 50;
 }
+  */

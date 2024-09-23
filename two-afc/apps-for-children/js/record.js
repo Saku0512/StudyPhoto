@@ -72,7 +72,56 @@ const studyChart = new Chart(ctx, {
 
 // DOM の読み込み完了後に実行する処理
 document.addEventListener('DOMContentLoaded', () => {
+  const timeButton = document.getElementById("timeButton");
+  const noteButton = document.getElementById("noteButton");
+  const commentButton = document.getElementById("commentButton");
+  const timerSection = document.getElementById("timerSection");
+  const noteSection = document.getElementById("noteSection");
+  const commentSection = document.getElementById("commentSection");
   const selectedCategory = localStorage.getItem("selectedCategory");
+
+  // Sectionを全部非表示
+  function hideAllSection() {
+    if(timerSection) timerSection.classList.remove("active");
+    if(noteSection) noteSection.classList.remove("active");
+    if(commentSection) commentSection.classList.remove("active");
+  }
+
+  // デフォルトでtimerSectionを表示
+  hideAllSection();
+  if(timerSection) timerSection.classList.add("active");
+
+  // ボタンの状態をリセット
+  function resetButtonStates() {
+    timeButton.classList.remove("active");
+    noteButton.classList.remove("active");
+    commentButton.classList.remove("active");
+  }
+
+  // タイムボタンをクリック
+  timeButton.addEventListener("click", function() {
+    hideAllSection();
+    resetButtonStates();
+    if(timerSection) timerSection.classList.add("active");
+    timeButton.classList.add("active");
+  });
+
+  // ノートボタンをクリック
+  noteButton.addEventListener("click", function() {
+    hideAllSection();
+    resetButtonStates();
+    if(noteSection) noteSection.classList.add("active");
+    noteButton.classList.add("active");
+  });
+
+  // コメントボタンをクリック
+  commentButton.addEventListener("click", function() {
+    hideAllSection();
+    resetButtonStates();
+    if(commentSection) commentSection.classList.add("active");
+    commentButton.classList.add("active");
+  });
+
   console.log(selectedCategory);
   if(selectedCategory) {
     document.getElementById("displayCategory").textContent = selectedCategory;

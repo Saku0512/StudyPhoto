@@ -92,6 +92,10 @@
         transform: translateX(-50%);
         width: 84vw;
         height: 30vh;
+        background-color: white;
+        border: 1px solid black;
+        padding: 20px;
+        z-index: 100;
       }
       .popup.active {
         display: block;
@@ -104,7 +108,7 @@
         text-align: center;
         color: white;
         cursor: pointer;
-        width: 60vw;
+        width: 50vw;
         height: 10vh;
         border: none;
         border-radius: 15px;
@@ -130,7 +134,16 @@
         height: 20vh;
         border: none;
       }
-
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+      }
     </style>
   </head>
   <body>
