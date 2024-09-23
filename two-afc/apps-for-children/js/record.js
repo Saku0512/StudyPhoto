@@ -22,7 +22,7 @@ const formattedDates = Array.from(dateTimeMap.keys()).map(date => new Date(date)
 const totalTimes = Array.from(dateTimeMap.values());
 
 // グラフの作成
-const ctx = $('#studyChart')[0].getContext('2d');
+const ctx = document.getElementById('studyChart').getContext('2d'); // jQuery ではなく、純粋な JS を使用
 const studyChart = new Chart(ctx, {
   type: 'bar', // 棒グラフを表示
   data: {
@@ -53,9 +53,9 @@ const studyChart = new Chart(ctx, {
         type: 'time',
         time: {
           unit: 'day', // 日単位で表示
-          tooltipFormat: 'MM/DD', // ツールチップの日付形式
+          tooltipFormat: 'MM/dd', // ツールチップの日付形式
           displayFormats: {
-            day: 'MM/DD' // 軸ラベルの日付形式
+            day: 'MM/dd' // 軸ラベルの日付形式
           }
         },
         title: {
@@ -67,5 +67,14 @@ const studyChart = new Chart(ctx, {
         }
       }
     }
+  }
+});
+
+// DOM の読み込み完了後に実行する処理
+document.addEventListener('DOMContentLoaded', () => {
+  const selectedCategory = localStorage.getItem("selectedCategory");
+  console.log(selectedCategory);
+  if(selectedCategory) {
+    document.getElementById("displayCategory").textContent = selectedCategory;
   }
 });

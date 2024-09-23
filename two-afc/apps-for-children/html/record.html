@@ -12,50 +12,76 @@
     body {
       margin: 0;
       padding: 0;
+      display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       height: 100vh;
       width: 100vw;
       text-align: center;
     }
-    .return {
+    .main {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      width: 100vw;
+    }
+    .button-container {
       position: absolute;
+      top: 10px;
+      left: 10px;
       display: flex;
       justify-content: flex-start;
-      width: 100vw;
-      height: 10vh;
-      position: relative;
+      gap: 10px;
+      width: 100%;
     }
-    .return a{
+    .button-container a, .button-container button {
       font-size: 18px;
-      height: 60px;
-      width: 60px;
+      height: 40px;
+      width: 40px;
+      padding: 10px 20px;
+      margin-right: auto;
+      border-radius: 5px;
       border: none;
       cursor: pointer;
-      display: inline-block;
-      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .return a img {
-      display: block;
-      height: 60px;
-      width: 60px;
+    .button-container a img {
+      height: 50px;
+      width: 50px;
+      background-color: white;
+    }
+    .button-container button img {
+      height: 65px;
+      width: 65px;
+      background-color: white;
     }
     .chart-container {
-      width: 90%; /* グラフの幅を90%に設定 */
+      width: 80vw; /* グラフの幅を90%に設定 */
       height: 600px; /* 高さを600pxに設定 */
-      margin: 0 auto;
+      margin-top: 10vh;
     }
   </style>
 </head>
 <body>
   <main>
-    <div class="return">
+    <div class="button-container">
       <a href="../home.html"><img src="../ui_image/return.png"></a>
+      <button id="timeButton" type="button"><img src="../ui_image/clock.png"></button>
+      <button id="noteButton" type="button"><img src="../ui_image/book.png"></button>
+      <button id="commentButton" type="button"><img src="../ui_image/parent.png"></button>
     </div>
+    
     <div class="chart-container">
       <canvas id="studyChart"></canvas>
     </div>
+    <p id="displayCategory"></p>
   </main>
   <script src="../js/record.js" defer></script> <!-- JSファイルをdefer属性付きで読み込む -->
 </body>
