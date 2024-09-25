@@ -20,18 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.getElementById('saveButton').addEventListener('click', (event) => {
   event.preventDefault();
-  console.log("Save button clicked"); // デバッグ用
+  //console.log("Save button clicked"); // デバッグ用
 
   const categorySelect = document.getElementById("category");
   const selectedCategory = categorySelect.value;
-  console.log("Selected Category:",selectedCategory); // デバッグ用
+  //console.log("Selected Category:",selectedCategory); // デバッグ用
 
   const photoDisplay = document.getElementById("photoDisplay_id");
   const photoSelected = photoDisplay.innerHTML.trim() !== ''; // 画像を選択しているかどうか
-  console.log("Photo Selected:", photoSelected); // デバッグ用
+  //console.log("Photo Selected:", photoSelected); // デバッグ用
 
   // 教科が選択されていない場合は、画像ポップアップは表示せず教科アラートを表示
-  if(selectedCategory === "--教科を選択--" || selectedCategory === "0") {
+  if(selectedCategory === "--教科を選択--" && !photoSelected) {
     alert("教科を選択してください。");
     return;
   }
