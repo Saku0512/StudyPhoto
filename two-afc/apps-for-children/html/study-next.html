@@ -96,10 +96,12 @@
       width: 40vw;
       padding: 2px 6px;
       text-align: center;
-      font-size: 13px;
+      font-size: 14px;
       background-color: #4870BD;
       color: white;
       border: none;
+      white-space: nowrap;
+      min-width: 100px;
     }
 
     .photo{
@@ -110,7 +112,7 @@
       gap: 10vw;
      
     }
-    .photoSelect{
+    .photoSelect, .photoGraph{
       height: 7vh;
       width: 37vw;
       text-align: center;
@@ -118,18 +120,9 @@
       background-color: #4870BD;
       color: white;
       border: none;
+      white-space: nowrap;
+      min-width: 100px;
     }
-    .photoGraph{
-      height: 7vh;
-      width: 37vw;
-      padding: 2px 6px;
-      text-align: center;
-      font-size: 25px;
-      background-color: #4870BD;
-      color: white;
-      border: none;
-    }
-
     .photoDisplay{
       display: flex;
       justify-content: center;
@@ -141,6 +134,14 @@
       border: 1px solid #bfbfbf;
       width: 84vw;
       height: 50vh;
+    }
+    @media (max-width: 600px) {
+      .newSubject{
+        font-size: 12px;
+      }
+      .photoSelect, .photoGraph{
+        font-size: 20px;
+      }
     }
     .overlay {
       display: none;
@@ -312,6 +313,14 @@
     
     <div class="button-container">
       <a href="../home.html" id="saveButton">登録</a>
+    </div>
+    <div class="overlay" id="confirm-overlay" onclick="hideConfirmPopup()"></div>
+    <div class="popup" id="confirm-popup">
+      <p>画像が選択されていません。<br>登録しますか？</p>
+      <div class="popupbutton">
+        <button onclick="hideConfirmPopup()" class="cancel">キャンセル</button>
+        <button id="confirm-save" class="add">登録</button>
+      </div>
     </div>
 
   </main>

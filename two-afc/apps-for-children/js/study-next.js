@@ -18,7 +18,47 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('timer-display').textContent = timeString;
 });
 
-document.getElementById('saveButton').addEventListener('click', () => {
+document.getElementById('saveButton').addEventListener('click', (event) => {
+  event.preventDefault();
+  console.log("Save button clicked"); // デバッグ用
+
+  const categorySelect = document.getElementById("category");
+  const selectedCategory = categorySelect.value;
+  console.log("Selected Category:",selectedCategory); // デバッグ用
+
+  const photoDisplay = document.getElementById("photoDisplay_id");
+  const photoSelected = photoDisplay.innerHTML.trim() !== ''; // 画像を選択しているかどうか
+  console.log("Photo Selected:", photoSelected); // デバッグ用
+
+  // 教科が選択されていない場合は、画像ポップアップは表示せず教科アラートを表示
+  if(selectedCategory === "--教科を選択--" || selectedCategory === "0") {
+    alert("教科を選択してください。");
+    return;
+  }
+
+  if(!photoSelected) {
+    showConfirmPopup();
+  } else {
+    saveData();
+  }
+});
+
+document.getElementById("confirm-save").addEventListener("click", () => {
+  hideConfirmPopup();
+  saveData();
+});
+
+function showConfirmPopup() {
+  document.getElementById("confirm-overlay").style.display = "block";
+  document.getElementById("confirm-popup").style.display = "block";
+}
+
+function hideConfirmPopup() {
+  document.getElementById("confirm-overlay").style.display = "none";
+  document.getElementById("confirm-popup").style.display = "none";
+}
+
+function saveData() {
   // 現在の日付を取得し、YYYY-MM-DD形式で保存
   const now = new Date();
   const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD形式
@@ -51,4 +91,4 @@ document.getElementById('saveButton').addEventListener('click', () => {
 
   // タイマーをリセット
   localStorage.setItem('stopwatchTime', '00:00:00');
-});
+};
