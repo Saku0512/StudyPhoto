@@ -153,9 +153,7 @@ function editOption() {
         editSelect.options[selectedIndex].textContent = subject;
 
         hidePopup();
-    } else {
-        alert("教科を選択し、入力してください。");
-    }
+    } 
 }
 
 function deleteOption() {
