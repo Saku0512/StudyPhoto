@@ -52,7 +52,7 @@ function showSection(sectionId) {
     if(sectionId === 'addSection'){
         popup.style.height = '30vh';
     }else if(sectionId === 'editSection'){
-        popup.style.height = '40vh';
+        popup.style.height = '45vh';
     }else if(sectionId === 'deleteSection'){
         popup.style.height = '30vh';
     }

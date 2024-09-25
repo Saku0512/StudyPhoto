@@ -87,7 +87,7 @@
       .popup {
         display: none;
         position: fixed;
-        top: 30%;
+        top: 35%;
         left: 50%;
         transform: translateX(-50%);
         width: 84vw;
@@ -104,25 +104,34 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #4870BD;
-        text-align: center;
-        color: white;
-        cursor: pointer;
-        width: 50vw;
         height: 10vh;
-        border: none;
+        width: 50vw;
         border-radius: 15px;
         text-decoration: none;
+        text-align: center;
         font-size: 60px;
+        text-decoration: none;
+      }
+      .me{
+        margin-top: 5vh;
+        margin-bottom: 10px;
+        background-color: #4870BD;
+        color: white;
+      }
+      .note {
+        margin-top: 10px;
+        margin-bottom: 5vh;
+        background-color: #4870BD;
+        color: white;
       }
       .popup .tab {
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
         text-align: center;
         margin-top: 3vh;
         gap: 8vh;
+        justify-content: center;
       }
       
       .close-button {
@@ -164,7 +173,8 @@
       <div class="popup" id="popup">
         <div class="tab">
           <a href="html/record.html" class="me">自分の記録</a>
-          <a href="#" class="parent">保護者</a>
+          <div class="space-h"></div>
+          <a href="html/record.html" class="parent">保護者</a>
         </div>
       </div>
     </main>

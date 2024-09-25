@@ -69,17 +69,29 @@
       width: 100vw;
       margin-top: 80px;
     }
-    /*
-    .border {
-      width: 90vw;
-      margin-top: 9vh;
-      border-bottom: 1px solid blue;
-    }
-    */
     .chart-container {
       width: 80vw; /* グラフの幅を90%に設定 */
       height: 50vh; /* 高さを600pxに設定 */
-      margin-top: 5vh;
+      margin-top: 2vh;
+    }
+    .side_unit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-direction: column;
+      width: 80vh;
+      height: 20vh;
+    }
+    .side_unit_button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5vw;
+    }
+    .side_unit_button button {
+      width: 10vw;
+      height: 3vh;
     }
     #timerSection, #noteSection, #commentSection {
       display: none;
@@ -102,6 +114,14 @@
     <div class="popup" id="popup">
       <!-- Timer Section -->
       <div id="timerSection" class="section">
+        <div class="side_unit">
+          <p class="side_unit_text">横軸の単位を選択してください</p>
+          <div class="side_unit_button">
+            <button class="side_unit_week">週</button>
+            <button class="side_unit_mounth">月</button>
+            <button class="side_unit_year">年</button>
+          </div>
+        </div>
         <div class="chart-container">
           <canvas id="studyChart"></canvas>
         </div>
