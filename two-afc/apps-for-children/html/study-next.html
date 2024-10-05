@@ -109,12 +109,12 @@
       align-items: center;
       justify-content: center;
       margin-top: 2.5vh;
-      gap: 10vw;
+      gap: 5vw;
      
     }
-    .photoSelect, .photoGraph{
+    .photoSelect, .photoGraph, .photoDelete, .cancel_photo{
       height: 7vh;
-      width: 37vw;
+      width: 40vw;
       text-align: center;
       font-size: 25px;
       background-color: #4870BD;
@@ -124,22 +124,73 @@
       min-width: 100px;
     }
     .photoDisplay{
-      display: flex;
-      justify-content: center;
+      display: block;
+      justify-content: flex-start;
       align-items: center;
       margin-top: 2.5vh;
-    }
-
-    #photoDisplay_id{
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 50vh;
+      height: 50vh;
+      width: 90vw;
       border: 1px solid #bfbfbf;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #photoDisplay_id{
       width: 84vw;
       height: 50vh;
     }
+    .photo_img{
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      margin: 5px;
+      border: 1px solid black;
+      object-fit: contain;
+    }
+    #photoOptionsPopup {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 84vw;
+      padding: 20px;
+      background-color: white;
+      border: 1px solid black;
+      z-index: 100;
+    }
+    #photoOptionsPopup p {
+      font-size: 18px;
+    }
+    .popupbutton_photo_sub {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      margin-top: 2vh;
+      margin-bottom: 2vh;
+    }
+    .popupbutton_photo_sub button {
+      height: 8vh;
+      width: 40vw;
+      margin-top: 2vh;
+      margin-bottom: 2vh;
+    }
+
+/*
+    #photoDisplay_id{
+      width: 84vw;
+      height: 50vh;
+    }
+*/
     @media (max-width: 600px) {
       .newSubject{
         font-size: 12px;
       }
-      .photoSelect, .photoGraph{
+      .photoSelect, .photoGraph, .photoDelete, .cancel_photo{
         font-size: 20px;
       }
     }
@@ -159,6 +210,8 @@
       top: 30%;
       left: 50%;
       transform: translateX(-50%);
+      margin-left: auto;
+      margin-right: auto;
       width: 84vw;
       padding: 20px;
       background-color: white;
@@ -248,7 +301,7 @@
         <option>英語</option>
         <option>国語</option>
       </select>
-      <button class="newSubject" onclick="showPopup()">教科を追加・変更・削除</button>
+      <button class="newSubject" onclick="showPopup()">教科を編集</button>
     </div>
   
     <div class="overlay" id="overlay" onclick="hidePopup()"></div>
@@ -303,8 +356,17 @@
     </div>
   
     <div class="photo">
-      <button class="photoGraph" onclick="capturePhoto()">画像を撮影</button>
-      <button  class="photoSelect" onclick="selectPhoto()">画像を選択</button>
+      <button class="photoSelect" onclick="showPhotoOptions()">画像を追加</button>
+      <button class="photoDelete" onclick="deletePhoto()">画像を削除</button>
+    </div>
+
+    <div class="popup_photo" id="photoOptionsPopup">
+      <p>画像をどうしますか？</p>
+      <div class="popupbutton_photo_sub">
+        <button onclick="capturePhoto()" class="photoGraph">撮影</button>
+        <button onclick="selectPhoto()" class="photoSelect">選択</button>
+        <button onclick="hidePhotoOptionsPopup()" class="cancel_photo">キャンセル</button>
+      </div>
     </div>
 
     <div class="photoDisplay">
