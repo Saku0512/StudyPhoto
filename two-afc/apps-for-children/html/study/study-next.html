@@ -366,7 +366,6 @@
           <button onclick="editOption()" class="add">変更</button>
         </div>
       </div>
-
       <!-- Delete Section -->
       <div id="deleteSection" class="form-section delete-popup">
         <label for="optionSelect" class="optionlabel">削除する教科名</label>
@@ -382,12 +381,10 @@
         </div>
       </div>
     </div>
-  
     <div class="photo">
       <button class="photoSelect" onclick="showPhotoOptions()">画像を追加</button>
       <button class="photoDelete" onclick="showDeletePhotoPopup()">画像を削除</button>
     </div>
-
     <div class="popup_photo" id="photoOptionsPopup">
       <p>画像をどうしますか？</p>
       <div class="popupbutton_photo_sub">
@@ -396,18 +393,15 @@
         <button onclick="hidePhotoOptionsPopup()" class="cancel_photo">キャンセル</button>
       </div>
     </div>
-
     <div class="popup_photo_delete" id="deletePhotoPopup">
       <p>削除する画像を選択してください</p>
       <div id="deletePhotoList"></div>
       <button onclick="hideDeletePhotoPopup()" class="delete_cancel">キャンセル</button>
       <button onclick=" deleteSelectedPhotos()" class="delete_done">削除</button>
     </div>
-
     <div class="photoDisplay">
       <div type="text" id="photoDisplay_id"></div>
     </div>
-    
     <div class="button-container">
       <a href="../../home.html" id="saveButton">登録</a>
     </div>
@@ -419,7 +413,6 @@
         <button id="confirm-save" class="add">登録</button>
       </div>
     </div>
-
   </main>
   <script src="../../js/study-next.js" defer></script>
   <script src="../../js/addcategory.js" defer></script>
