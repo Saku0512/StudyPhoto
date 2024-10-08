@@ -161,7 +161,7 @@
         <img src="./ui_image/logo.png" alt="logo" title="logo">
       </div>
       <div class="contents" >
-        <a href="html/study.html" class="study">勉強する</a>
+        <a href="./html/study/study.html" class="study">勉強する</a>
         <div class="space-h"></div>
         <a href="#" class="note" onclick="showPopup()">記録する</a>
       </div>
@@ -172,14 +172,14 @@
       <div class="overlay" id="overlay" onclick="hidePopup()"></div>
       <div class="popup" id="popup">
         <div class="tab">
-          <a href="html/record.html" class="me">自分の記録</a>
-          <a href="html/record.html" class="parent">保護者</a>
+          <a href="html/record/record_time.html" class="me">自分の記録</a>
+          <a href="html/record/record_time.html" class="parent">保護者</a>
         </div>
       </div>
     </main>
     <script type="text/javascript" defer>
       // タイマーをリセット
-      document.querySelector('a[href="html/study.html"]').addEventListener('click', () => {
+      document.querySelector('a[href="./html/study/study.html"]').addEventListener('click', () => {
         localStorage.removeItem('stopwatchTime');
         localStorage.removeItem('isRunning');
       });
