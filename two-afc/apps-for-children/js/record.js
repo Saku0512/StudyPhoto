@@ -72,21 +72,9 @@ const studyChart = new Chart(ctx, {
 
 // DOM の読み込み完了後に実行する処理
 document.addEventListener('DOMContentLoaded', () => {
-  showPopup();
   const selectedCategory = localStorage.getItem("selectedCategory");
   console.log(selectedCategory);
   if(selectedCategory) {
     document.getElementById("displayCategory").textContent = selectedCategory;
   }
 });
-// ポップアップを隠す関数
-function hidePopup() {
-  document.getElementById('popup').style.display = 'none';
-  document.getElementById('overlay').style.display = 'none';
-}
-
-// ポップアップを表示する関数
-function showPopup() {
-  document.getElementById('popup').style.display = 'block';
-  document.getElementById('overlay').style.display = 'block';
-}
