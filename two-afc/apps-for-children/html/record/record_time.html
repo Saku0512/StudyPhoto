@@ -50,23 +50,24 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative; /* 位置指定を追加 */
     }
     .tab a img {
-      height: 50px;
-      width: 50px;
-      background-color: white;
-    }
-    .tab button img {
       height: 65px;
       width: 65px;
-      background-color: white;
     }
-    .tab button.active {
-      border-bottom: 2px solid blue;
+    .tab a.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -15px; /* ボーダーの位置を下げるための距離 */
+      height: 2px; /* ボーダーの高さ */
+      background-color: blue;
     }
     .section {
       width: 100%;
-      margin-top: 80px;
+      margin-top: 60px;
     }
     @media (max-width: 600px) {
       .tab {
@@ -75,10 +76,6 @@
       .side_unit {
         width: 90%;
       }
-    }
-    .popup {
-      width: 100%;
-      margin-top: 80px;
     }
     .chart-container {
       width: 80%; /* グラフの幅を90%に設定 */
@@ -127,7 +124,6 @@
       <a href="./record_note.html" id="noteButton" type="button"><img src="../../ui_image/book.png"></a>
       <a href="./record_comment.html" id="commentButton" type="button"><img src="../../ui_image/parent.png"></a>
     </div>
-    <div class="border"></div>
     <!-- Timer Section -->
     <div id="timerSection" class="section">
       <div class="side_unit">
@@ -145,5 +141,18 @@
     </div>
   </main>
   <script src="../../js/record.js" defer></script> <!-- JSファイルをdefer属性付きで読み込む -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
+      const tabs = document.querySelectorAll('.tab a'); // すべてのタブを取得
+  
+      tabs.forEach(tab => {
+        const tabHref = tab.getAttribute('href').split('/').pop(); // タブのリンクのファイル名を取得
+        if (tabHref === currentPage) {
+          tab.classList.add('active'); // 現在のページに一致するタブにactiveクラスを追加
+        }
+      });
+    });
+  </script>  
 </body>
 </html>
