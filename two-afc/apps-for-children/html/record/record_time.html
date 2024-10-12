@@ -65,6 +65,10 @@
     .tab button.active {
       border-bottom: 2px solid blue;
     }
+    .section {
+      width: 100vw;
+      margin-top: 80px;
+    }
     .popup {
       width: 100vw;
       margin-top: 80px;
@@ -117,20 +121,20 @@
     </div>
     <div class="border"></div>
       <!-- Timer Section -->
-      <div id="timerSection" class="section">
-        <div class="side_unit">
-          <p class="side_unit_text">横軸の単位を選択してください</p>
-          <div class="side_unit_button">
-            <button class="side_unit_week">週</button>
-            <button class="side_unit_mounth">月</button>
-            <button class="side_unit_year">年</button>
-          </div>
+    <div id="timerSection" class="section">
+      <div class="side_unit">
+        <p class="side_unit_text">横軸の単位を選択してください</p>
+        <div class="side_unit_button">
+          <button class="side_unit_week">週</button>
+          <button class="side_unit_mounth">月</button>
+          <button class="side_unit_year">年</button>
         </div>
-        <div class="chart-container">
-          <canvas id="studyChart"></canvas>
-        </div>
-        <p id="displayCategory"></p>
       </div>
+      <div class="chart-container">
+        <canvas id="studyChart"></canvas>
+      </div>
+      <p id="displayCategory"></p>
+    </div>
   </main>
   <script src="../../js/record.js" defer></script> <!-- JSファイルをdefer属性付きで読み込む -->
 </body>
