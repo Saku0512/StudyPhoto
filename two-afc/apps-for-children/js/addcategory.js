@@ -188,19 +188,3 @@ function deleteOption() {
         alert("削除する教科を選択してください。");
     }
 }
-
-// 選択したオプションを保存する
-document.getElementById("saveButton").addEventListener("click", function(event) {
-    //event.preventDefault(); //ページ遷移を一旦止める
-
-    const categorySelect = document.getElementById("category");
-    const selectedOption = categorySelect.options[categorySelect.selectedIndex].text;
-
-    if(selectedOption === "--教科を選択--") {
-        event.preventDefault();
-        alert("教科を選択してください。");
-        return;
-    }else {
-        localStorage.setItem("selectedOption", selectedOption);
-    }
-});

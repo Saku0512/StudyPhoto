@@ -40,6 +40,7 @@ document.getElementById('saveButton').addEventListener('click', (event) => {
     showConfirmPopup();
   } else {
     saveData();
+    window.location.href = '../../home.html';
   }
 });
 
