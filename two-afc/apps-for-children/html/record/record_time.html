@@ -105,12 +105,6 @@
       border: none;
       border-radius: 5px;
     }
-    #timerSection, #noteSection, #commentSection {
-      display: none;
-    }
-    #timerSection.active, #noteSection.active, #commentSection.active {
-      display: block;
-    }
   </style>
 </head>
 <body>
@@ -122,8 +116,6 @@
       <button id="commentButton" type="button"><img src="../../ui_image/parent.png"></button>
     </div>
     <div class="border"></div>
-    <div class="overlay" id="overlay" onclick="hidePopup()"></div>
-    <div class="popup" id="popup">
       <!-- Timer Section -->
       <div id="timerSection" class="section">
         <div class="side_unit">
@@ -139,7 +131,6 @@
         </div>
         <p id="displayCategory"></p>
       </div>
-    </div>
   </main>
   <script src="../../js/record.js" defer></script> <!-- JSファイルをdefer属性付きで読み込む -->
 </body>
