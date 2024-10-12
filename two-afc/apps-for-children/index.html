@@ -9,7 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
-
     <script>
       // Firebase 初期化設定
       const firebaseConfig = {
@@ -30,7 +29,6 @@
     <!-- Firebase UI for Authentication -->
     <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
-
     <title>子供アプリ</title>
     <style>
       .logo {
@@ -67,7 +65,6 @@
       </div>
       <div id="firebaseui-auth-container"></div>
     </main>
-
     <script type="text/javascript">
       auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL) .then(() => {
         const ui = new firebaseui.auth.AuthUI(auth);
