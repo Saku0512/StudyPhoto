@@ -9,9 +9,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js"></script> <!-- date-fns CDN -->
   <title>記録を振り返る</title>
   <style>
-    body {
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
       margin: 0;
       padding: 0;
+      overflow-x: hidden;
+    }
+    body {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -21,14 +27,7 @@
       text-align: center;
     }
     .main {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      width: 100vw;
+      width: 100%;
     }
     .tab {
       position: absolute;
@@ -66,11 +65,19 @@
       border-bottom: 2px solid blue;
     }
     .section {
-      width: 100vw;
+      width: 100%;
       margin-top: 80px;
     }
+    @media (max-width: 600px) {
+      .tab {
+        align-items: center;
+      }
+      .side_unit {
+        width: 90%;
+      }
+    }
     .popup {
-      width: 100vw;
+      width: 100%;
       margin-top: 80px;
     }
     .chart-container {
@@ -120,7 +127,7 @@
       <a href="./record_comment.html" id="commentButton" type="button"><img src="../../ui_image/parent.png"></a>
     </div>
     <div class="border"></div>
-      <!-- Timer Section -->
+    <!-- Timer Section -->
     <div id="timerSection" class="section">
       <div class="side_unit">
         <p class="side_unit_text">横軸の単位を選択してください</p>
