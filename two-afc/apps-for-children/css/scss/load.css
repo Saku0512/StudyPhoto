@@ -11,6 +11,7 @@
   background-color: white;
   visibility: hidden;
   transition: 0.5s;
+  z-index: 110;
 }
 .loading.active {
   visibility: visible;

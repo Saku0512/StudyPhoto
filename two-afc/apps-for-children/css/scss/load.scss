@@ -13,6 +13,7 @@
     background-color: white;
     visibility: hidden;
     transition: 0.5s;
+    z-index: 110;
 
     &.active {
         visibility: visible;
@@ -25,7 +26,7 @@
         height: unquote($string: "min(90vw, 800px)"); // アイコンサイズ
         border-radius: 50%;
         border: 5px solid;
-        border-color: color.scale(#4870BD, $lightness: 40%);
+        border-color: color.scale(#4870BD, $lightness: 40%); // 正しい形式
         animation: loading-rotate 3s infinite linear;
     }
 
