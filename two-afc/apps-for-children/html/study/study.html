@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../../css/main.css" /> 
+  <link rel="stylesheet" href="../../css/main.css" />
+  <link rel="stylesheet" href="../../css/scss/load.css" />
+  <script src="../../js/load.js" defer></script>
   <title>勉強する</title>
   <style>
     body {
@@ -103,6 +105,10 @@
   </style>
 </head>
 <body>
+  <div class="loading active">
+    <div class="loading__icon"></div>
+    <p class="loading__text">loading</p>
+  </div>
   <main>
     <div class="return">
       <a href="../../home.html"><img src="../../ui_image/return.png"></a>
