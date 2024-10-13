@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/scss/load.css" />
+    <script src="./js/load.js" defer></script>
     <title>ホーム</title>
     <style>
       main {
@@ -156,11 +158,15 @@
     </style>
   </head>
   <body>
-    <main>
+    <div class="loading active">
+      <div class="loading__icon"></div>
+      <p class="loading__text">loading</p>
+    </div>
+    <main class="main">
       <div class="logo">
         <img src="./ui_image/logo.png" alt="logo" title="logo">
       </div>
-      <div class="contents" >
+      <div class="contents">
         <a href="./html/study/study.html" class="study">勉強する</a>
         <div class="space-h"></div>
         <a href="#" class="note" onclick="showPopup()">記録する</a>

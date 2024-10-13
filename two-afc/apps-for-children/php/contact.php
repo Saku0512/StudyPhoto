@@ -59,6 +59,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width , initial-scale=1.0" />
     <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/scss/load.css" />
+    <script src="../js/load.js" defer></script>
     <title>お問い合わせ</title>
     <style>
     body {
@@ -171,6 +173,10 @@
     </style>
   </head>
   <body>
+    <div class="loading active">
+      <div class="loading__icon"></div>
+      <p class="loading__text">loading</p>
+    </div>
     <main>
       <?php if($mode == 'input'){ ?>
         <!-- 入力画面 -->
@@ -207,8 +213,8 @@
               </div>
               <textarea class="Form-Item-Textarea" name="message"  id="text"><?php echo $_SESSION['message']; ?></textarea>
             </div>
-            <input type="submit" name="confirm" id="save" class="save" value="確認する">
             <input type="reset" id="cancel" class="cancel" value="リセット">
+            <input type="submit" name="confirm" id="save" class="save" value="確認する">
           </div>
         </form>
       <?php } else if($mode == 'confirm'){ ?>
