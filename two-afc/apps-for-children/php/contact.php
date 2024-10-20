@@ -9,6 +9,16 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// CSRFトークンの確認
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('不正なリクエストです。');
+    }
+}
+
 if (isset($_POST['back']) && $_POST['back']) {
     // 何もしない
 } else if (isset($_POST['confirm']) && $_POST['confirm']) {
@@ -52,12 +62,10 @@ if (isset($_POST['back']) && $_POST['back']) {
       . "お名前: " . $_SESSION['fullname'] . "\r\n"
       . "email: " . $_SESSION['email'] . "\r\n"
       . "お問い合わせ内容:\r\n"
-      . preg_replace("/\r\n|\n/", "\r\n", $_SESSION['message']);
+      . $_SESSION['message'];
 
     // メール送信
     require 'vendor/autoload.php';
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
 
     $mail = new PHPMailer(true);
 
@@ -83,7 +91,7 @@ if (isset($_POST['back']) && $_POST['back']) {
 
         // メール送信
         $mail->send();
-        $_SESSION = array();
+        $_SESSION = array(); // セッションをリセット
         $mode = 'send';
     } catch (Exception $e) {
         $errmessage[] = "メール送信に失敗しました。再度お試しください。 {$mail->ErrorInfo}";
@@ -101,10 +109,6 @@ if (isset($_POST['back']) && $_POST['back']) {
     <link rel="stylesheet" href="../css/scss/load.css" />
     <script src="../js/load.js" defer></script>
     <title>お問い合わせ</title>
-    <style>
-        /* CSSスタイルはそのまま */
-        /* (CSSのスタイルはここに追加) */
-    </style>
 </head>
 <body>
     <div class="loading active">
@@ -124,19 +128,19 @@ if (isset($_POST['back']) && $_POST['back']) {
                         <div class="Form-Item-Label">
                             <span class="Form-Item-Label-Required">必須</span>名前
                         </div>
-                        <input type="text" name="fullname" id="name" class="Form-Item-Input" value="<?php echo $_SESSION['fullname']; ?>" required>
+                        <input type="text" name="fullname" id="name" class="Form-Item-Input" value="<?php echo $_SESSION['fullname'] ?? ''; ?>" required>
                     </div>
                     <div class="Form-Item">
                         <div class="Form-Item-Label">
                             <span class="Form-Item-Label-Required">必須</span>メールアドレス
                         </div>
-                        <input type="email" name="email" id="mail" class="Form-Item-Input" value="<?php echo $_SESSION['email']; ?>" required>
+                        <input type="email" name="email" id="mail" class="Form-Item-Input" value="<?php echo $_SESSION['email'] ?? ''; ?>" required>
                     </div>
                     <div class="Form-Item">
                         <div class="Form-Item-Label">
                             <span class="Form-Item-Label-Required">必須</span>お問い合わせ内容
                         </div>
-                        <textarea class="Form-Item-Textarea" name="message" id="text" required><?php echo $_SESSION['message']; ?></textarea>
+                        <textarea class="Form-Item-Textarea" name="message" id="text" required><?php echo $_SESSION['message'] ?? ''; ?></textarea>
                     </div>
                     <input type="reset" class="cancel" value="リセット">
                     <input type="submit" name="confirm" class="save" value="確認する">
@@ -156,7 +160,7 @@ if (isset($_POST['back']) && $_POST['back']) {
                     </div>
                     <div class="Form-Item">
                         <div class="Form-Item-Label">お問い合わせ内容</div>
-                        <div class="Form-Item-Textarea"><?php echo nl2br($_SESSION['message']); ?></div>
+                        <div class="Form-Item-Textarea"><?php echo nl2br(htmlspecialchars($_SESSION['message'])); ?></div>
                     </div>
                     <input type="submit" name="back" class="cancel" value="戻る">
                     <input type="submit" name="send" class="save" value="送信する">
