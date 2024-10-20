@@ -72,10 +72,10 @@ if (isset($_POST['back']) && $_POST['back']) {
     try {
         // SMTPの設定
         $mail->isSMTP();
-        $mail->Host       = 'smtp.example.com'; // 自分のSMTPサーバーを設定
+        $mail->Host       = 'smtp.gmail.com'; // 自分のSMTPサーバーを設定
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'your_email@example.com'; // SMTPユーザー名
-        $mail->Password   = 'your_password'; // SMTPパスワード
+        $mail->Username   = 'comonraven113@gmail.com'; // SMTPユーザー名
+        $mail->Password   = 'Hugin13Munin2016'; // SMTPパスワード
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587; // ポート番号
 
