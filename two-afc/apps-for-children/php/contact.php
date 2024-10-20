@@ -9,7 +9,6 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// フォームの送信処理
 if (isset($_POST['back']) && $_POST['back']) {
     // 何もしない
 } else if (isset($_POST['confirm']) && $_POST['confirm']) {
@@ -18,7 +17,6 @@ if (isset($_POST['back']) && $_POST['back']) {
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING);
     
-    // バリデーション
     if (!$fullname) {
         $errmessage[] = 'お名前を入力してください';
     } else if (mb_strlen($fullname) > 100) {
@@ -42,39 +40,31 @@ if (isset($_POST['back']) && $_POST['back']) {
     }
     $_SESSION['message'] = htmlspecialchars($message, ENT_QUOTES);
 
-    // エラーメッセージがあるかどうかでモードを変更
     if ($errmessage) {
         $mode = 'input';
     } else {
         $mode = 'confirm';
     }
 } else if (isset($_POST['send']) && $_POST['send']) {
-    // CSRFトークンの検証
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        $errmessage[] = '不正なリクエストです。';
-        $mode = 'input';
-    } else {
-        // 送信ボタンを押したとき
-        $massage = 
-          "お問い合わせを受け付けました。\r\n"
-          . "お名前: " . htmlspecialchars($_SESSION['fullname'], ENT_QUOTES) . "\r\n"
-          . "email: " . htmlspecialchars($_SESSION['email'], ENT_QUOTES) . "\r\n"
-          . "お問い合わせ内容:\r\n"
-          . preg_replace("/\r\n|\n/", "\r\n", htmlspecialchars($_SESSION['message'], ENT_QUOTES));
+    // 送信ボタンを押したとき
+    $massage = 
+      "お問い合わせを受け付けました。\r\n"
+      . "お名前: " . $_SESSION['fullname'] . "\r\n"
+      . "email: " . $_SESSION['email'] . "\r\n"
+      . "お問い合わせ内容:\r\n"
+      . preg_replace("/\r\n|\n/", "\r\n", $_SESSION['message']);
 
-        // メール送信
-        if (mail($mymail, 'スタディフォトからのお問い合わせ受付', $massage) &&
-          mail($_SESSION['email'], 'お問い合わせありがとうございます。', $massage)) {
-            // 送信成功
-        } else {
-            $errmessage[] = 'メール送信に失敗しました。再度お試しください。' . error_get_last()['message'];
-        }
-        
-        $_SESSION = array();
-        $mode = 'send';
+    // メール送信
+    if (mail($mymail, 'スタディフォトからのお問い合わせ受付', $massage) &&
+      mail($_SESSION['email'], 'お問い合わせありがとうございます。', $massage)) {
+    // 送信成功
+    } else {
+      $errmessage[] = 'メール送信に失敗しました。再度お試しください。';
     }
-} else {
-    // セッションを初期化
+    
+    $_SESSION = array();
+    $mode = 'send';
+  } else {
     $_SESSION['fullname'] = "";
     $_SESSION['email'] = "";
     $_SESSION['message'] = "";
@@ -227,61 +217,51 @@ if (isset($_POST['back']) && $_POST['back']) {
                         <div class="Form-Item-Label">
                             <span class="Form-Item-Label-Required">必須</span>名前
                         </div>
-                        <input type="text" name="fullname" id="name" class="Form-Item-Input" value="<?php echo htmlspecialchars($_SESSION['fullname'], ENT_QUOTES); ?>">
+                        <input type="text" name="fullname" id="name" class="Form-Item-Input" value="<?php echo $_SESSION['fullname']; ?>">
                     </div>
                     <div class="Form-Item">
                         <div class="err-msg-mail"></div>
                         <div class="Form-Item-Label">
                             <span class="Form-Item-Label-Required">必須</span>メールアドレス
                         </div>
-                        <input type="email" name="email" id="mail" class="Form-Item-Input" value="<?php echo htmlspecialchars($_SESSION['email'], ENT_QUOTES); ?>">
+                        <input type="email" name="email" id="mail" class="Form-Item-Input" value="<?php echo $_SESSION['email']; ?>">
                     </div>
                     <div class="Form-Item">
                         <div class="err-msg-content"></div>
                         <div class="Form-Item-Label">
                             <span class="Form-Item-Label-Required">必須</span>お問い合わせ内容
                         </div>
-                        <textarea name="message" id="message" class="Form-Item-Textarea"><?php echo htmlspecialchars($_SESSION['message'], ENT_QUOTES); ?></textarea>
+                        <textarea class="Form-Item-Textarea" name="message" id="text"><?php echo $_SESSION['message']; ?></textarea>
                     </div>
-                    <div>
-                        <button type="submit" name="confirm" class="save">確認する</button>
-                    </div>
+                    <input type="reset" id="cancel" class="cancel" value="リセット">
+                    <input type="submit" name="confirm" id="save" class="save" value="確認する">
                 </div>
             </form>
         <?php } else if ($mode == 'confirm') { ?>
             <!-- 確認画面 -->
-            <div class="return">
-                <a href="../home.html"><img src="../ui_image/return.png"></a>
-            </div>
-            <form method="post" action="./contact.php">
-                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+            <form action="./contact.php" method="post">
                 <div class="Form">
                     <div class="Form-Item">
-                        <div class="Form-Item-Label">お名前</div>
-                        <p><?php echo htmlspecialchars($_SESSION['fullname'], ENT_QUOTES); ?></p>
+                        <div class="Form-Item-Label">名前</div>
+                        <div class="Form-Item-Input"><?php echo $_SESSION['fullname']; ?></div>
                     </div>
                     <div class="Form-Item">
                         <div class="Form-Item-Label">メールアドレス</div>
-                        <p><?php echo htmlspecialchars($_SESSION['email'], ENT_QUOTES); ?></p>
+                        <div class="Form-Item-Input"><?php echo $_SESSION['email']; ?></div>
                     </div>
                     <div class="Form-Item">
                         <div class="Form-Item-Label">お問い合わせ内容</div>
-                        <p><?php echo nl2br(htmlspecialchars($_SESSION['message'], ENT_QUOTES)); ?></p>
+                        <div class="Form-Item-Textarea"><?php echo nl2br($_SESSION['message']); ?></div>
                     </div>
-                    <div>
-                        <button type="submit" name="send" class="save">送信する</button>
-                        <button type="submit" name="back" class="cancel">戻る</button>
-                    </div>
+                    <input type="submit" name="back" id="back" class="cancel" value="戻る">
+                    <input type="submit" name="send" id="send" class="save" value="送信する">
                 </div>
             </form>
         <?php } else if ($mode == 'send') { ?>
             <!-- 送信完了画面 -->
-            <div>
-                お問い合わせありがとうございます。<br>
-                内容を送信しました。
-            </div>
-            <div>
-              <a href="../home.html">ホームに戻る</a>
+            <div class="Form">
+                <div>お問い合わせが送信されました。ありがとうございました。</div>
+                <div><a href="../home.html">ホームに戻る</a></div>
             </div>
         <?php } ?>
     </main>
