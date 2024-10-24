@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width , initial-scale=1.0" />
+  <link rel="stylesheet" href="../../css/main.css" />
+  <link rel="stylesheet" href="../../css/scss/load.css" />
+    <script src="../../js/load.js" defer></script>
+  <title>記録を振り返る</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      width: 100vw;
+      text-align: center;
+    }
+    .main {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      width: 100vw;
+    }
+    .tab {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      width: 100%;
+    }
+    .tab a, .tab button {
+      font-size: 18px;
+      height: 40px;
+      width: 40px;
+      padding: 10px 20px;
+      margin-right: auto;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative; /* 位置指定を追加 */
+    }
+    .tab a img {
+      height: 65px;
+      width: 65px;
+    }
+    .tab a.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -15px; /* ボーダーの位置を下げるための距離 */
+      height: 2px; /* ボーダーの高さ */
+      background-color: blue; /* ボーダーの色 */
+    }
+    .section {
+      width: 100%;
+      margin-top: 10vh;
+    }
+    @media (max-width: 600px) {
+      .tab {
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading active">
+    <div class="loading__icon"></div>
+    <p class="loading__text">loading</p>
+  </div>
+  <main>
+    <div class="tab">
+      <a href="../../home.html"><img src="../../ui_image/return.png"></a>
+      <a href="./record_time.html" id="timeButton" type="button"><img src="../../ui_image/clock.png"></a>
+      <a href="./record_note.html" id="noteButton" type="button"><img src="../../ui_image/book.png"></a>
+      <a href="./record_comment.html" id="commentButton" type="button"><img src="../../ui_image/parent.png"></a>
+    </div>
+    <!-- Note Section -->
+    <div id="noteSection" class="section">
+      <p>Note Section</p>
+    </div>
+  </main>
+  <script>
+    // ページが読み込まれた後に実行
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
+      const tabs = document.querySelectorAll('.tab a'); // すべてのタブを取得
+  
+      tabs.forEach(tab => {
+        const tabHref = tab.getAttribute('href').split('/').pop(); // タブのリンクのファイル名を取得
+        if (tabHref === currentPage) {
+          tab.classList.add('active'); // 現在のページに一致するタブにactiveクラスを追加
+        }
+      });
+    });
+  </script>  
+</body>
+</html>

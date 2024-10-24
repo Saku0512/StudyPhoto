@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
     <link rel="stylesheet" href="css/main.css" />
-    <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js" defer></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
+    <link rel="stylesheet" href="css/scss/load.css" />
+    <script src="./js/load.js" defer></script>
     <title>ホーム</title>
     <style>
       main {
@@ -19,9 +19,9 @@
       .logo{
         display: flex;
         justify-content: center;
-        margin: 0 auto 20px;
-        height: 398px;
-        width: 450px;
+        margin: 0 auto 0;
+        height: 600px;
+        width: 600px;
       }
       .logo img{
         width: 100%;
@@ -31,19 +31,26 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        text-align: center;
         justify-content: center;
-        margin-left: auto;
-        margin-right: auto;
       }
-      .contents button {
+      .contents a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         height: 10vh;
         width: 50vw;
-        font-size: 40px;
         border-radius: 15px;
+        text-align: center;
+        font-size: 60px;
+        text-decoration: none;
       }
+
       .study {
         margin-top: 5vh;
         margin-bottom: 10px;
+        background-color: #4870BD;
+        color: white;
       }
       .space-h {
         height: 5vh;
@@ -51,54 +58,152 @@
       }
       .note {
         margin-top: 10px;
-        margin-bottom: 10vh;
+        margin-bottom: 5vh;
+        background-color: #4870BD;
+        color: white;
       }
       .footer {
         margin-top: auto;
         padding: 0;
+        display: flex;
+        justify-content: center;
+        gap: 10vw;
       }
-      .footer button {
-        font-size: 40px;
-        margin-left: 10vw;
-        margin-right: 10vw;
+      .footer a , .footer button{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 60px;
+        border-radius: 15px;
+        background-color: #4870BD;
+        color: white;
       }
       .setting {
-        height: 150px;
-        width: 150px;
-        border-radius: 50%;
-        padding: 0;
+        height: 7vh;
+        width: 37vw;
       }
       .contact {
+        height: 7vh;
+        width: 37vw;
+      }
+      .popup {
+        display: none;
+        position: fixed;
+        top: 30%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 84vw;
+        height: 35vh;
+        background-color: white;
+        border: 1px solid black;
+        padding: 20px;
+        z-index: 100;
+      }
+      .popup.active {
+        display: block;
+      }
+      .popup .tab a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 10vh;
+        width: 50vw;
+        border-radius: 15px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 60px;
+        text-decoration: none;
+      }
+      .me{
+        margin-top: 2vh;
+        margin-bottom: 10px;
+        background-color: #4870BD;
+        color: white;
+      }
+      .note {
         margin-top: 10px;
-        margin-bottom: 10vh;
+        margin-bottom: 5vh;
+        background-color: #4870BD;
+        color: white;
+      }
+      .popup .tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8vh;
+        justify-content: center;
+        margin-top: 1vh;
+      }
+      
+      .close-button {
+        margin-top: 10px;
+        background-color: white;
+        color: black;
+        cursor: pointer;
+        width: 20vw;
+        height: 20vh;
+        border: none;
+      }
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 99;
       }
     </style>
   </head>
   <body>
-    <script src="/__/firebase/7.16.0/firebase-app.js"></script>
-    <script src="/__/firebase/7.16.0/firebase-auth.js"></script>
-    <script src="/__/firebase/init.js"></script>
-    <main>
+    <div class="loading active">
+      <div class="loading__icon"></div>
+      <p class="loading__text">loading</p>
+    </div>
+    <main class="main">
       <div class="logo">
-        <img src="ui_image/logo.png" alt="logo" title="logo">
+        <img src="./ui_image/logo.png" alt="logo" title="logo">
       </div>
-      <div class="contents" >
-        <button type="button" class="study"><a href="html/study.html">勉強する</a></button>
+      <div class="contents">
+        <a href="./html/study/study.html" class="study">勉強する</a>
         <div class="space-h"></div>
-        <button type="button" class="note"><a href="html/record.html">記録する</a></button>
+        <a href="#" class="note" onclick="showPopup()">記録する</a>
       </div>
       <div class="footer" type="button">
         <button class="setting">設定</button>
-        <button class="contact"><a href="./php/contact.php">問い合わせ<!--</a>--></button>
+        <a href="./php/contact.php" class="contact">問い合わせ</a>
+      </div>
+      <div class="overlay" id="overlay" onclick="hidePopup()"></div>
+      <div class="popup" id="popup">
+        <div class="tab">
+          <a href="html/record/record_time.html" class="me">自分の記録</a>
+          <a href="html/record/record_time.html" class="parent">保護者</a>
+        </div>
       </div>
     </main>
-      <!--
-      <div class="overlay" id="overlay"></div>
-      <div class="popup" id="popup">
-        <h2>本当にログアウトしますか？</h2>
-        <button id="logout">ログアウト</button>
-        <button id="closePopup">閉じる</button>
-      </div>
-      -->
+    <script type="text/javascript" defer>
+      // タイマーをリセット
+      document.querySelector('a[href="./html/study/study.html"]').addEventListener('click', () => {
+        localStorage.removeItem('stopwatchTime');
+        localStorage.removeItem('isRunning');
+      });
+
+      function showPopup() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("popup").classList.add("active");
+      }
+
+      function hidePopup() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("popup").classList.remove("active");
+      }
+
+      function saveRecord() {
+        alert("記録が保存されました。");
+        hidePopup();
+      }
+    </script>
   </body>
 </html>

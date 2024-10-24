@@ -2,30 +2,26 @@
   box-sizing: border-box;
   padding-top: 80;
 }
-
+@font-face {
+  font-family: 'Corporate-Logo-Medium-ver3';
+  src: url(../font/Corporate-Logo-Medium-ver3.otf) format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
 body{
   margin: 0;
   padding: 0;
-  font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "メイリオ", "Meiryo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Corporate-Logo-Medium-ver3", sans-serif;
   background-color: white;
   background: white;
 }
-/*
-header{
-  padding: 30px 4% 10px;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-}
-*/
 main{
   margin: 0;
   padding: 0;
 }
-
+a {
+  text-decoration: none;
+}
 /* home画面 */
 .auth {
   height: 20vh;
@@ -49,25 +45,6 @@ textarea{
 h1{
   margin: 0; padding: 0;
   font-size: 1.4rem;
-}
-p {
-  text-shadow: 0 0 2px rgb(0, 0, 0); /* 影を軽減する */
-}
-a{
-  text-decoration: none;
-  color: black;
-}
-nav{
-  margin: 0 0 0 auto;
-}
-ul {
-  list-style: none;
-  margin: 0;
-  display: flex;
-}
-li {
-  margin: 0 0 0 15px;
-  font-size: 1.2rem;
 }
 /* フォーム */
 .Form {
@@ -157,62 +134,4 @@ li {
   max-width: 410px;
   background: #eaedf2;
   font-size: 18px;
-}
-.form-invalid{
-  color: #f50000;
-  font-size: 12px;
-}
-.input-invalid{
-  border: 4px solid #f50000;
-}
-.save, .cancel {
-  border-radius: 6px;
-  margin-top: 32px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 10px;
-  padding-bottom: 40px;
-  width: 280px;
-  display: block;
-  letter-spacing: 0.05em;
-  background: #5bc8ac;
-  color: black;
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-/* カレントのヘッダー色表示 */
-/* 通常 */
-.header-nav_item a{
-  color: #333;
-}
-/* カレント表示 */
-.header-nav_item.current a{
-  color: blue;
-}
-
-/*ポップアップ操作*/
-.popup{
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); 
-  background-color: white;
-  padding: 20px;
-  border: 1px solid black;
-  z-index: 100;
-}
-.overlay{
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 50;
-}
-#logout{
-  position: fixed;
-  right: 10%;
 }

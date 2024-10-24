@@ -1,4 +1,71 @@
-$('#saveButton').on('click', () => {
+document.addEventListener('DOMContentLoaded', () => {
+  // localStorage から保存された秒数を取得
+  const elapsedSeconds = parseInt(localStorage.getItem('stopwatchTime'), 10) || 0;
+  //console.log(elapsedSeconds); // デバッグ用
+
+  // 秒を時間：分：秒形式に変換
+  const hours = Math.floor(elapsedSeconds / 3600);
+  const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+  const seconds = elapsedSeconds % 60;
+
+  //表示用のテキストを作成
+  const timeString = 
+    String(hours).padStart(2, '0') + ':' +
+    String(minutes).padStart(2, '0') + ':' +
+    String(seconds).padStart(2, '0');
+
+    // 表示
+  document.getElementById('timer-display').textContent = timeString;
+});
+
+document.getElementById('saveButton').addEventListener('click', (event) => {
+  event.preventDefault();
+  //console.log("Save button clicked"); // デバッグ用
+
+  const categorySelect = document.getElementById("category");
+  const selectedCategory = categorySelect.value;
+  //console.log("Selected Category:",selectedCategory); // デバッグ用
+
+  const photoDisplay = document.getElementById("photoDisplay_id");
+  const photoSelected = photoDisplay.innerHTML.trim() !== ''; // 画像を選択しているかどうか
+  //console.log("Photo Selected:", photoSelected); // デバッグ用
+
+  // 教科が選択されていない場合は、画像ポップアップは表示せず教科アラートを表示
+  if(selectedCategory === "--教科を選択--" && !photoSelected) {
+    alert("教科を選択してください。");
+    return;
+  }
+
+  if(!photoSelected) {
+    showConfirmPopup();
+  } else {
+    saveData();
+    window.location.href = '../../home.html';
+  }
+});
+
+document.getElementById("confirm-save").addEventListener("click", () => {
+  hideConfirmPopup();
+  saveData();
+});
+
+function showConfirmPopup() {
+  document.getElementById("confirm-overlay").style.display = "block";
+  document.getElementById("confirm-popup").style.display = "block";
+}
+
+function hideConfirmPopup() {
+  document.getElementById("confirm-overlay").style.display = "none";
+  document.getElementById("confirm-popup").style.display = "none";
+}
+
+/*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * 保存ボタンが押されたら、現在の日付と現在の Study Time を localStorage に保存。
+   * また、既存の totalTime を取得し、新しい Study Time を加算して保存。
+   * 最後に、タイマーをリセット。
+   */
+/******  17ea883a-ceab-4f0a-8fea-ffd56bd89819  *******/function saveData() {
   // 現在の日付を取得し、YYYY-MM-DD形式で保存
   const now = new Date();
   const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD形式
@@ -7,21 +74,30 @@ $('#saveButton').on('click', () => {
   const timeString = localStorage.getItem('stopwatchTime') || '00:00:00';
   console.log("Saving to record:", timeString); // デバッグ用
 
-  const [hours, minutes, seconds] = timeString.split(':').map(Number);
-  const totalHours = hours + minutes / 60 + seconds / 3600;
+  const elapsedSeconds = parseInt(timeString, 10) || 0;
+  const hours = Math.floor(elapsedSeconds / 3600);
+  const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+  const seconds = elapsedSeconds % 60;
+  const totalCurrentHours = hours + minutes / 60 + seconds / 3600;
 
-  // データを保存
-  localStorage.setItem('recordTime', totalHours);
+  // 既存の totalTime を取得（なければ 0 を使用）
+  const previousTotalTime = parseInt(localStorage.getItem('totalTime')) || 0;
+
+  const newTotalTime = previousTotalTime + totalCurrentHours;
+  localStorage.setItem('totalTime', newTotalTime);
 
   // 現在の日付と時間を保存
   let dates = JSON.parse(localStorage.getItem('dates')) || [];
   let studyTimes = JSON.parse(localStorage.getItem('studyTimes')) || [];
 
   dates.push(currentDate);
-  studyTimes.push(totalHours);
+  studyTimes.push(totalCurrentHours);
 
   localStorage.setItem('dates', JSON.stringify(dates));
   localStorage.setItem('studyTimes', JSON.stringify(studyTimes));
 
-  window.location.href = 'record.html';
-});
+  // タイマーをリセット
+  localStorage.setItem('stopwatchTime', '00:00:00');
+
+  window.location.href = '../../home.html';
+};

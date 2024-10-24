@@ -22,7 +22,7 @@ const formattedDates = Array.from(dateTimeMap.keys()).map(date => new Date(date)
 const totalTimes = Array.from(dateTimeMap.values());
 
 // グラフの作成
-const ctx = $('#studyChart')[0].getContext('2d');
+const ctx = document.getElementById('studyChart').getContext('2d'); // jQuery ではなく、純粋な JS を使用
 const studyChart = new Chart(ctx, {
   type: 'bar', // 棒グラフを表示
   data: {
@@ -30,8 +30,8 @@ const studyChart = new Chart(ctx, {
     datasets: [{
       label: '勉強時間 (h)',
       data: totalTimes,
-      backgroundColor: '#5bc8ac', // 棒グラフの背景色
-      borderColor: '#3b9e8d', // 棒グラフの枠線色
+      backgroundColor: '#4870BD', // 棒グラフの背景色
+      borderColor: 'white', // 棒グラフの枠線色
       borderWidth: 1
     }]
   },
@@ -41,9 +41,9 @@ const studyChart = new Chart(ctx, {
     scales: {
       y: {
         beginAtZero: true,
-        max: 12, // 最大値を12時間に設定
+        max: 0.5, // 最大値を12時間に設定
         ticks: {
-          stepSize: 0.5, // 目盛り間隔を0.5時間に設定
+          stepSize: 0.05, // 目盛り間隔を0.5時間に設定
           callback: function(value) {
             return value + 'h'; // 時間を表示
           }
@@ -53,9 +53,9 @@ const studyChart = new Chart(ctx, {
         type: 'time',
         time: {
           unit: 'day', // 日単位で表示
-          tooltipFormat: 'MM/DD', // ツールチップの日付形式
+          tooltipFormat: 'MM/dd', // ツールチップの日付形式
           displayFormats: {
-            day: 'MM/DD' // 軸ラベルの日付形式
+            day: 'MM/dd' // 軸ラベルの日付形式
           }
         },
         title: {
@@ -70,7 +70,11 @@ const studyChart = new Chart(ctx, {
   }
 });
 
-// 戻るボタンの設定
-$('#backToHome').on('click', () => {
-  window.location.href = '../home.html';
+// DOM の読み込み完了後に実行する処理
+document.addEventListener('DOMContentLoaded', () => {
+  const selectedCategory = localStorage.getItem("selectedCategory");
+  console.log(selectedCategory);
+  if(selectedCategory) {
+    document.getElementById("displayCategory").textContent = selectedCategory;
+  }
 });
