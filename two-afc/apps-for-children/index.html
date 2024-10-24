@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/main.css" />
 
-    <!-- Firebase SDKをCDNから読み込む (compat バージョン) -->
+    <!-- Firebase SDKをCDNから読み込む (compat バージョン) 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
@@ -26,9 +26,11 @@
       firebase.analytics();
       const auth = firebase.auth();
     </script>
-    <!-- Firebase UI for Authentication -->
+  -->
+    <!-- Firebase UI for Authentication 
     <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__ja.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
+  -->
     <title>子供アプリ</title>
     <style>
       .logo {
@@ -61,33 +63,16 @@
         <img src="./ui_image/logo.png" alt="logo" title="logo">
       </div>
       <div class="text">
-        <h3>以下のいずれかの方法でログインしてください。</h3>
+        <form action="php/register.php" method="post">
+          <label for="username">ユーザー名:</label>
+          <input type="text" id="username" name="username" required><br>
+          <label for="email">メールアドレス:</label>
+          <input type="email" id="email" name="email" required><br>
+          <label for="password">パスワード:</label>
+          <input type="password" id="password" name="password" required><br>
+          <button type="submit">登録</button>
+        </form>        
       </div>
-      <div id="firebaseui-auth-container"></div>
     </main>
-    <script type="text/javascript">
-      auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL) .then(() => {
-        const ui = new firebaseui.auth.AuthUI(auth);
-        const uiConfig = {
-          callbacks: {
-            signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-              // サインイン後にリダイレクトする
-              window.location.href = "home.html";
-              return false; // 自動リダイレクトは行わない
-            }
-          },
-          signInFlow: 'popup',
-          signInOptions: [
-            firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID
-          ],
-        };
-        ui.start('#firebaseui-auth-container', uiConfig);
-      })
-      .catch(error => {
-        console.error('エラーが発生しました:', error);
-      });
-      // FirebaseUIの初期化と設定
-    </script>
   </body>
 </html>
