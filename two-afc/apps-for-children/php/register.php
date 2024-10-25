@@ -1,46 +1,50 @@
 <?php
-// MySQLデータベース接続情報
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+header('Content-Type: text/html; charset=UTF-8');
+
 $servername = "localhost";
 $username = "childapp_user";
-$password = "bMFQ-N-36&+6>L}!";
+$password = "bMFQ-N-36&+6>L}!"; // 必要に応じて変更
 $dbname = "childapp_local";
 
-// フォームから送信されたデータを取得
 $user_name = $_POST['username'] ?? null;
 $email = $_POST['email'] ?? null;
 $password = $_POST['password'] ?? null;
 
 if (!empty($user_name) && !empty($email) && !empty($password)) {
-    // パスワードをハッシュ化
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-    // データベースに接続
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-    // 接続をチェック
     if ($conn->connect_error) {
-        die("接続に失敗しました: " . $conn->connect_error);
-    }else {
-        echo "接続成功";
+        die("接続失敗: " . $conn->connect_error);
+    } else {
+        echo "接続成功<br>";
     }
 
-    // ユーザー情報を挿入するSQLクエリ
-    $sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+    if ($conn->ping()) {
+        echo "接続は生きています<br>";
+    } else {
+        echo "接続は失われました<br>";
+    }
 
-    // SQLを準備
+    $sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
+    
+    if ($stmt === false) {
+        die("SQL文の準備失敗: " . $conn->error);
+    }
+
     $stmt->bind_param("sss", $user_name, $email, $hashed_password);
 
-    // SQLクエリを実行
     if ($stmt->execute()) {
-        echo "ユーザーが正常に登録されました！";
+        echo "ユーザーが正常に登録されました<br>";
     } else {
-        echo "エラー: " . $stmt->error;
+        echo "ユーザー登録失敗: " . $stmt->error . "<br>";
     }
 
-    // データベース接続を閉じる
     $stmt->close();
     $conn->close();
 } else {
-    echo "すべてのフィールドに入力してください。";
+    echo "すべてのフィールドを入力してください<br>";
 }
