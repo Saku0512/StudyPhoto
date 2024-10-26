@@ -1,75 +1,88 @@
-// グローバルオブジェクトからformat関数を取得
-const { format } = window.dateFns || { format: (date) => date.toString() };
+// Chart.jsで使用するデータの基本設定
+const chartContext = document.getElementById('studyChart').getContext('2d');
+let chartInstance;
 
-// ローカルストレージから勉強時間と日付のデータを取得
-const studyTimes = JSON.parse(localStorage.getItem('studyTimes')) || [];
-const dates = JSON.parse(localStorage.getItem('dates')) || [];
-
-// 重複を削除し、一意の日付だけを取得
-const uniqueDates = [...new Set(dates)];
-const dateTimeMap = new Map(uniqueDates.map(date => [date, 0]));
-
-// 日付ごとに勉強時間を合計
-studyTimes.forEach((time, index) => {
-  const date = dates[index];
-  if (dateTimeMap.has(date)) {
-    dateTimeMap.set(date, dateTimeMap.get(date) + time);
-  }
-});
-
-// 日付と勉強時間を配列に変換
-const formattedDates = Array.from(dateTimeMap.keys()).map(date => new Date(date));
-const totalTimes = Array.from(dateTimeMap.values());
-
-// グラフの作成
-const ctx = document.getElementById('studyChart').getContext('2d'); // jQuery ではなく、純粋な JS を使用
-const studyChart = new Chart(ctx, {
-  type: 'bar', // 棒グラフを表示
-  data: {
-    labels: formattedDates,
-    datasets: [{
-      label: '勉強時間 (h)',
-      data: totalTimes,
-      backgroundColor: '#4870BD', // 棒グラフの背景色
-      borderColor: 'white', // 棒グラフの枠線色
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 0.5, // 最大値を12時間に設定
-        ticks: {
-          stepSize: 0.05, // 目盛り間隔を0.5時間に設定
-          callback: function(value) {
-            return value + 'h'; // 時間を表示
-          }
-        }
-      },
-      x: {
-        type: 'time',
-        time: {
-          unit: 'day', // 日単位で表示
-          tooltipFormat: 'MM/dd', // ツールチップの日付形式
-          displayFormats: {
-            day: 'MM/dd' // 軸ラベルの日付形式
+// グラフの初期設定
+function createChart(labelUnit) {
+  const data = generateChartData(labelUnit); // ラベルに基づいてデータを生成する
+  const config = {
+    type: 'line',
+    data: {
+      labels: data.labels,
+      datasets: [{
+        label: '学習時間',
+        data: data.values,
+        fill: false,
+        borderColor: 'blue',
+        tension: 0.1
+      }]
+    },
+    options: {
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: labelUnit // ここで週、月、年を指定
           }
         },
-        title: {
-          display: true,
-          text: '日付'
-        },
-        ticks: {
-          source: 'auto' // 軸のラベルを自動的に設定
+        y: {
+          beginAtZero: true
         }
       }
     }
+  };
+
+  if (chartInstance) {
+    chartInstance.destroy(); // 既存のチャートがあれば破棄
   }
+
+  chartInstance = new Chart(chartContext, config);
+}
+
+// サンプルのデータ生成（実際にはAPIやDBからデータを取得する）
+function generateChartData(unit) {
+  const now = new Date();
+  let labels = [];
+  let values = [];
+  
+  // データを週、月、年ごとに生成
+  if (unit === 'week') {
+    for (let i = 0; i < 7; i++) {
+      labels.push(new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)); // 過去7日分のラベル
+      values.push(Math.floor(Math.random() * 10) + 1); // ランダムなデータ
+    }
+  } else if (unit === 'month') {
+    for (let i = 0; i < 30; i++) {
+      labels.push(new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)); // 過去30日分のラベル
+      values.push(Math.floor(Math.random() * 10) + 1); // ランダムなデータ
+    }
+  } else if (unit === 'year') {
+    for (let i = 0; i < 12; i++) {
+      labels.push(new Date(now.getFullYear(), now.getMonth() - i, 1)); // 過去12ヶ月分のラベル
+      values.push(Math.floor(Math.random() * 100) + 10); // ランダムなデータ
+    }
+  }
+
+  return { labels, values };
+}
+
+// ボタンのクリックイベントを設定
+document.querySelector('.side_unit_week').addEventListener('click', () => {
+  createChart('week');
+});
+document.querySelector('.side_unit_mounth').addEventListener('click', () => {
+  createChart('month');
+});
+document.querySelector('.side_unit_year').addEventListener('click', () => {
+  createChart('year');
 });
 
+<<<<<<< HEAD
+// ページが読み込まれたときに初期グラフを表示（例えば、週単位のグラフ）
+window.addEventListener('load', () => {
+  createChart('week');
+});
+=======
 // DOM の読み込み完了後に実行する処理
 document.addEventListener('DOMContentLoaded', () => {
   const selectedCategory = localStorage.getItem("selectedCategory");
@@ -78,3 +91,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("displayCategory").textContent = selectedCategory;
   }
 });
+>>>>>>> origin/main
