@@ -116,6 +116,39 @@
       border: none;
       border-radius: 5px;
     }
+    .year-mouth-daybutton {
+      left: 0;
+      right: 0;
+  
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-left: auto;
+      margin-right: auto;
+      width: 84vw;
+      padding: 20px;
+      background-color: white;
+      border: 1px solid black;
+      z-index: 100;
+    }
+    .popup.active {
+      display: block;
+    }
+
   </style>
 </head>
 <body>
@@ -147,6 +180,7 @@
     </div>
   </main>
   <script src="../../js/record.js" defer></script> <!-- JSファイルをdefer属性付きで読み込む -->
+  <script src="../../js/calender.js"defer></script> <!-- JSファイルをdefer属性付きで読み込む -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
@@ -160,5 +194,11 @@
       });
     });
   </script>  
+    </select>
+    <button class="year-mouth-daybutton" onclick="showPopup11()">y/m/dの記録</button>
+    <div class="overlay" id="overlay" onclick="hidePopup()"></div>
+    <div class="popup" id="popup">
+      //カレンダーのコード
+    </div>
 </body>
 </html>

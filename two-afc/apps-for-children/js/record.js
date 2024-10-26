@@ -40,6 +40,7 @@ function createChart(labelUnit) {
 }
 
 // サンプルのデータ生成（実際にはAPIやDBからデータを取得する）
+//ここからデータベースとつなげるところ
 function generateChartData(unit) {
   const now = new Date();
   let labels = [];
@@ -65,6 +66,7 @@ function generateChartData(unit) {
 
   return { labels, values };
 }
+//ここで終了
 
 // ボタンのクリックイベントを設定
 document.querySelector('.side_unit_week').addEventListener('click', () => {
@@ -91,4 +93,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("displayCategory").textContent = selectedCategory;
   }
 });
+
 
