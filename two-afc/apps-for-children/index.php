@@ -4,6 +4,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+$message = ""; //メッセージを格納する変数
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // データベース接続設定
     $servername = "localhost";
@@ -38,9 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         //重複チェック
         if($usernameResult->num_rows > 0) {
-            echo "<p>このユーザー名は既に登録されています</p>";
+            $message = "このユーザー名は既に登録されています";
         }elseif($emailResult->num_rows > 0) {
-            echo "<p>このメールアドレスは既に登録されています</p>";
+            $message = "このメールアドレスは既に登録されています";
         }else{
             //パスワードをハッシュ化
             $hashed_password = password_hash($dbPassword, PASSWORD_DEFAULT);
@@ -54,11 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("sss", $dbUsername, $dbEmail, $hashed_password);
 
             if ($stmt->execute()) {
-            echo "<p>ユーザーが正常に登録されました</p>";
+                $message = "ユーザーが正常";
             } else {
-                echo "<p>ユーザー登録失敗: " . $stmt->error . "</p>";
+                $message = "ユーザー登録失敗: " . $stmt->error;
             }
-
             $stmt->close();
         }
 
@@ -66,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkUsernameStmt->close();
         $conn->close();
     } else {
-        echo "<p>すべてのフィールドを入力してください</p>";
+        $message = "全てのフィールドを入力してください";
     }
 }
 ?>
@@ -97,6 +98,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 40px;
         }
     </style>
+    <script>
+        window.onload = function(){
+            <?php if(!empty($message)): ?>
+                alert("<?php echo addslashes($message); ?>");
+            <?php endif; ?>
+        }
+    </script>
 </head>
 <body>
     <main>
