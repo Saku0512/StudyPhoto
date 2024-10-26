@@ -1,10 +1,16 @@
 <?php
+//デバッグ用
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // データベース接続設定
-    $servername = "localhost";
+    $servername = "127.0.0.1";
     $username = "childapp_user";
-    $password = "bMFQ-N-36&+6>L}!"; // 必要に応じて変更
+    $password = "sdTJRTPutuXQ-Wlb2WBVE";
     $dbname = "childapp_test";
+
 
     $user_name = $_POST['username'] ?? null;
     $email = $_POST['email'] ?? null;
