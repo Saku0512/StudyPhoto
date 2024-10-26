@@ -40,6 +40,7 @@ document.getElementById('saveButton').addEventListener('click', (event) => {
     showConfirmPopup();
   } else {
     saveData();
+    window.location.href = '../../home.html';
   }
 });
 
@@ -58,7 +59,13 @@ function hideConfirmPopup() {
   document.getElementById("confirm-popup").style.display = "none";
 }
 
-function saveData() {
+/*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * 保存ボタンが押されたら、現在の日付と現在の Study Time を localStorage に保存。
+   * また、既存の totalTime を取得し、新しい Study Time を加算して保存。
+   * 最後に、タイマーをリセット。
+   */
+/******  17ea883a-ceab-4f0a-8fea-ffd56bd89819  *******/function saveData() {
   // 現在の日付を取得し、YYYY-MM-DD形式で保存
   const now = new Date();
   const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD形式
@@ -91,4 +98,6 @@ function saveData() {
 
   // タイマーをリセット
   localStorage.setItem('stopwatchTime', '00:00:00');
+
+  window.location.href = '../../home.html';
 };

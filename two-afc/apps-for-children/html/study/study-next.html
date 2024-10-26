@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../../css/main.css" />
+  <link rel="stylesheet" href="../../css/scss/load.css" />
+  <script src="../../js/load.js" defer></script>
   <title>Stopwatch Next</title>
   <style>
     body {
@@ -16,6 +18,9 @@
       height: 100vh;
       width: 100vw;
       text-align: center;
+      overflow-x: none;
+      margin-left: auto;
+      margin-right: auto;
     }
     main {
       align-items: center;
@@ -109,12 +114,12 @@
       align-items: center;
       justify-content: center;
       margin-top: 2.5vh;
-      gap: 10vw;
+      gap: 5vw;
      
     }
-    .photoSelect, .photoGraph{
+    .photoSelect, .photoGraph, .photoDelete, .cancel_photo{
       height: 7vh;
-      width: 37vw;
+      width: 40vw;
       text-align: center;
       font-size: 25px;
       background-color: #4870BD;
@@ -124,22 +129,88 @@
       min-width: 100px;
     }
     .photoDisplay{
-      display: flex;
-      justify-content: center;
+      display: block;
+      justify-content: flex-start;
       align-items: center;
       margin-top: 2.5vh;
-    }
-
-    #photoDisplay_id{
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 50vh;
+      height: 50vh;
+      width: 90vw;
       border: 1px solid #bfbfbf;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #photoDisplay_id{
       width: 84vw;
       height: 50vh;
     }
+    .photo_img{
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      margin: 5px;
+      border: 1px solid black;
+      object-fit: contain;
+    }
+    #photoOptionsPopup {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 84vw;
+      padding: 20px;
+      background-color: white;
+      border: 1px solid black;
+      z-index: 100;
+    }
+    #photoOptionsPopup p {
+      font-size: 18px;
+    }
+    .popupbutton_photo_sub {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      margin-top: 2vh;
+      margin-bottom: 2vh;
+    }
+    .popupbutton_photo_sub button {
+      height: 8vh;
+      width: 40vw;
+      margin-top: 2vh;
+      margin-bottom: 2vh;
+    }
+    .popup_photo_delete {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      width: 84vw;
+      max-height: 80vh;
+      transform: translateX(-50%);
+      width: 84vw;
+      padding: 20px;
+      background-color: white;
+      border: 1px solid black;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+/*
+    #photoDisplay_id{
+      width: 84vw;
+      height: 50vh;
+    }
+*/
     @media (max-width: 600px) {
       .newSubject{
         font-size: 12px;
       }
-      .photoSelect, .photoGraph{
+      .photoSelect, .photoGraph, .photoDelete, .cancel_photo{
         font-size: 20px;
       }
     }
@@ -159,6 +230,8 @@
       top: 30%;
       left: 50%;
       transform: translateX(-50%);
+      margin-left: auto;
+      margin-right: auto;
       width: 84vw;
       padding: 20px;
       background-color: white;
@@ -232,12 +305,26 @@
       color: white;
       border: none;
     }
+    .delete_done, .delete_cancel {
+      height: 5vh;
+      width: 30vw;
+      font-size: 18px;
+      background-color: #4870BD;
+      color: white;
+      border: none;
+      margin-left: 2vw;
+      margin-right: 2vw;
+    }
   </style>
 </head>
 <body>
+  <div class="loading active">
+    <div class="loading__icon"></div>
+    <p class="loading__text">loading</p>
+  </div>
   <main>
     <div class="return">
-      <a href="./study.html"><img src="../ui_image/return.png"></a>
+      <a href="./study.html"><img src="../../ui_image/return.png"></a>
     </div>
     <h1 class="timer" id="timer-display">00:00:00</h1>
     
@@ -248,7 +335,7 @@
         <option>英語</option>
         <option>国語</option>
       </select>
-      <button class="newSubject" onclick="showPopup()">教科を追加・変更・削除</button>
+      <button class="newSubject" onclick="showPopup()">教科を編集</button>
     </div>
   
     <div class="overlay" id="overlay" onclick="hidePopup()"></div>
@@ -285,7 +372,6 @@
           <button onclick="editOption()" class="add">変更</button>
         </div>
       </div>
-
       <!-- Delete Section -->
       <div id="deleteSection" class="form-section delete-popup">
         <label for="optionSelect" class="optionlabel">削除する教科名</label>
@@ -301,18 +387,29 @@
         </div>
       </div>
     </div>
-  
     <div class="photo">
-      <button class="photoGraph" onclick="capturePhoto()">画像を撮影</button>
-      <button  class="photoSelect" onclick="selectPhoto()">画像を選択</button>
+      <button class="photoSelect" onclick="showPhotoOptions()">画像を追加</button>
+      <button class="photoDelete" onclick="showDeletePhotoPopup()">画像を削除</button>
     </div>
-
+    <div class="popup_photo" id="photoOptionsPopup">
+      <p>画像をどうしますか？</p>
+      <div class="popupbutton_photo_sub">
+        <button onclick="capturePhoto()" class="photoGraph">撮影</button>
+        <button onclick="selectPhoto()" class="photoSelect">選択</button>
+        <button onclick="hidePhotoOptionsPopup()" class="cancel_photo">キャンセル</button>
+      </div>
+    </div>
+    <div class="popup_photo_delete" id="deletePhotoPopup">
+      <p>削除する画像を選択してください</p>
+      <div id="deletePhotoList"></div>
+      <button onclick="hideDeletePhotoPopup()" class="delete_cancel">キャンセル</button>
+      <button onclick=" deleteSelectedPhotos()" class="delete_done">削除</button>
+    </div>
     <div class="photoDisplay">
       <div type="text" id="photoDisplay_id"></div>
     </div>
-    
     <div class="button-container">
-      <a href="../home.html" id="saveButton">登録</a>
+      <a href="../../home.html" id="saveButton">登録</a>
     </div>
     <div class="overlay" id="confirm-overlay" onclick="hideConfirmPopup()"></div>
     <div class="popup" id="confirm-popup">
@@ -322,10 +419,9 @@
         <button id="confirm-save" class="add">登録</button>
       </div>
     </div>
-
   </main>
-  <script src="../js/study-next.js" defer></script>
-  <script src="../js/addcategory.js" defer></script>
-  <script src="../js/photoDisplay.js" defer></script>
+  <script src="../../js/study-next.js" defer></script>
+  <script src="../../js/addcategory.js" defer></script>
+  <script src="../../js/photoDisplay.js" defer></script>
 </body>
 </html>

@@ -77,7 +77,18 @@ document.querySelector('.side_unit_year').addEventListener('click', () => {
   createChart('year');
 });
 
+<<<<<<< HEAD
 // ページが読み込まれたときに初期グラフを表示（例えば、週単位のグラフ）
 window.addEventListener('load', () => {
   createChart('week');
 });
+=======
+// DOM の読み込み完了後に実行する処理
+document.addEventListener('DOMContentLoaded', () => {
+  const selectedCategory = localStorage.getItem("selectedCategory");
+  console.log(selectedCategory);
+  if(selectedCategory) {
+    document.getElementById("displayCategory").textContent = selectedCategory;
+  }
+});
+>>>>>>> origin/main
