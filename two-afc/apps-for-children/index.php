@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="./ui_image/logo.png" alt="logo" title="logo">
         </div>
         <div class="text">
-            <form action="php/register.php" method="post">
+            <form action="" method="post">
                 <label for="username">ユーザー名:</label>
                 <input type="text" id="username" name="username" required><br>
                 <label for="email">メールアドレス:</label>
