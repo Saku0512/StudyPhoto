@@ -1,24 +1,25 @@
-function saveStudySession() {
+export default function saveStudySession() {
     const category = document.getElementById("category").value;
     const studyTime = document.getElementById("timer-display").textContent;
     const selectdImages = []; // 選択した画像のリスト
+    const username = document.getElementById("username").value;
 
     // ここで選択した画像の情報を取得する処理を追加する
 
     // AJAXリクエストを送信
-    fetch('../php/save_study_data.php', {
+    fetch('../../php/save_study_data.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: '<php echo $_SESSION["username"]; ?>',
+            username: username,
             category: category,
             study_time: studyTime,
             images: selectdImages
         })
     })
-    .then(Response => Response.json())
+    .then(response => response.json())
     .then(data => {
         if(data.success) {
             alert("保存が完了しました");

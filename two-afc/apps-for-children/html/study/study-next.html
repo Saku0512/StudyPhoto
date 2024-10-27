@@ -101,7 +101,7 @@
       <div type="text" id="photoDisplay_id"></div>
     </div>
     <div class="button-container">
-      <a href="#" id="saveButton" onclick="saveStudySession()">登録</a>
+      <button id="saveButton" onclick="saveStudySession()">登録</button>
     </div>
     <div class="overlay" id="confirm-overlay" onclick="hideConfirmPopup()"></div>
     <div class="popup" id="confirm-popup">
@@ -112,8 +112,10 @@
       </div>
     </div>
   </main>
+  <input type="hidden" id="username" value="<?php echo $_SESSION['username']; ?>">
   <script src="../../js/study-next.js" defer></script>
   <script src="../../js/addcategory.js" defer></script>
   <script src="../../js/photoDisplay.js" defer></script>
+  <script type="module" src="../../js/saveStudySession.js" defer></script>
 </body>
 </html>
