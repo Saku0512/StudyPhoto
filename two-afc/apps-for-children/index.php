@@ -38,55 +38,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dbPassword = $_POST['password'] ?? null;
 
     if (!empty($dbUsername) && !empty($dbEmail) && !empty($dbPassword)) {
-        $conn = new mysqli($servername, $username, $password, $db_name);
+        //メールアドレスの形式検証
+        if (!filter_var($dbEmail, FILTER_VALIDATE_EMAIL)) {
+            $message = '無効なメールアドレスです。';
+        }else {
+            $conn = new mysqli($servername, $username, $password, $db_name);
 
-        if ($conn->connect_error) {
-            die("接続失敗: " . $conn->connect_error);
-        }
-
-        //ユーザー名の重複チェック
-        $checkUsernameSql = "SELECT * FROM users WHERE username = ?";
-        $checkUsernameStmt = $conn->prepare($checkUsernameSql);
-        $checkUsernameStmt->bind_param("s", $dbUsername);
-        $checkUsernameStmt->execute();
-        $usernameResult = $checkUsernameStmt->get_result();
-
-        //メールアドレスの重複チェック
-        $checkEmailSql = "SELECT * FROM users WHERE email = ?";
-        $checkEmailStmt = $conn->prepare($checkEmailSql);
-        $checkEmailStmt->bind_param("s", $dbEmail);
-        $checkEmailStmt->execute();
-        $emailResult = $checkEmailStmt->get_result();
-
-        //重複チェック
-        if($usernameResult->num_rows > 0) {
-            $message = "このユーザー名は既に登録されています";
-        }elseif($emailResult->num_rows > 0) {
-            $message = "このメールアドレスは既に登録されています";
-        }else{
-            $uniqueID = generateRandomID($conn);
-            //パスワードをハッシュ化
-            $hashed_password = password_hash($dbPassword, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-
-            if ($stmt === false) {
-                die("SQL文の準備失敗: " . $conn->error);
+            if ($conn->connect_error) {
+                die("接続失敗: " . $conn->connect_error);
             }
+
+            //ユーザー名の重複チェック
+            $checkUsernameSql = "SELECT * FROM users WHERE username = ?";
+            $checkUsernameStmt = $conn->prepare($checkUsernameSql);
+            $checkUsernameStmt->bind_param("s", $dbUsername);
+            $checkUsernameStmt->execute();
+            $usernameResult = $checkUsernameStmt->get_result();
+
+            //メールアドレスの重複チェック
+            $checkEmailSql = "SELECT * FROM users WHERE email = ?";
+            $checkEmailStmt = $conn->prepare($checkEmailSql);
+            $checkEmailStmt->bind_param("s", $dbEmail);
+            $checkEmailStmt->execute();
+            $emailResult = $checkEmailStmt->get_result();
+
+            //重複チェック
+            if($usernameResult->num_rows > 0) {
+                $message = "このユーザー名は既に登録されています";
+            }elseif($emailResult->num_rows > 0) {
+                $message = "このメールアドレスは既に登録されています";
+            }else{
+                $uniqueID = generateRandomID($conn);
+                //パスワードをハッシュ化
+                $hashed_password = password_hash($dbPassword, PASSWORD_DEFAULT);
+                $sql = "INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+
+                if ($stmt === false) {
+                    die("SQL文の準備失敗: " . $conn->error);
+                }
             
-            $stmt->bind_param("ssss", $uniqueID, $dbUsername, $dbEmail, $hashed_password);
+                $stmt->bind_param("ssss", $uniqueID, $dbUsername, $dbEmail, $hashed_password);
 
-            if ($stmt->execute()) {
-                $message = "ユーザーが正常に登録されました";
-            } else {
-                $message = "ユーザー登録失敗: " . $stmt->error;
+                if ($stmt->execute()) {
+                    $message = "ユーザーが正常に登録されました";
+                } else {
+                    $message = "ユーザー登録失敗: " . $stmt->error;
+                }
+                $stmt->close();
             }
-            $stmt->close();
-        }
 
-        $checkEmailStmt->close();
-        $checkUsernameStmt->close();
-        $conn->close();
+            $checkEmailStmt->close();
+            $checkUsernameStmt->close();
+            $conn->close();
+        }
     } elseif (isset($_POST['login'])) {
         // サインイン処理
         $loginUsername = $_POST['login_username'] ?? null;
