@@ -4,6 +4,26 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+function generateRandomID($conn) {
+    $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $id = "";
+    do {
+        $id = "";
+        for($i = 0; $i < 8; $i++){
+            $id .= $characters[rand(0, strlen($characters) -1)];
+        }
+
+        //重複確認
+        $stmt = $conn->prepare("SELECT id FROM users WHERE id = ?");
+        $stmt->bind_param("s", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    } while ($result->num_rows > 0); // 重複があれば再生成
+
+    $stmt->close();
+    return $id;
+}
+
 $message = ""; //メッセージを格納する変数
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -44,19 +64,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }elseif($emailResult->num_rows > 0) {
             $message = "このメールアドレスは既に登録されています";
         }else{
+            $uniqueID = generateRandomID($conn);
             //パスワードをハッシュ化
             $hashed_password = password_hash($dbPassword, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"; // 修正: カラム名を正しく指定
+            $sql = "INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
 
             if ($stmt === false) {
                 die("SQL文の準備失敗: " . $conn->error);
             }
             
-            $stmt->bind_param("sss", $dbUsername, $dbEmail, $hashed_password);
+            $stmt->bind_param("ssss", $uniqueID, $dbUsername, $dbEmail, $hashed_password);
 
             if ($stmt->execute()) {
-                $message = "ユーザーが正常";
+                $message = "ユーザーが正常に登録されました";
             } else {
                 $message = "ユーザー登録失敗: " . $stmt->error;
             }
@@ -66,6 +87,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkEmailStmt->close();
         $checkUsernameStmt->close();
         $conn->close();
+    } elseif (isset($_POST['login'])) {
+        // サインイン処理
+        $loginUsername = $_POST['login_username'] ?? null;
+        $loginPassword = $_POST['login_password'] ?? null;
+
+        if (!empty($loginUsername) && !empty($loginPassword)) {
+            $conn = new mysqli($servername, $username, $password, $db_name);
+            if ($conn->connect_error) {
+                die('接続失敗: '. $conn->connect_error);
+            }
+
+            // ユーザー名で検索
+            $loginSql = "SELECT * FROM users WHERE username = ?";
+            $loginStmt = $conn->prepare($loginSql);
+            $loginStmt->bind_param("s", $loginUsername);
+            $loginStmt->execute();
+            $loginResult = $loginStmt->get_result();
+
+            if ($loginResult->num_rows > 0) {
+                $user = $loginResult->fetch_assoc();
+                if (password_verify($loginPassword, $user['password'])) {
+                    $message = "ログイン成功";
+                    header("Location: home.html");
+                } else {
+                    $message = "パスワードが間違っています";
+                }
+            } else {
+                $message = "ユーザー名が見つかりません";
+            }
+
+            $loginStmt->close();
+            $conn->close();
+        } else {
+            $message = "全てのフィールドを入力してください";
+        }
     } else {
         $message = "全てのフィールドを入力してください";
     }
@@ -94,8 +150,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .text {
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            margin-top: 40px;
+            align-items: center;
+            text-align: center;
+            margin: 0 auto 0;
+            margin-top: 20px;
+            width: 80vw;
+        }
+        .loginbuttons {
+            display: flex;
+            justify-content: center;
+            gap: 10vw;
+        }
+        #signupForm, #loginForm {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
         }
     </style>
     <script>
@@ -103,6 +175,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if(!empty($message)): ?>
                 alert("<?php echo addslashes($message); ?>");
             <?php endif; ?>
+        }
+        function showForm(formId) {
+            document.getElementById("signupForm").style.display = "none";
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById(formId).style.display = "flex";
         }
     </script>
 </head>
@@ -112,7 +189,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="./ui_image/logo.png" alt="logo" title="logo">
         </div>
         <div class="text">
-            <form action="" method="post">
+            <div class="loginbuttons">
+                <button onclick="showForm('signupForm')">サインアップ</button>
+                <button onclick="showForm('loginForm')">サインイン</button>
+            </div>
+            <form id="signupForm" action="" method="post">
                 <label for="username">ユーザー名:</label>
                 <input type="text" id="username" name="username" required><br>
                 <label for="email">メールアドレス:</label>
@@ -120,6 +201,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="password">パスワード:</label>
                 <input type="password" id="password" name="password" required><br>
                 <button type="submit">登録</button>
+            </form>
+            <form id="loginForm" action="" method="post">
+                <label for="login_username">ユーザー名:</label>
+                <input type="text" id="login_username" name="login_username" required><br>
+                <label for="login_password">パスワード:</label>
+                <input type="password" id="login_password" name="login_password" required><br>
+                <button type="submit" name="login">ログイン</button>
             </form>
         </div>
     </main>
