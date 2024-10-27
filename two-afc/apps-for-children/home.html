@@ -82,6 +82,20 @@
         height: 7vh;
         width: 37vw;
       }
+      .settingPanel {
+        display: none; /* 初期状態は非表示 */
+        position: fixed; /* 固定位置 */
+        top: 30%; /* 上からの位置 */
+        left: 50%; /* 左からの位置 */
+        transform: translate(-50%, -50%); /* 中央に配置 */
+        width: 80vw; /* 幅 */
+        height: auto; /* 高さは自動 */
+        background-color: white; /* 背景色 */
+        border: 1px solid black; /* ボーダー */
+        padding: 20px; /* 内側の余白 */
+        z-index: 100; /* z-indexを設定して上に表示 */
+      }
+      
       .contact {
         height: 7vh;
         width: 37vw;
@@ -172,7 +186,11 @@
         <a href="#" class="note" onclick="showPopup()">記録する</a>
       </div>
       <div class="footer" type="button">
-        <button class="setting">設定</button>
+        <button class="setting" onclick="showSPopup()">設定</button>
+        <div class="settingPanel" id="settingPanel">
+          <p>設定</p>
+          <button onclick="hideSPopup()">閉じる</button>
+        </div>
         <a href="./php/contact.php" class="contact">問い合わせ</a>
       </div>
       <div class="overlay" id="overlay" onclick="hidePopup()"></div>
@@ -189,6 +207,13 @@
         localStorage.removeItem('stopwatchTime');
         localStorage.removeItem('isRunning');
       });
+
+      function showSPopup() {
+        document.getElementById("settingPanel").style.display = "block";
+      }
+      function hideSPopup() {
+        document.getElementById("settingPanel").style.display = "none";
+      }
 
       function showPopup() {
         document.getElementById("overlay").style.display = "block";
