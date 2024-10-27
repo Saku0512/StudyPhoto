@@ -40,7 +40,7 @@ document.getElementById('saveButton').addEventListener('click', (event) => {
     showConfirmPopup();
   } else {
     saveData();
-    window.location.href = '../../home.html';
+    window.location.href = '../../home.php';
   }
 });
 
@@ -99,5 +99,5 @@ function hideConfirmPopup() {
   // タイマーをリセット
   localStorage.setItem('stopwatchTime', '00:00:00');
 
-  window.location.href = '../../home.html';
+  window.location.href = '../../home.php';
 };

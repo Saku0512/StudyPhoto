@@ -11,7 +11,7 @@ function signOut() {
       .signOut()
       .then(() => {
         console.log('ログアウトしました');
-        location.href = "index.html";
+        location.href = "index.php";
       })
       .catch((error) => {
         console.log(`ログアウト時にエラーが発生しました (${error})`);
