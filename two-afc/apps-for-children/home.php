@@ -1,9 +1,33 @@
 <?php
 session_start();
 
-$username = $_SESSION['username'];
-$userId = $_SESSION['user_id'];
-$email = $_SESSION['email'];
+//データベースにアクセス
+$host = "localhost";
+$username = "childapp_user";
+$password = "sdTJRTPutuXQ-Wlb2WBVE"; // 正しいパスワードを使用
+$dbname = "childapp_test";
+
+//データベースにアクセス
+try {
+  $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+  echo "接続失敗: " . $e->getMessage();
+  exit();
+}
+
+//ユーザーIDをセッションから取得
+$userId = $_SESSION['user_id'] ?? null;
+if ($userId === null) {
+  echo "ログインしていません。";
+  exit();
+}
+//ユーザー情報を取得
+$stmt = $pdo->prepare("SELECT id, username, email FROM users WHERE id = :id");
+$stmt->bindParam(":id", $userId);
+$stmt->execute();
+
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -196,9 +220,9 @@ $email = $_SESSION['email'];
         <button class="setting" onclick="showSPopup()">設定</button>
         <div class="settingPanel" id="settingPanel">
           <p>設定</p>
-          <p>ユーザー名: <?php echo htmlspecialchars($username); ?></p>
-          <p>ユーザーID: <?php echo htmlspecialchars($userId); ?></p>
-          <p>メールアドレス: <?php echo htmlspecialchars($email); ?></p>
+          <p>ユーザー名: <?php echo htmlspecialchars($user['username']); ?></p>
+          <p>ユーザーID: <?php echo htmlspecialchars($user['id']); ?></p>
+          <p>メールアドレス: <?php echo htmlspecialchars($user['email']); ?></p>
           <button onclick="hideSPopup()">閉じる</button>
         </div>
         <a href="./php/contact.php" class="contact">問い合わせ</a>

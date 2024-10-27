@@ -109,6 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user = $loginResult->fetch_assoc();
                 if (password_verify($loginPassword, $user['password'])) {
                     $message = "ログイン成功";
+                    session_start();
+                    $_SESSION['user_id'] = $user['id'];
                     header("Location: home.php");
                 } else {
                     $message = "パスワードが間違っています";
