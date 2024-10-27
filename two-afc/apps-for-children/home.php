@@ -1,3 +1,10 @@
+<?php
+session_start();
+
+$username = $_SESSION['username'];
+$userId = $_SESSION['user_id'];
+$email = $_SESSION['email'];
+?>
 <!DOCTYPE html>
 <html lang="ja">
   <head>
@@ -189,6 +196,9 @@
         <button class="setting" onclick="showSPopup()">設定</button>
         <div class="settingPanel" id="settingPanel">
           <p>設定</p>
+          <p>ユーザー名: <?php echo htmlspecialchars($username); ?></p>
+          <p>ユーザーID: <?php echo htmlspecialchars($userId); ?></p>
+          <p>メールアドレス: <?php echo htmlspecialchars($email); ?></p>
           <button onclick="hideSPopup()">閉じる</button>
         </div>
         <a href="./php/contact.php" class="contact">問い合わせ</a>
