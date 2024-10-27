@@ -116,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message = "ログイン成功";
                     session_start();
                     $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $username;
                     header("Location: home.php");
                 } else {
                     $message = "パスワードが間違っています";
