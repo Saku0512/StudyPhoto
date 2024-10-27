@@ -1,3 +1,5 @@
+import saveStudySession from "./saveStudySession.js";
+
 document.addEventListener('DOMContentLoaded', () => {
   // localStorage から保存された秒数を取得
   const elapsedSeconds = parseInt(localStorage.getItem('stopwatchTime'), 10) || 0;
@@ -35,6 +37,7 @@ document.getElementById('saveButton').addEventListener('click', (event) => {
     alert("教科を選択してください。");
     return;
   }
+  saveStudySession();
 
   if(!photoSelected) {
     showConfirmPopup();
