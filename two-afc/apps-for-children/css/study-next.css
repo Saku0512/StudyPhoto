@@ -1,0 +1,301 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    text-align: center;
+    overflow-x: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+main {
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+.return {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+.return a{
+  font-size: 18px;
+  height: 40px;
+  width: 40px;
+  padding: 10px 20px;
+  margin-right: auto;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+.return a img {
+  height: 50px;
+  width: 50px;
+}
+.timer {
+  text-align: center;
+  font-size: 60px;
+  margin-top: 7.5vh;
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;   
+}
+#saveButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 6px;
+  text-align: center;
+  font-size: 30px;
+  background-color: #4870BD;
+  color: white;
+  height: 10vh;
+  width: 84vw;
+  margin-top: 2.5vh;
+  margin-bottom: 2.5vh;
+}
+.dropdown{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2.5vh;
+  gap: 4vw;   
+}
+#category{
+  height: 4vh;
+  width: 40vw;
+  font-size: 13px;
+  text-align: center;
+}
+#category option{
+  text-align: center;
+}
+.newSubject{
+  height: 4vh;
+  width: 40vw;
+  padding: 2px 6px;
+  text-align: center;
+  font-size: 14px;
+  background-color: #4870BD;
+  color: white;
+  border: none;
+  white-space: nowrap;
+  min-width: 100px;
+}
+.photo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2.5vh;
+  gap: 5vw;  
+}
+.photoSelect, .photoGraph, .photoDelete, .cancel_photo{
+  height: 7vh;
+  width: 40vw;
+  text-align: center;
+  font-size: 25px;
+  background-color: #4870BD;
+  color: white;
+  border: none;
+  white-space: nowrap;
+  min-width: 100px;
+}
+.photoDisplay{
+  display: block;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 2.5vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 50vh;
+  height: 50vh;
+  width: 90vw;
+  border: 1px solid #bfbfbf;
+  margin-left: auto;
+  margin-right: auto;
+}
+#photoDisplay_id{
+  width: 84vw;
+  height: 50vh;
+}
+.photo_img{
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  margin: 5px;
+  border: 1px solid black;
+  object-fit: contain;
+}
+#photoOptionsPopup {
+  display: none;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 84vw;
+  padding: 20px;
+  background-color: white;
+  border: 1px solid black;
+  z-index: 100;
+}
+#photoOptionsPopup p {
+  font-size: 18px;
+}
+.popupbutton_photo_sub {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+}
+.popupbutton_photo_sub button {
+  height: 8vh;
+  width: 40vw;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+}
+.popup_photo_delete {
+  display: none;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  width: 84vw;
+  max-height: 80vh;
+  transform: translateX(-50%);
+  width: 84vw;
+  padding: 20px;
+  background-color: white;
+  border: 1px solid black;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+/*
+  #photoDisplay_id{
+    width: 84vw;
+    height: 50vh;
+  }
+*/
+@media (max-width: 600px) {
+  .newSubject{
+    font-size: 12px;
+  }
+  .photoSelect, .photoGraph, .photoDelete, .cancel_photo{
+    font-size: 20px;
+  }
+}
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+.popup {
+  display: none;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-left: auto;
+  margin-right: auto;
+  width: 84vw;
+  padding: 20px;
+  background-color: white;
+  border: 1px solid black;
+  z-index: 100;
+}
+.popup.active {
+  display: block;
+}
+.tab {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid blue;
+}
+.tab button {
+  font-size: 18px;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  width: 20vw;
+  border: none;
+}
+.form-section {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+.form-section.active {
+  display: flex;
+}
+.optionlabel {
+  font-size: 20px;
+}
+#addOptionName{
+  height: 4vh;
+}
+#addOptionName, #editOptionName, #deleteOptionName,  #deleteOptionSelect, #editOptionSelect {
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  border: 1px solid #bfbfbf;
+}
+#editSection, #deleteSection {
+  text-align: center;
+}
+#editOptionSelect, #deleteOptionSelect {
+  height: 4vh;
+  width: 40vw;
+  font-size: 13px;
+  text-align: center;
+}
+.popupbutton {
+  margin-left: 0;
+  margin-right: 0;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 5vh;
+  gap: 10vw;
+}
+#addSection, #editSection, #deleteSection {
+  margin-top: 2vh;
+}
+.cancel, .add {
+  padding: 0;
+  margin-top: 0;
+  height: 5vh;
+  width: 30vw;
+  font-size: 20px;
+  background-color: #4870BD;
+  color: white;
+  border: none;
+}
+.delete_done, .delete_cancel {
+  height: 5vh;
+  width: 30vw;
+  font-size: 18px;
+  background-color: #4870BD;
+  color: white;
+  border: none;
+  margin-left: 2vw;
+  margin-right: 2vw;
+}
