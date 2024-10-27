@@ -33,3 +33,50 @@ function showSection(sectionId) {
         popup.style.height = '30vh';
     }
 }
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+let currentDate = new Date();
+
+function renderCalendar(date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  
+  // 月と年を表示
+  document.getElementById('month').textContent = `${monthNames[month]}`;
+  document.getElementById('year').textContent = `${year}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+  const prevLastDate = new Date(year, month, 0).getDate();
+  const calendarBody = document.getElementById('calendar-body');
+  calendarBody.innerHTML = "";
+
+  // 前月の最後の日付を表示
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const cell = document.createElement("div");
+    cell.classList.add("inactive");
+    cell.textContent = prevLastDate - i;
+    calendarBody.appendChild(cell);
+  }
+
+  // 当月の日付を表示
+  for (let i = 1; i <= lastDate; i++) {
+    const cell = document.createElement("div");
+    cell.textContent = i;
+    if (new Date(year, month, i).getDay() === 0) cell.classList.add("sunday");
+    if (new Date(year, month, i).getDay() === 6) cell.classList.add("saturday");
+    calendarBody.appendChild(cell);
+  }
+
+  // 次月の最初の日付を表示
+  const remainingCells = 42 - calendarBody.children.length;
+  for (let i = 1; i <= remainingCells; i++) {
+    const cell = document.createElement("div");
+    cell.classList.add("inactive");
+    cell.textContent = i;
+    calendarBody.appendChild(cell);
+  }
+}
+
+// 初回のカレンダー描画
+renderCalendar(currentDate);
+
