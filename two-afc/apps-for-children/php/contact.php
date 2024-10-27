@@ -170,7 +170,7 @@ if (isset($_POST['back']) && $_POST['back']) {
             <!-- 送信完了画面 -->
             <div class="Form">
                 <div>お問い合わせが送信されました。ありがとうございました。</div>
-                <div><a href="../home.html">ホームに戻る</a></div>
+                <div><a href="../home.php">ホームに戻る</a></div>
             </div>
         <?php } ?>
     </main>
