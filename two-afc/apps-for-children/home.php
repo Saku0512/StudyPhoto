@@ -19,7 +19,7 @@ try {
 //ユーザーIDをセッションから取得
 $userId = $_SESSION['user_id'] ?? null;
 if ($userId === null) {
-  echo "ログインしていません。";
+  header("Location: index.php");
   exit();
 }
 //ユーザー情報を取得
@@ -224,6 +224,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
           <p>ユーザーID: <?php echo htmlspecialchars($user['id']); ?></p>
           <p>メールアドレス: <?php echo htmlspecialchars($user['email']); ?></p>
           <button onclick="hideSPopup()">閉じる</button>
+          <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
         </div>
         <a href="./php/contact.php" class="contact">問い合わせ</a>
       </div>
