@@ -1,3 +1,4 @@
+<?php
 session_start();
 include 'db_connection.php'; // データベース接続の設定
 

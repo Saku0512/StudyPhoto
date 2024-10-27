@@ -26,5 +26,5 @@ function saveStudySession() {
             alert("エラーが発生しました");
         }
     })
-    .catch(error => console/error("Error:", error));
+    .catch(error => console.error("Error:", error));
 }
