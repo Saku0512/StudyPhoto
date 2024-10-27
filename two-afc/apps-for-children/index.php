@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user = $loginResult->fetch_assoc();
                 if (password_verify($loginPassword, $user['password'])) {
                     $message = "ログイン成功";
-                    header("Location: home.html");
+                    header("Location: home.php");
                 } else {
                     $message = "パスワードが間違っています";
                 }
