@@ -148,6 +148,54 @@
     .popup.active {
       display: block;
     }
+    * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+/*calenderのCSSコード始まり*/
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シンプルカレンダー</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="calendar">
+    <div class="calendar-header">
+      <h2 id="month"></h2>
+      <h2 id="year"></h2>
+    </div>
+    <div class="calendar-days">
+      <div class="day-name sunday">SUN</div>
+      <div class="day-name">MON</div>
+      <div class="day-name">TUE</div>
+      <div class="day-name">WED</div>
+      <div class="day-name">THU</div>
+      <div class="day-name">FRI</div>
+      <div class="day-name saturday">SAT</div>
+    </div>
+    <div id="calendar-body" class="calendar-body"></div>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+/*calenderのコード終わり*/
+
+
 
   </style>
 </head>
@@ -179,8 +227,8 @@
       <p id="displayCategory"></p>
     </div>
   </main>
-  <script src="../../js/record.js" defer></script> <!-- JSファイルをdefer属性付きで読み込む -->
-  <script src="../../js/calender.js"defer></script> <!-- JSファイルをdefer属性付きで読み込む -->
+  <script src="../../js/record.js" defer></script>  
+  <script src="../../js/calender.js"defer></script> 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
@@ -198,7 +246,35 @@
     <button class="year-mouth-daybutton" onclick="showPopup11()">y/m/dの記録</button>
     <div class="overlay" id="overlay" onclick="hidePopup()"></div>
     <div class="popup" id="popup">
-      //カレンダーのコード
-    </div>
-</body>
-</html>
+     <!--カレンダーのコード--> 
+     <!DOCTYPE html>
+     <html lang="ja">
+     <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>カレンダー</title>
+       <link rel="stylesheet" href="style.css">
+     </head>
+     <body>
+       <div class="calendar">
+         <div class="calendar-header">
+           <button id="prev-month">◀</button>
+           <h2 id="month-year"></h2>
+           <button id="next-month">▶</button>
+         </div>
+         <div class="calendar-days">
+           <div class="day-name sunday">SUN</div>
+           <div class="day-name">MON</div>
+           <div class="day-name">TUE</div>
+           <div class="day-name">WED</div>
+           <div class="day-name">THU</div>
+           <div class="day-name">FRI</div>
+           <div class="day-name saturday">SAT</div>
+         </div>
+         <div id="calendar-body" class="calendar-body"></div>
+       </div>
+       
+       <script src="script.js"></script>
+     </body>
+     </html>
+     
