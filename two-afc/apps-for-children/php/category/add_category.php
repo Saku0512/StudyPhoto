@@ -6,7 +6,11 @@ if (!isset($_SESSION['username'])) {
 }
 
 $category_name = $_POST['category_name'] ?? '';
-$username = $_SESSION['username'] ?? '';
+$username = $_SESSION['username'] ?? null;
+
+if($username === null) {
+    header('Location: ../../index.php');
+}
 
 if (empty($category_name)) {
     echo json_encode(["status" => "error", "message" => "カテゴリー名が必要です。"]);
@@ -15,7 +19,7 @@ if (empty($category_name)) {
 
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=childapp_test', 'childapp_user', 'sdTJRTPutuXQ-Wlb2WBVE');
-    $stmt = $pdo->prepare("INSERT INTO user_categories (category_name, username) VALUES (:category_name, :username)");
+    $stmt = $pdo->prepare("INSERT INTO categories (category_name, username) VALUES (:category_name, :username)");
     $stmt->execute(['category_name' => $category_name, 'username' => $username]);
     echo json_encode(["status" => "success"]);
 } catch (PDOException $e) {

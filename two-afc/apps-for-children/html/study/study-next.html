@@ -26,9 +26,7 @@
     <div class="dropdown">
       <select id="category" required="required">
         <option name="0">--教科を選択--</option>
-        <option>数学</option>
-        <option>英語</option>
-        <option>国語</option>
+        <!--動的にカテゴリーを表示-->
       </select>
       <button class="newSubject" onclick="showPopup()">教科を編集</button>
     </div>
@@ -43,7 +41,7 @@
 
       <!-- Add Section -->
        <div id="addSection" class="form-section add-popup">
-        <label for="optionName" class="optionlabel">新しい教科名</label>
+        <label for="optionName" class="optionlabel">追加する教科名</label>
         <input type="text" id="addOptionName" placeholder="新しい教科名">
         <div class="popupbutton">
           <button onclick="hidePopup()" class="cancel">キャンセル</button>
@@ -56,9 +54,7 @@
         <label for="optionSelect" class="optionlabel">変更する教科名</label>
         <select id="editOptionSelect">
           <option value="">--変更する教科を選択--</option>
-          <option>数学</option>
-          <option>英語</option>
-          <option>国語</option>
+          <!--動的にカテゴリーを表示-->
         </select>
         <label for="editOptionName" class="optionlabel">新しい教科名</label>
         <input type="text" id="editOptionName" placeholder="新しい教科名">
@@ -72,9 +68,7 @@
         <label for="optionSelect" class="optionlabel">削除する教科名</label>
         <select id="deleteOptionSelect">
           <option value="">--削除する教科を選択--</option>
-          <option>数学</option>
-          <option>英語</option>
-          <option>国語</option>
+          <!--動的にカテゴリーを表示-->
         </select>
         <div class="popupbutton">
           <button onclick="hidePopup()" class="cancel">キャンセル</button>

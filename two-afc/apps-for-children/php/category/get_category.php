@@ -9,17 +9,12 @@ require '../db_connection.php';
 
 $username = $_SESSION['username'];
 
-try {
-    // カテゴリーを取得するためのSQLクエリ
-    $stmt = $pdo->prepare("SELECT category_name FROM user_categories WHERE username = ?");
-    $stmt->execute([$username]);
-    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// カテゴリーを取得するためのSQLクエリ
+$sql = "SELECT category_name FROM categories WHERE username = ?";
+$stmt = $pdo->prepare($sql); // ここを$pdoに変更
+$stmt->execute([$username]);
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC); // 結果を配列として取得
 
-    // JSONレスポンスを出力
-    header('Content-Type: application/json');
-    echo json_encode($categories);
-} catch (PDOException $e) {
-    // エラーメッセージをJSON形式で返す
-    http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
-}
+// JSONレスポンスを出力
+header('Content-Type: application/json');
+echo json_encode($categories);
