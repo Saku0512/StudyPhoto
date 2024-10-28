@@ -1,4 +1,5 @@
 <?php
+session_start();
 // デバッグ用
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -98,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $loginPassword = $_POST['login_password'] ?? null;
 
         if (!empty($loginUsername) && !empty($loginPassword)) {
-            $conn = new mysqli($servername, $username, $password, $db_name);
+            $conn = new mysqli($servername,  $username, $password, $db_name);
             if ($conn->connect_error) {
                 die('接続失敗: '. $conn->connect_error);
             }
@@ -116,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message = "ログイン成功";
                     session_start();
                     $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['username'] = $username;
+                    $_SESSION['username'] = $user['username'];
                     header("Location: home.php");
                 } else {
                     $message = "パスワードが間違っています";

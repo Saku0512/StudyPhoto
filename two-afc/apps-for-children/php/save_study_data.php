@@ -2,6 +2,9 @@
 session_start();
 include 'db_connection.php';
 
+// Content-Typeを設定
+header('Content-Type: application/json');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -10,7 +13,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $username = $data['username'];
+    // Retrieve the logged-in username from the session
+    $username = $_SESSION['username'] ?? null;
+
+    if ($username === null) {
+        echo json_encode(['success' => false, 'error' => 'User is not logged in']);
+        exit;
+    }
+
     $category = $data['category'];
     $studyTime = $data['study_time'];
     $images = json_encode($data['images']);
