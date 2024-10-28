@@ -6,7 +6,11 @@ if (!isset($_SESSION['username'])) {
 }
 
 $category_name = $_POST['category_name'] ?? '';
-$username = $_SESSION['username'] ?? '';
+$username = $_SESSION['username'] ?? null;
+
+if($username === null) {
+    header('Location: ../../index.php');
+}
 
 if (empty($category_name)) {
     echo json_encode(["status" => "error", "message" => "カテゴリー名が必要です。"]);

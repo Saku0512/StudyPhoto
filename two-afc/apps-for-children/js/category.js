@@ -106,11 +106,6 @@ function editOption() {
     const newOptionName = document.getElementById('editOptionName').value;
     const username = document.getElementById('username').value;
 
-    //デバッグ用
-    console.log("oldOptionName:", oldOptionName);
-    console.log("newOptionName:", newOptionName);
-    console.log("username:", username);
-
     if (!oldOptionName || !newOptionName) {
         alert("変更する教科名を選択し、新しい教科名を入力してください。");
         return;
@@ -179,7 +174,7 @@ function loadCategories() {
         return response.json();
     })
     .then(data => {
-        console.log('Categories loaded:', data);
+        //console.log('Categories loaded:', data);
         const categorySelect = document.getElementById("category");
         const editcategorySelect = document.getElementById("editOptionSelect");
         const deletecategorySelect = document.getElementById("deleteOptionSelect");

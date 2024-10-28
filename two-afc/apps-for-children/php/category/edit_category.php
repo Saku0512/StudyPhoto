@@ -7,7 +7,11 @@ if (!isset($_SESSION['username'])) {
 
 $old_category_name = $_POST['old_category_name'] ?? '';
 $new_category_name = $_POST['new_category_name'] ?? '';
-$username = $_SESSION['username'] ?? '';
+$username = $_SESSION['username'] ?? null;
+
+if($username === null){
+    header('Location: ../../index.php');
+}
 
 if (empty($old_category_name) || empty($new_category_name)) {
     echo json_encode(["status" => "error", "message" => "両方のカテゴリー名が必要です。"]);
