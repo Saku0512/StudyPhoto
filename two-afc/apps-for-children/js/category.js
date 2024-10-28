@@ -137,34 +137,32 @@ function editOption() {
 }
 
 function deleteOption() {
-    const categoryName = document.getElementById('deleteOptionSelect').value;
+    const optionToDelete = document.getElementById('deleteOptionSelect').value;
     const username = document.getElementById('username').value;
 
-    if (!categoryName) {
-        alert("削除する教科を選択してください。");
+    if (!optionToDelete) {
+        alert("削除する教科名を選択してください。");
         return;
     }
 
-    if (confirm("本当にこのカテゴリーを削除しますか？")) {
-        fetch('../../php/category/delete_category.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `category_name=${categoryName}&username=${username}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "success") {
-                alert("カテゴリーが削除されました。");
-                hidePopup();
-                loadCategories(); // カテゴリーを再読み込み
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => console.error('Error deleting category:', error));
-    }
+    fetch('../../php/category/delete_category.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `category_name=${encodeURIComponent(optionToDelete)}&username=${encodeURIComponent(username)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("カテゴリーが削除されました。");
+            hidePopup();
+            loadCategories(); // カテゴリーを再読み込み
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Error deleting category:', error));
 }
 
 function loadCategories() {

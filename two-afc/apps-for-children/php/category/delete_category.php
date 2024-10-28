@@ -6,7 +6,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 $category_name = $_POST['category_name'] ?? '';
-$username = $_POST['username'] ?? '';
+$username = $_SESSION['username'] ?? null;
 
 if (empty($category_name)) {
     echo json_encode(["status" => "error", "message" => "カテゴリー名が必要です。"]);
@@ -17,11 +17,11 @@ try {
     $pdo = new PDO('mysql:host=localhost;dbname=childapp_test', 'childapp_user', 'sdTJRTPutuXQ-Wlb2WBVE');
     $stmt = $pdo->prepare("DELETE FROM categories WHERE category_name = :category_name AND username = :username");
     $stmt->execute(['category_name' => $category_name, 'username' => $username]);
-    
+
     if ($stmt->rowCount() > 0) {
         echo json_encode(["status" => "success"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "カテゴリーが見つかりません。"]);
+        echo json_encode(["status" => "error", "message" => "カテゴリーが見つかりませんでした。"]);
     }
 } catch (PDOException $e) {
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
