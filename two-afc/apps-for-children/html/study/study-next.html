@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="../../css/scss/load.css" />
   <link rel="stylesheet" href="../../css/study-next.css" />
   <script src="../../js/load.js" defer></script>
+  <script src="../../js/study-next.js" defer></script>
+  <script src="../../js/addcategory.js" defer></script>
+  <script src="../../js/photoDisplay.js" defer></script>
   <title>Stopwatch Next</title>
 </head>
 <body>
@@ -101,7 +104,7 @@
       <div type="text" id="photoDisplay_id"></div>
     </div>
     <div class="button-container">
-      <button id="saveButton" onclick="saveStudySession()">登録</button>
+      <button id="saveButton">登録</button>
     </div>
     <div class="overlay" id="confirm-overlay" onclick="hideConfirmPopup()"></div>
     <div class="popup" id="confirm-popup">
@@ -113,9 +116,5 @@
     </div>
   </main>
   <input type="hidden" id="username" value="<?php echo $_SESSION['username']; ?>">
-  <script src="../../js/study-next.js" defer></script>
-  <script src="../../js/addcategory.js" defer></script>
-  <script src="../../js/photoDisplay.js" defer></script>
-  <script type="module" src="../../js/saveStudySession.js" defer></script>
 </body>
 </html>
