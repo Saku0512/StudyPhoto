@@ -3,7 +3,7 @@ let isPopupVisible = false;
 function showPopup() {
     document.getElementById("overlay").style.display = "block";
     document.getElementById("popup").classList.add("active");
-    isPopupVasible = true;
+    isPopupVisible = true;
     showSection('addSection'); // 最初に追加フォームを表示
 
     // フォームの入力をリセット
@@ -11,28 +11,20 @@ function showPopup() {
     document.getElementById("editOptionName").value = "";
 }
 
-// overlayクリック時にの動作を無効
+// overlayクリック時の動作を無効
 window.onclick = function(event) {
     const overlay = document.getElementById("overlay");
-    if(overlay){
-        overlay.addEventListener("click", function(event){
-            if(isPopupVisible) {
+    if (overlay) {
+        overlay.addEventListener("click", function(event) {
+            if (isPopupVisible) {
                 event.stopPropagation(); // 何もしない
                 return;
-            }else{
+            } else {
                 hidePopup();
             }
         });
     }
 };
-document.getElementById("overlay").addEventListener("click", function(event){
-    if(isPopupVisible) {
-        event.stopPropagation(); // 何もしない
-        return;
-    }else{
-        hidePopup();
-    }
-});
 
 function hidePopup() {
     document.getElementById("overlay").style.display = "none";
@@ -49,106 +41,119 @@ function showSection(sectionId) {
 
     // ポップアップのサイズを調整
     const popup = document.getElementById("popup");
-    if(sectionId === 'addSection'){
+    if (sectionId === 'addSection') {
         popup.style.height = '30vh';
-    }else if(sectionId === 'editSection'){
+    } else if (sectionId === 'editSection') {
         popup.style.height = '45vh';
-    }else if(sectionId === 'deleteSection'){
+    } else if (sectionId === 'deleteSection') {
         popup.style.height = '30vh';
     }
 }
 
-// デフォルトで追加フォームを表示
-window.onload = function() {
-    document.getElementById("addSection").classList.add("active");
-    updateButtonColor('addSection'); // ボタンの色を更新
-}
-
 // ボタンの色をセクションに合わせて更新する関数
-function updateButtonColor(activeSectionId){
-    const buttons = document.querySelectorAll('.tab button'); // 修正
+function updateButtonColor(activeSectionId) {
+    const buttons = document.querySelectorAll('.tab button');
     buttons.forEach(button => {
-        // 全てのボタンの色をリセット
         button.style.color = 'black';
     });
-    // アクティブセクションに応じて対応するボタンの色を青にする
-    if(activeSectionId === 'addSection'){
+    if (activeSectionId === 'addSection') {
         buttons[0].style.color = 'blue';
-    }else if(activeSectionId === 'editSection'){
+    } else if (activeSectionId === 'editSection') {
         buttons[1].style.color = 'blue';
-    }else if(activeSectionId === 'deleteSection'){
+    } else if (activeSectionId === 'deleteSection') {
         buttons[2].style.color = 'blue';
     }
 }
 
 // ボタンの色をリセット
-function resetButtonColor(){
+function resetButtonColor() {
     const buttons = document.querySelectorAll('.tab button');
     buttons.forEach(button => {
         button.style.color = 'black';
     });
 }
+
 function addOption() {
-    const subject = document.getElementById("addOptionName").value;
+    const optionName = document.getElementById('addOptionName').value;
+    const username = document.getElementById('username').value;
 
-    if (subject) {
-        fetch('../../php/category/add_category.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `category_name=${encodeURIComponent(subject)}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "success") {
-                loadCategories(); // カテゴリーを再読み込み
-                hidePopup(); // ポップアップを隠す
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => console.error('Error adding category:', error));
-    } else {
-        alert("入力してください。");
+    if (!optionName) {
+        alert("教科名を入力してください。");
+        return;
     }
+
+    fetch('../../php/category/add_category.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `category_name=${optionName}&username=${username}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("カテゴリーが追加されました。");
+            hidePopup();
+            loadCategories(); // カテゴリーを再読み込み
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Error adding category:', error));
 }
 
-function editOption(categoryId) {
-    const newCategoryName = prompt("新しいカテゴリー名を入力してください:");
+function editOption() {
+    const oldOptionName = document.getElementById('editOptionSelect').value;
+    const newOptionName = document.getElementById('editOptionName').value;
+    const username = document.getElementById('username').value;
 
-    if (newCategoryName) {
-        fetch('edit_category.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `category_id=${categoryId}&new_category_name=${encodeURIComponent(newCategoryName)}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "success") {
-                loadCategories(); // カテゴリーを再読み込み
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => console.error('Error editing category:', error));
+    if (!oldOptionName || !newOptionName) {
+        alert("変更する教科名を選択し、新しい教科名を入力してください。");
+        return;
     }
+
+    fetch('../../php/category/edit_category.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `old_category_name=${oldOptionName}&new_category_name=${newOptionName}&username=${username}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("カテゴリーが変更されました。");
+            hidePopup();
+            loadCategories(); // カテゴリーを再読み込み
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Error editing category:', error));
 }
 
-function deleteOption(categoryId) {
+function deleteOption() {
+    const categoryName = document.getElementById('deleteOptionSelect').value;
+    const username = document.getElementById('username').value;
+
+    if (!categoryName) {
+        alert("削除する教科を選択してください。");
+        return;
+    }
+
     if (confirm("本当にこのカテゴリーを削除しますか？")) {
-        fetch('delete_category.php', {
+        fetch('../../php/category/delete_category.php', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `category_id=${categoryId}`
+            body: `category_name=${categoryName}&username=${username}`
         })
         .then(response => response.json())
         .then(data => {
             if (data.status === "success") {
+                alert("カテゴリーが削除されました。");
+                hidePopup();
                 loadCategories(); // カテゴリーを再読み込み
             } else {
                 alert(data.message);
@@ -159,11 +164,17 @@ function deleteOption(categoryId) {
 }
 
 function loadCategories() {
-    fetch('get_categories.php')
-        .then(response => response.json())
+    fetch('../../php/category/get_category.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Categories loaded:', data);
             const categorySelect = document.getElementById("category");
-            categorySelect.innerHTML = '<option name="0">--教科を選択--</option>';
+            categorySelect.innerHTML = '<option value="0">--教科を選択--</option>';
             data.forEach(item => {
                 const option = document.createElement("option");
                 option.textContent = item.category_name;
