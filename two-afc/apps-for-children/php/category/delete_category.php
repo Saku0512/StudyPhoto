@@ -15,7 +15,7 @@ if (empty($category_name)) {
 
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=childapp_test', 'childapp_user', 'sdTJRTPutuXQ-Wlb2WBVE');
-    $stmt = $pdo->prepare("DELETE FROM user_categories WHERE category_name = :category_name AND username = :username");
+    $stmt = $pdo->prepare("DELETE FROM categories WHERE category_name = :category_name AND username = :username");
     $stmt->execute(['category_name' => $category_name, 'username' => $username]);
     
     if ($stmt->rowCount() > 0) {

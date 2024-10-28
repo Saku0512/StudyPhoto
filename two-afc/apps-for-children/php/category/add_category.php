@@ -15,7 +15,7 @@ if (empty($category_name)) {
 
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=childapp_test', 'childapp_user', 'sdTJRTPutuXQ-Wlb2WBVE');
-    $stmt = $pdo->prepare("INSERT INTO user_categories (category_name, username) VALUES (:category_name, :username)");
+    $stmt = $pdo->prepare("INSERT INTO categories (category_name, username) VALUES (:category_name, :username)");
     $stmt->execute(['category_name' => $category_name, 'username' => $username]);
     echo json_encode(["status" => "success"]);
 } catch (PDOException $e) {

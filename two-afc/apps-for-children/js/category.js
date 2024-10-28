@@ -75,7 +75,6 @@ function resetButtonColor() {
 
 function addOption() {
     const optionName = document.getElementById('addOptionName').value;
-    const username = document.getElementById('username').value;
 
     if (!optionName) {
         alert("教科名を入力してください。");
@@ -87,7 +86,7 @@ function addOption() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `category_name=${optionName}&username=${username}`
+        body: `category_name=${encodeURIComponent(optionName)}`
     })
     .then(response => response.json())
     .then(data => {
@@ -107,6 +106,11 @@ function editOption() {
     const newOptionName = document.getElementById('editOptionName').value;
     const username = document.getElementById('username').value;
 
+    //デバッグ用
+    console.log("oldOptionName:", oldOptionName);
+    console.log("newOptionName:", newOptionName);
+    console.log("username:", username);
+
     if (!oldOptionName || !newOptionName) {
         alert("変更する教科名を選択し、新しい教科名を入力してください。");
         return;
@@ -117,7 +121,7 @@ function editOption() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `old_category_name=${oldOptionName}&new_category_name=${newOptionName}&username=${username}`
+        body: `old_category_name=${encodeURIComponent(oldOptionName)}&new_category_name=${encodeURIComponent(newOptionName)}&username=${encodeURIComponent(username)}`
     })
     .then(response => response.json())
     .then(data => {
@@ -164,27 +168,52 @@ function deleteOption() {
 }
 
 function loadCategories() {
-    fetch('../../php/category/get_category.php')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Categories loaded:', data);
-            const categorySelect = document.getElementById("category");
-            categorySelect.innerHTML = '<option value="0">--教科を選択--</option>';
-            data.forEach(item => {
-                const option = document.createElement("option");
-                option.textContent = item.category_name;
-                categorySelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error loading categories:', error));
+    fetch('../../php/category/get_category.php', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Categories loaded:', data);
+        const categorySelect = document.getElementById("category");
+        const editcategorySelect = document.getElementById("editOptionSelect");
+        const deletecategorySelect = document.getElementById("deleteOptionSelect");
+        categorySelect.innerHTML = '<option value="0">--教科を選択--</option>';
+        editcategorySelect.innerHTML = '<option value="0">--変更する教科を選択--</option>';
+        deletecategorySelect.innerHTML = '<option value="0">--削除する教科を選択--</option>';
+        // 選択するカテゴリーをデータベースと一致させる
+        data.forEach(item => {
+            const option = document.createElement("option");
+            option.textContent = item.category_name;
+            categorySelect.appendChild(option);
+        });
+        // 変更するカテゴリーをデータベースと一致させる
+        data.forEach(item => {
+            const option = document.createElement("option");
+            option.textContent = item.category_name;
+            editcategorySelect.appendChild(option);
+        });
+        // 削除するカテゴリーをデータベースと一致させる
+        data.forEach(item => {
+            const option = document.createElement("option");
+            option.textContent = item.category_name;
+            deletecategorySelect.appendChild(option);
+        });
+    })
+    .catch(error => console.error('Error loading categories:', error));
 }
 
 // ページが読み込まれたときにカテゴリーを読み込む
 window.onload = function() {
     loadCategories();
 };
+document.addEventListener('DOMContentLoaded', function() {
+    loadCategories(); // ページが読み込まれたらカテゴリーを読み込む
+});
