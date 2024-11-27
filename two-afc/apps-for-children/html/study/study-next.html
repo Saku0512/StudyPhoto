@@ -9,7 +9,6 @@
   <script src="../../js/load.js" defer></script>
   <script src="../../js/study-next.js" defer></script>
   <script src="../../js/category.js" defer></script>
-  <script src="../../js/photoDisplay.js" defer></script>
   <title>Stopwatch Next</title>
 </head>
 <body>
@@ -79,6 +78,7 @@
     <div class="photo">
       <button class="photoSelect" onclick="showPhotoOptions()">画像を追加</button>
       <button class="photoDelete" onclick="showDeletePhotoPopup()">画像を削除</button>
+      <input type="file" id="fileInput" name="images[]" multiple style="display: none;" />
     </div>
     <div class="popup_photo" id="photoOptionsPopup">
       <p>画像をどうしますか？</p>
