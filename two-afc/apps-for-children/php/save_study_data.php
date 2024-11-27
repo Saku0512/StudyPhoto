@@ -1,46 +1,45 @@
 <?php
-session_start();
-include 'db_connection.php';
+require 'db_connection.php'; // データベース接続を含める
 
-// Content-Typeを設定
-header('Content-Type: application/json');
+// POSTデータの取得
+$category = $_POST['category'] ?? null;
+$study_time = $_POST['study_time'] ?? null;
+$images = $_FILES['images'] ?? null;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
+if ($images === null) {
+    echo json_encode(['success' => false, 'error' => '画像が選択されていません。']);
+    exit;
+}
 
-    if ($data === null) {
-        echo json_encode(['success' => false, 'error' => 'Invalid JSON input']);
+// アップロードディレクトリの設定
+$uploadDir = '/var/www/html/uploads/';
+$uploadedImagePaths = [];
+
+// 画像のアップロード処理
+foreach ($images['tmp_name'] as $key => $tmpName) {
+    $targetFilePath = $uploadDir . basename($images['name'][$key]);
+
+    if (move_uploaded_file($tmpName, $targetFilePath)) {
+        // アップロード成功
+        $uploadedImagePaths[] = $targetFilePath; // 成功した場合にパスを追加
+    } else {
+        echo json_encode(['success' => false, 'error' => '画像のアップロードに失敗しました。']);
         exit;
     }
+}
 
-    // Retrieve the logged-in username from the session
-    $username = $_SESSION['username'] ?? null;
-
-    if ($username === null) {
-        echo json_encode(['success' => false, 'error' => 'User is not logged in']);
-        exit;
-    }
-
-    $category = $data['category'];
-    $studyTime = $data['study_time'];
-    $images = json_encode($data['images']);
-
-    $sql = "INSERT INTO study_data (username, category, study_time, images) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-
-    if ($stmt === false) {
-        echo json_encode(['success' => false, 'error' => 'Statement preparation failed: ' . $conn->error]);
-        exit;
-    }
-
-    $stmt->bind_param("ssss", $username, $category, $studyTime, $images);
+// データベースへの保存
+try {
+    $stmt = $pdo->prepare("INSERT INTO study_data (category, study_time, images) VALUES (:category, :study_time, :images)");
+    $stmt->bindParam(':category', $category);
+    $stmt->bindParam(':study_time', $study_time);
+    $stmt->bindParam(':images', json_encode(value: $uploadedImagePaths)); // 配列をJSON形式で保存
 
     if ($stmt->execute()) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'error' => $stmt->error]);
+        echo json_encode(['success' => false, 'error' => 'データの保存に失敗しました。']);
     }
-
-    $stmt->close();
-    $conn->close();
+} catch (PDOException $e) {
+    echo json_encode(['success' => false, 'error' => 'データベースエラー: ' . $e->getMessage()]);
 }
