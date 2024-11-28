@@ -51,7 +51,7 @@ function saveStudySession() {
   .then(data => {
     if (data.success) {
         console.log("Data saved successfully:", data);
-        alert("データが正常に保存されました。");
+        //alert("データが正常に保存されました。");
     } else {
         console.error("Error saving data:", data.error);
         alert("エラーが発生しました: " + data.error);
@@ -133,7 +133,7 @@ function saveData() {
 
   localStorage.setItem('stopwatchTime', '00:00:00');
 
-  //window.location.href = '../../home.php'; // ここでもリダイレクト
+  window.location.href = '../../home.php'; // ここでもリダイレクト
 }
 
 //画像処理
