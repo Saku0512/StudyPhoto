@@ -1,4 +1,8 @@
 <?php
+session_start();
+// データベース接続ファイルの読み込み
+include('db_connection.php');
+
 // アップロードディレクトリの設定
 $uploadDir = '/var/www/html/uploads/';
 
@@ -18,6 +22,7 @@ if (!is_writable($uploadDir)) {
 
 // POSTデータとファイルデータの取得
 $images = $_FILES['images'] ?? null;
+$username = $_SESSION['username'] ?? null;  // ユーザー名の取得方法を適切に変更してください（セッション等で）
 
 // ファイルの存在確認
 if ($images === null || empty($images['tmp_name'])) {
@@ -58,23 +63,52 @@ foreach ($images['tmp_name'] as $key => $tmpName) {
     if (move_uploaded_file($tmpName, $targetFilePath)) {
         $uploadedImagePaths[] = $targetFilePath; // 成功した場合、パスを配列に追加
     } else {
-        echo json_encode([
-            'success' => false,
+        echo json_encode([ 
+            'success' => false, 
             'error' => '画像のアップロードに失敗しました。',
             'debug' => [
                 'tmpName' => $tmpName,
                 'targetFilePath' => $targetFilePath,
                 'is_writable' => is_writable($uploadDir),
-                'files' => $_FILES, // POSTデータの構造確認用
+                'files' => $_FILES,
             ],
         ]);
         exit;
     }
 }
 
-// 成功した場合のレスポンス
-echo json_encode([
-    'success' => true,
-    'message' => '画像が正常にアップロードされました。',
-    'uploadedPaths' => $uploadedImagePaths, // アップロードされた画像パスを含める
-]);
+// 画像パスを暗号化
+$encryptedImagePaths = array_map('base64_encode', $uploadedImagePaths); // base64で暗号化
+$encryptedImages = implode(",", $encryptedImagePaths); // カンマ区切りで保存
+
+// その他のPOSTデータ
+$category = $_POST['category'] ?? '';
+$studyTime = $_POST['study_time'] ?? '';
+
+// データベースに保存
+try {
+    // データベース接続の取得
+    $pdo = getDatabaseConnection();
+
+    // INSERTクエリの準備
+    $sql = "INSERT INTO study_data (username, category, study_time, images) 
+            VALUES (:username, :category, :study_time, :images)";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':username', $username);
+    $stmt->bindParam(':category', $category);
+    $stmt->bindParam(':study_time', $studyTime);
+    $stmt->bindParam(':images', $encryptedImages);
+
+    // クエリの実行
+    $stmt->execute();
+
+    echo json_encode([
+        'success' => true,
+    ]);
+} catch (PDOException $e) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'データベースエラー: ' . $e->getMessage(),
+    ]);
+}
