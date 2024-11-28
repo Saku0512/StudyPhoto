@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once 'db_connection.php'; // db_connection.phpをインクルード
+
 if (!isset($_SESSION['username'])) {
     echo json_encode(["status" => "error", "message" => "User not logged in"]);
     exit();
@@ -8,8 +10,9 @@ if (!isset($_SESSION['username'])) {
 $category_name = $_POST['category_name'] ?? '';
 $username = $_SESSION['username'] ?? null;
 
-if($username == null) {
+if ($username == null) {
     header('Location: ../../index.php');
+    exit;
 }
 
 if (empty($category_name)) {
@@ -18,7 +21,9 @@ if (empty($category_name)) {
 }
 
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=childapp_test', 'childapp_user', 'sdTJRTPutuXQ-Wlb2WBVE');
+    // db_connection.php の getDatabaseConnection() を使用
+    $pdo = getDatabaseConnection();
+
     $stmt = $pdo->prepare("DELETE FROM categories WHERE category_name = :category_name AND username = :username");
     $stmt->execute(['category_name' => $category_name, 'username' => $username]);
 

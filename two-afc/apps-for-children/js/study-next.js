@@ -22,9 +22,9 @@ function saveStudySession() {
 
   // 画像が選択されているか確認
   if (selectedImages.length === 0) {
-      console.error("No images selected.");
-      alert("画像が選択されていません。");
-      return; // 画像がない場合は処理を中断
+    console.error("No images selected.");
+    alert("画像が選択されていません。");
+    return; // 画像がない場合は処理を中断
   }
 
   // 送信するデータを準備
@@ -44,29 +44,22 @@ function saveStudySession() {
 
   // データをサーバーに送信
   fetch('../../php/save_study_data.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        category: category,
-        study_time: studyTime,
-        images: selectedImages
-    })
+    method: 'POST',
+    body: formData
   })
-  .then(response => response.json())
+  .then(response => response.json())  // サーバーからのレスポンスがJSONであることを確認
   .then(data => {
-      if (data.success) {
-          console.log("Data saved successfully:", data);
-          alert("データが正常に保存されました。");
-      } else {
-          console.error("Error saving data:", data.error);
-          alert("エラーが発生しました: " + data.error);
-      }
+    if (data.success) {
+        console.log("Data saved successfully:", data);
+        alert("データが正常に保存されました。");
+    } else {
+        console.error("Error saving data:", data.error);
+        alert("エラーが発生しました: " + data.error);
+    }
   })
   .catch(error => {
-      console.error('Error:', error);
-      alert("通信エラーが発生しました。");
+    console.error('Error:', error);
+    alert("通信エラーが発生しました。");
   });
 }
 document.getElementById('saveButton').addEventListener('click', (event) => {
@@ -140,7 +133,7 @@ function saveData() {
 
   localStorage.setItem('stopwatchTime', '00:00:00');
 
-  window.location.href = '../../home.php'; // ここでもリダイレクト
+  //window.location.href = '../../home.php'; // ここでもリダイレクト
 }
 
 //画像処理
