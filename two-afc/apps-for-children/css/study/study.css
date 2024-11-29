@@ -1,0 +1,94 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+.return {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+.return a{
+  font-size: 18px;
+  height: 40px;
+  width: 40px;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+.return a img {
+  height: 50px;
+  width: 50px;
+}
+
+
+.circle-timer {
+  position: relative;
+  width: 50vw;
+  height: 50vh;
+  max-width: 300px; /* 最大サイズを300pxに設定 */
+  max-height: 300px;
+  aspect-ratio: 1; /* 縦横比を1:1に保つ */
+  border-radius: 50%;
+  background: conic-gradient(#5bc8ac var(--percentage, 0%), #ddd 0%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 50px 0; /* Adjust the vertical margin as needed */
+}
+.circle-timer span {
+  position: absolute;
+  font-size: 24px;
+  color: #000;
+}
+.button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+.timer-container h1 img {
+  text-align: center;
+  width: 70px;
+  height: 70px;
+}
+
+.start-container button img {
+  text-align: center;
+  width: 30px;
+  height: 30px;
+}
+
+.stop-container button img {
+  text-align: center;
+  width: 30px;
+  height: 30px;
+
+}
+#stop-btn {
+  display: none; /* 最初は見えないように設定 */
+}
+
+
+.button-container button {
+  display: block;
+  font-size: 18px;
+  padding: 10px 20px;
+  margin: 5px auto;
+  border-radius: 5px;
+  border: none;
+  background-color: #5bc8ac;
+  color: white;
+  cursor: pointer;
+}
+.button-container button:hover {
+  background-color: #45a29e;
+}
