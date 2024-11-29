@@ -12,6 +12,8 @@ sudo systemctl restart apache2
 # Gitを使ってChildAppをクローン
 cd /var/www/html
 git clone git@github.com:ComonRaven/ChildApp.git
+mkdir /var/www/html/uploads
+chmod 777 /var/www/html/uploads
 
 # 1. /etc/hosts にエントリを追加
 echo "127.0.0.1 childapp.localhost" | sudo tee -a /etc/hosts
