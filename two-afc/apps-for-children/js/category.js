@@ -112,35 +112,47 @@ function addOption() {
 }
 
 function editOption() {
-    const oldOptionName = document.getElementById('editOptionSelect').value;
-    const newOptionName = document.getElementById('editOptionName').value;
-    const username = document.getElementById('username').value;
+  const oldOptionName = document.getElementById('editOptionSelect').value;
+  const newOptionName = document.getElementById('editOptionName').value;
 
-    if (!oldOptionName || !newOptionName) {
-        alert("変更する教科名を選択し、新しい教科名を入力してください。");
-        return;
-    }
 
-    fetch('../../php/category/edit_category.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `old_category_name=${encodeURIComponent(oldOptionName)}&new_category_name=${encodeURIComponent(newOptionName)}&username=${encodeURIComponent(username)}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            alert("カテゴリーが変更されました。");
-            hidePopup();
-            loadCategories(); // カテゴリーを再読み込み
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(error => console.error('Error editing category:', error));
+  if (!oldOptionName || !newOptionName) {
+      alert("変更する教科名を選択し、新しい教科名を入力してください。");
+      return;
+  }
+
+  fetch('../../php/category/edit_category.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `old_category_name=${encodeURIComponent(oldOptionName)}&new_category_name=${encodeURIComponent(newOptionName)}`
+  })
+  .then(response => {
+      console.log('Response Status:', response.status); // ステータスコードを表示
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.text(); // レスポンスをJSONとして取得
+  })
+  .then(text => {
+    console.log('Raw Response:', text); // サーバーからのレスポンスを確認
+    return JSON.parse(text);
+  })
+  .then(data => {
+      console.log('Response Data:', data); // レスポンス内容を表示
+      if (data.status === "success") {
+          alert("カテゴリーが変更されました。");
+          hidePopup();
+          loadCategories(); // カテゴリー一覧を更新
+      } else {
+          alert(data.message); // エラーメッセージを表示
+      }
+  })
+  .catch(error => {
+      console.error('Error editing category:', error);
+  });
 }
-
 function deleteOption() {
     const optionToDelete = document.getElementById('deleteOptionSelect').value;
     const username = document.getElementById('username').value;
