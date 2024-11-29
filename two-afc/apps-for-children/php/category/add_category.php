@@ -2,10 +2,6 @@
 session_start();
 require '../db_connection.php';
 
-// エラーを表示する（デバッグ用）
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 header('Content-Type: application/json'); // JSON レスポンス
 

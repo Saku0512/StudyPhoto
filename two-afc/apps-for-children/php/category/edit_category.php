@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db_connection.php'; // データベース接続ファイルをインクルード
+require_once '../db_connection.php'; // データベース接続ファイルをインクルード
 
 // エラーを表示する
 ini_set('display_errors', 1);

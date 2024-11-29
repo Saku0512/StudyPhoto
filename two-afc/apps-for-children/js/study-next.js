@@ -50,21 +50,21 @@ function saveStudySession() {
   .then(response => response.json())  // サーバーからのレスポンスがJSONであることを確認
   .then(data => {
     if (data.success) {
-        console.log("Data saved successfully:", data);
+        //console.log("Data saved successfully:", data);
         //alert("データが正常に保存されました。");
     } else {
-        console.error("Error saving data:", data.error);
+        //console.error("Error saving data:", data.error);
         alert("エラーが発生しました: " + data.error);
     }
   })
   .catch(error => {
-    console.error('Error:', error);
+    //console.error('Error:', error);
     alert("通信エラーが発生しました。");
   });
 }
 document.getElementById('saveButton').addEventListener('click', (event) => {
   event.preventDefault();
-  console.log("Save button clicked");
+  //console.log("Save button clicked");
 
   const categorySelect = document.getElementById("category");
   const selectedCategory = categorySelect.value;

@@ -1,0 +1,83 @@
+* {
+  box-sizing: border-box;
+}
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+}
+.main {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  width: 100vw;
+}
+.tab {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+.tab a, .tab button {
+  font-size: 18px;
+  height: 40px;
+  width: 40px;
+  padding: 10px 20px;
+  margin-right: auto;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* 位置指定を追加 */
+}
+.tab a img {
+  height: 65px;
+  width: 65px;
+}
+.tab a.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -15px; /* ボーダーの位置を下げるための距離 */
+  height: 2px; /* ボーダーの高さ */
+  background-color: blue; /* ボーダーの色 */
+}
+.section {
+  width: 100%;
+  margin-top: 10vh;
+}
+@media (max-width: 600px) {
+  .tab {
+    align-items: center;
+  }
+}
+/* 画像のスタイル */
+.study-image {
+  max-width: 100%; /* 画像を親要素に合わせてリサイズ */
+  height: auto;
+  margin: 10px 0;
+}
+
+/* 画像を囲むコンテナのスタイル */
+.image-container {
+  margin-bottom: 20px;
+}

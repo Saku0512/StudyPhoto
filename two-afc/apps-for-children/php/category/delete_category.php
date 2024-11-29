@@ -1,6 +1,11 @@
 <?php
 session_start();
-require_once 'db_connection.php'; // db_connection.phpをインクルード
+require_once '../db_connection.php'; // db_connection.phpをインクルード
+
+// エラーを表示する（デバッグ用）
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
 
 if (!isset($_SESSION['username'])) {
     echo json_encode(["status" => "error", "message" => "User not logged in"]);

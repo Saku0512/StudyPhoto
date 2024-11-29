@@ -3,84 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width , initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/js-base64/base64.min.js" defer></script>
   <link rel="stylesheet" href="../../css/main.css" />
   <link rel="stylesheet" href="../../css/scss/load.css" />
-    <script src="../../js/load.js" defer></script>
+  <link rel="stylesheet" href="../../css/record/record_note.css" />
+  <script src="../../js/load.js" defer></script>
+  <script src="../../js/record/note.js" defer></script>
   <title>記録を振り返る</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body, html {
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      width: 100vw;
-      text-align: center;
-    }
-    .main {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      width: 100vw;
-    }
-    .tab {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      display: flex;
-      justify-content: flex-start;
-      gap: 10px;
-      width: 100%;
-    }
-    .tab a, .tab button {
-      font-size: 18px;
-      height: 40px;
-      width: 40px;
-      padding: 10px 20px;
-      margin-right: auto;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative; /* 位置指定を追加 */
-    }
-    .tab a img {
-      height: 65px;
-      width: 65px;
-    }
-    .tab a.active::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -15px; /* ボーダーの位置を下げるための距離 */
-      height: 2px; /* ボーダーの高さ */
-      background-color: blue; /* ボーダーの色 */
-    }
-    .section {
-      width: 100%;
-      margin-top: 10vh;
-    }
-    @media (max-width: 600px) {
-      .tab {
-        align-items: center;
-      }
-    }
-  </style>
 </head>
 <body>
   <div class="loading active">
