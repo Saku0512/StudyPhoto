@@ -82,18 +82,28 @@ function addOption() {
     }
 
     fetch('../../php/category/add_category.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `category_name=${encodeURIComponent(optionName)}`
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `category_name=${encodeURIComponent(optionName)}`
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response Status:', response.status); // ステータスコードを表示
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text(); // レスポンスをテキスト形式で表示
+    })
+    .then(text => {
+        console.log('Raw Response:', text); // サーバーからのレスポンスを確認
+        return JSON.parse(text); // 必要ならJSONに変換
+    })
     .then(data => {
         if (data.status === "success") {
             alert("カテゴリーが追加されました。");
             hidePopup();
-            loadCategories(); // カテゴリーを再読み込み
+            loadCategories();
         } else {
             alert(data.message);
         }
