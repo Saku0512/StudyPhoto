@@ -1,33 +1,39 @@
 <?php
 session_start();
-require_once 'db_connection.php'; // db_connection.phpをインクルード
+require '../db_connection.php';
 
-if (!isset($_SESSION['username'])) {
-    echo json_encode(["status" => "error", "message" => "User not logged in"]);
-    exit();
-}
+// エラーを表示する（デバッグ用）
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-$category_name = $_POST['category_name'] ?? '';
-$username = $_SESSION['username'] ?? null;
-
-if ($username === null) {
-    header('Location: ../../index.php');
-    exit;
-}
-
-if (empty($category_name)) {
-    echo json_encode(["status" => "error", "message" => "カテゴリー名が必要です。"]);
-    exit();
-}
+header('Content-Type: application/json'); // JSON レスポンス
 
 try {
-    // db_connection.php の getDatabaseConnection() を使用
+    if (!isset($_SESSION['username'])) {
+        throw new Exception("User not logged in");
+    }
+
+    $category_name = $_POST['category_name'] ?? '';
+    $username = $_SESSION['username'] ?? null;
+
+    if (empty($category_name)) {
+        throw new Exception("カテゴリー名が必要です");
+    }
+
+    if ($username === null) {
+        throw new Exception("ユーザー名が不明です");
+    }
+
     $pdo = getDatabaseConnection();
-    
+
+    // SQL 実行
     $stmt = $pdo->prepare("INSERT INTO categories (category_name, username) VALUES (:category_name, :username)");
     $stmt->execute(['category_name' => $category_name, 'username' => $username]);
-    
+
     echo json_encode(["status" => "success"]);
 } catch (PDOException $e) {
-    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
+} catch (Exception $e) {
+    echo json_encode(["status" => "error", "message" => "Error: " . $e->getMessage()]);
 }
