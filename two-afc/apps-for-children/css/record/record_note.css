@@ -86,8 +86,8 @@ body {
 
 /* 画像のスタイル */
 .category-image {
-  width: 300px; /* 画像のサイズ */
-  height: 300px; /* 画像のサイズ */
+  width: calc(500px * 0.7); /* 画像のサイズ  元データ500pxを0.75倍 */
+  height: calc(300px * 0.7); /* 画像のサイズ 元データ300pxを0.75倍*/  
   object-fit: cover; /* 画像が枠に収まるように調整 */
 }
 
@@ -102,4 +102,47 @@ body {
   font-weight: bold;
   text-align: center; /* 中央揃え */
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* 文字に影をつけて見やすくする */
+}
+/* オーバーレイのスタイル */
+#popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none; /* 初期状態は非表示 */
+  z-index: 1000;
+}
+
+/* ポップアップコンテンツのスタイル */
+#popupContent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+  display: none; /* 初期状態は非表示 */
+}
+
+/* テキストや追加画像のスタイル */
+#popupText {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #333;
+}
+/* 閉じるボタン */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
 }

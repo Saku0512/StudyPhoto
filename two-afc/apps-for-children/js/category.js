@@ -184,72 +184,137 @@ function deleteOption() {
 
 function loadCategories() {
   fetch('../../php/category/get_category.php', {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-      },
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
   })
-  .then(response => {
+    .then(response => {
       if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
       return response.json();
-  })
-  .then(data => {
+    })
+    .then(categoryData => {
       const currentPage = window.location.pathname;
 
       if (currentPage.includes("record_note.html")) {
-          // record_note.html の場合、画像を表示する
-          const noteSection = document.getElementById("noteSection");
-          if (!noteSection) return; // noteSectionが存在しない場合は何もしない
+        const noteSection = document.getElementById("noteSection");
+        if (!noteSection) return;
 
-          noteSection.innerHTML = ""; // 既存の内容をクリア
-          data.forEach(item => {
-              const imageElement = document.createElement('div');
-              imageElement.classList.add('image-container', item.category_name);
+        noteSection.innerHTML = "";
 
-              // 画像を表示
-              const img = document.createElement('img');
-              img.src = '../../ui_image/file_close.png';  // 必要に応じて画像パスを変更
-              img.alt = `${item.category_name}の画像`;
-              img.classList.add('category-image');
-              
-              // カテゴリー名を表示
-              const categoryName = document.createElement('span');
-              categoryName.classList.add('category-name');
-              categoryName.textContent = item.category_name; // カテゴリー名を表示
+        categoryData.forEach(item => {
+          const imageElement = document.createElement('div');
+          imageElement.classList.add('image-container');
 
+          // 画像を表示
+          const img = document.createElement('img');
+          img.src = '../../ui_image/file_close.png';
+          img.alt = `${item.category_name}の画像`;
+          img.classList.add('category-image', item.category_name);
 
-              imageElement.appendChild(img);
-              imageElement.appendChild(categoryName);
-              noteSection.appendChild(imageElement);
+          // 画像クリックイベント
+          img.addEventListener('click', () => {
+            const clickedClassName = item.category_name;
+            const imageClassName = img.classList.contains(clickedClassName);
+
+            if (imageClassName) {
+              const closedImage = '../../ui_image/file_close.png';
+              const openedImage = '../../ui_image/file_open.png';
+
+              // 画像を切り替え
+              img.src = img.src.includes('file_close.png') ? openedImage : closedImage;
+
+              // ポップアップに画像を表示
+              fetchStudyImages(clickedClassName);
+            } else {
+              console.log(`一致しない: ${clickedClassName} vs ${imageClassName}`);
+            }
           });
-      } else if (currentPage.includes("study_next.html")) {
-          // study_next.html の場合、カテゴリを選択肢として表示
-          const categorySelect = document.getElementById("category");
-          const editcategorySelect = document.getElementById("editOptionSelect");
-          const deletecategorySelect = document.getElementById("deleteOptionSelect");
-          categorySelect.innerHTML = '<option value="0">--教科を選択--</option>';
-          editcategorySelect.innerHTML = '<option value="0">--変更する教科を選択--</option>';
-          deletecategorySelect.innerHTML = '<option value="0">--削除する教科を選択--</option>';
 
-          data.forEach(item => {
-              // 各セレクトボックスにカテゴリーを追加
-              const option = document.createElement("option");
-              option.textContent = item.category_name;
-              categorySelect.appendChild(option);
-              editcategorySelect.appendChild(option.cloneNode(true));
-              deletecategorySelect.appendChild(option.cloneNode(true));
-          });
+          // カテゴリー名を表示
+          const categoryName = document.createElement('span');
+          categoryName.classList.add('category-name');
+          categoryName.textContent = item.category_name;
+
+          imageElement.appendChild(img);
+          imageElement.appendChild(categoryName);
+          noteSection.appendChild(imageElement);
+        });
       }
-  })
-  .catch(error => console.error('Error loading categories:', error));
+    })
+    .catch(error => console.error('Error loading categories:', error));
+}
+
+// study_data テーブルから画像を取得し、ポップアップに表示
+function fetchStudyImages(categoryName) {
+  fetch(`../../php/record/note.php?category=${encodeURIComponent(categoryName)}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.status);
+      }
+      const contentType = response.headers.get("Content-Type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Expected JSON response, but got " + contentType);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // ポップアップ内に画像を表示
+      const popupContent = document.getElementById("popupContent");
+      const popupText = document.getElementById("popupText");
+
+      popupText.textContent = `選択されたカテゴリー: ${categoryName}`;
+      //popupContent.innerHTML = ''; // 既存の内容をクリア
+
+      if (data.images && data.images.length > 0) {
+        data.images.forEach(base64EncodedUrl => {
+          try {
+            const decodedUrl = Base64.decode(base64EncodedUrl);
+            const imagePath = decodedUrl.replace('/var/www/html', '');
+
+            const img = document.createElement('img');
+            img.src = imagePath;
+            img.alt = 'Study Image';
+            img.classList.add('popup-study-image');
+            popupContent.appendChild(img);
+          } catch (error) {
+            console.error('Failed to decode Base64 URL:', error);
+          }
+        });
+      } else {
+        popupContent.innerHTML = '<p>No images available for this category.</p>';
+      }
+
+      // ポップアップを表示
+      document.getElementById("popupOverlay").style.display = "block";
+      popupContent.style.display = "block";
+    })
+    .catch(error => console.error('Error fetching study images:', error));
+}
+
+// ポップアップを非表示にし、画像をリセット
+function hidePopup_category() {
+  document.getElementById("popupOverlay").style.display = "none";
+  document.getElementById("popupContent").style.display = "none";
+
+  const images = document.querySelectorAll('.category-image');
+  images.forEach(img => {
+    if (img.src.includes('file_open.png')) {
+      img.src = '../../ui_image/file_close.png';
+    }
+  });
 }
 
 // ページが読み込まれたときにカテゴリーを読み込む
-window.onload = function() {
+window.onload = function () {
   loadCategories();
 };
-document.addEventListener('DOMContentLoaded', function() {
-  loadCategories(); // ページが読み込まれたらカテゴリーを読み込む
+document.addEventListener('DOMContentLoaded', function () {
+  loadCategories();
 });
