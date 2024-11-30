@@ -249,6 +249,14 @@ function loadCategories() {
 
 // study_data テーブルから画像を取得し、ポップアップに表示
 function fetchStudyImages(categoryName) {
+
+  console.log('Category Name:', categoryName);  // カテゴリ名が正しく渡されているか確認
+
+  if (!categoryName) {
+    console.error('Category name is missing');
+    return;  // カテゴリ名がなければ処理を中止
+  }
+
   fetch(`../../php/record/note.php?category=${encodeURIComponent(categoryName)}`)
     .then(response => {
       if (!response.ok) {
@@ -311,6 +319,13 @@ function fetchStudyImages(categoryName) {
 function hidePopup_category() {
   document.getElementById("popupOverlay").style.display = "none";
   document.getElementById("popupContent").style.display = "none";
+
+  // 画像のみを削除
+  const popupContent = document.getElementById("popupContent");
+  const images_remove = popupContent.querySelectorAll('img');
+  images_remove.forEach(img => {
+    img.remove();  // imgタグを削除
+  });
 
   const images = document.querySelectorAll('.category-image');
   images.forEach(img => {
