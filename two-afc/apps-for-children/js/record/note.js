@@ -10,11 +10,16 @@ fetch('../../php/record/note.php')
         return response.json();
     })
     .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        // 画像の処理
         const noteSection = document.getElementById('noteSection');
-        if (data.length > 0) {
-            data.forEach(base64EncodedUrl => {
+        if (data.images && data.images.length > 0) {
+            data.images.forEach(base64EncodedUrl => {
                 try {
-                  console.log(base64EncodedUrl);
+                    console.log(base64EncodedUrl);
                     const decodedUrl = Base64.decode(base64EncodedUrl); // Base64をデコード
                     console.log(decodedUrl); // デコードされたURLを確認
 
@@ -38,7 +43,20 @@ fetch('../../php/record/note.php')
         } else {
             noteSection.innerHTML = '<p>No images available.</p>';
         }
+
+        // カテゴリーの処理
+        const categorySection = document.getElementById('categorySection');
+        if (data.categories && data.categories.length > 0) {
+            data.categories.forEach(category => {
+                const categoryElement = document.createElement('div');
+                categoryElement.classList.add('category-item');
+                categoryElement.textContent = category; // カテゴリー名を表示
+                categorySection.appendChild(categoryElement);
+            });
+        } else {
+            categorySection.innerHTML = '<p>No categories available.</p>';
+        }
     })
     .catch(error => {
-        console.error('Error fetching images:', error);
+        console.error('Error fetching data:', error);
     });

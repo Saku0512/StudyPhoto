@@ -32,10 +32,25 @@ try {
         $images[] = $row['images']; // /var/www/html/uploads/hoge.png
     }
 
+    // カテゴリーを取得するクエリ
+    $sqlCategories = "SELECT category_name FROM categories WHERE username = :username";
+    $stmtCategories = $pdo->prepare($sqlCategories);
+    $stmtCategories->bindParam(':username', $username, PDO::PARAM_STR);
+    $stmtCategories->execute();
+
+    $categories = [];
+    while($row = $stmtCategories->fetch(PDO::FETCH_ASSOC)){
+      $categories[] = $row['category_name'];
+    }
+
+
     if (empty($images)) {
         echo json_encode(['error' => 'No images found']);
     } else {
-        echo json_encode($images);
+      echo json_encode([
+        'images' => $images,
+        'categories' => $categories
+      ]);
     }
 } catch (PDOException $e) {
     // エラーをログに記録
