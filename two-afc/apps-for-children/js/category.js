@@ -275,7 +275,7 @@ function loadCategories() {
 // study_data テーブルから画像を取得し、ポップアップに表示
 function fetchStudyImages(categoryName) {
 
-  console.log('Category Name:', categoryName);  // カテゴリ名が正しく渡されているか確認
+  //console.log('Category Name:', categoryName);  // カテゴリ名が正しく渡されているか確認
 
   if (!categoryName) {
     console.error('Category name is missing');
