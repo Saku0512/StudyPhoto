@@ -183,52 +183,73 @@ function deleteOption() {
 }
 
 function loadCategories() {
-    fetch('../../php/category/get_category.php', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        //console.log('Categories loaded:', data);
-        const categorySelect = document.getElementById("category");
-        const editcategorySelect = document.getElementById("editOptionSelect");
-        const deletecategorySelect = document.getElementById("deleteOptionSelect");
-        categorySelect.innerHTML = '<option value="0">--教科を選択--</option>';
-        editcategorySelect.innerHTML = '<option value="0">--変更する教科を選択--</option>';
-        deletecategorySelect.innerHTML = '<option value="0">--削除する教科を選択--</option>';
-        // 選択するカテゴリーをデータベースと一致させる
-        data.forEach(item => {
-            const option = document.createElement("option");
-            option.textContent = item.category_name;
-            categorySelect.appendChild(option);
-        });
-        // 変更するカテゴリーをデータベースと一致させる
-        data.forEach(item => {
-            const option = document.createElement("option");
-            option.textContent = item.category_name;
-            editcategorySelect.appendChild(option);
-        });
-        // 削除するカテゴリーをデータベースと一致させる
-        data.forEach(item => {
-            const option = document.createElement("option");
-            option.textContent = item.category_name;
-            deletecategorySelect.appendChild(option);
-        });
-    })
-    .catch(error => console.error('Error loading categories:', error));
+  fetch('../../php/category/get_category.php', {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+  })
+  .then(data => {
+      const currentPage = window.location.pathname;
+
+      if (currentPage.includes("record_note.html")) {
+          // record_note.html の場合、画像を表示する
+          const noteSection = document.getElementById("noteSection");
+          if (!noteSection) return; // noteSectionが存在しない場合は何もしない
+
+          noteSection.innerHTML = ""; // 既存の内容をクリア
+          data.forEach(item => {
+              const imageElement = document.createElement('div');
+              imageElement.classList.add('image-container', item.category_name);
+
+              // 画像を表示
+              const img = document.createElement('img');
+              img.src = '../../ui_image/file_close.png';  // 必要に応じて画像パスを変更
+              img.alt = `${item.category_name}の画像`;
+              img.classList.add('category-image');
+              
+              // カテゴリー名を表示
+              const categoryName = document.createElement('span');
+              categoryName.classList.add('category-name');
+              categoryName.textContent = item.category_name; // カテゴリー名を表示
+
+
+              imageElement.appendChild(img);
+              imageElement.appendChild(categoryName);
+              noteSection.appendChild(imageElement);
+          });
+      } else if (currentPage.includes("study_next.html")) {
+          // study_next.html の場合、カテゴリを選択肢として表示
+          const categorySelect = document.getElementById("category");
+          const editcategorySelect = document.getElementById("editOptionSelect");
+          const deletecategorySelect = document.getElementById("deleteOptionSelect");
+          categorySelect.innerHTML = '<option value="0">--教科を選択--</option>';
+          editcategorySelect.innerHTML = '<option value="0">--変更する教科を選択--</option>';
+          deletecategorySelect.innerHTML = '<option value="0">--削除する教科を選択--</option>';
+
+          data.forEach(item => {
+              // 各セレクトボックスにカテゴリーを追加
+              const option = document.createElement("option");
+              option.textContent = item.category_name;
+              categorySelect.appendChild(option);
+              editcategorySelect.appendChild(option.cloneNode(true));
+              deletecategorySelect.appendChild(option.cloneNode(true));
+          });
+      }
+  })
+  .catch(error => console.error('Error loading categories:', error));
 }
 
 // ページが読み込まれたときにカテゴリーを読み込む
 window.onload = function() {
-    loadCategories();
+  loadCategories();
 };
 document.addEventListener('DOMContentLoaded', function() {
-    loadCategories(); // ページが読み込まれたらカテゴリーを読み込む
+  loadCategories(); // ページが読み込まれたらカテゴリーを読み込む
 });

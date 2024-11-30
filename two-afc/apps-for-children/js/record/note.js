@@ -44,7 +44,7 @@ fetch('../../php/record/note.php')
             noteSection.innerHTML = '<p>No images available.</p>';
         }
 
-        // カテゴリーの処理
+        /* カテゴリーの処理
         const categorySection = document.getElementById('categorySection');
         if (data.categories && data.categories.length > 0) {
             data.categories.forEach(category => {
@@ -56,6 +56,7 @@ fetch('../../php/record/note.php')
         } else {
             categorySection.innerHTML = '<p>No categories available.</p>';
         }
+        */
     })
     .catch(error => {
         console.error('Error fetching data:', error);

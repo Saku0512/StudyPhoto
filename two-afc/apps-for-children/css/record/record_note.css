@@ -77,7 +77,29 @@ body {
   margin: 10px 0;
 }
 
-/* 画像を囲むコンテナのスタイル */
+/* 画像を包むコンテナ */
 .image-container {
-  margin-bottom: 20px;
+  position: relative; /* 画像とカテゴリー名を重ねるために必要 */
+  display: inline-block; /* 画像とカテゴリー名を横に並べる */
+  margin: 10px;
+}
+
+/* 画像のスタイル */
+.category-image {
+  width: 300px; /* 画像のサイズ */
+  height: 300px; /* 画像のサイズ */
+  object-fit: cover; /* 画像が枠に収まるように調整 */
+}
+
+/* カテゴリー名のスタイル */
+.category-name {
+  position: absolute; /* 画像の上に重ねる */
+  top: 50%; /* 画像の中央に配置 */
+  left: 50%; /* 画像の中央に配置 */
+  transform: translate(-50%, -50%); /* 正確に中央揃えにするために調整 */
+  color: white; /* 文字色 */
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center; /* 中央揃え */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* 文字に影をつけて見やすくする */
 }
