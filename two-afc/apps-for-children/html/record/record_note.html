@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../../css/scss/load.css" />
   <link rel="stylesheet" href="../../css/record/record_note.css" />
   <script src="../../js/load.js" defer></script>
-  <script src="../../js/record/note.js" defer></script>
+  <script src="../../js/category.js" defer></script>
   <title>記録を振り返る</title>
 </head>
 <body>
@@ -23,14 +23,16 @@
       <a href="./record_note.html" id="noteButton" type="button"><img src="../../ui_image/book.png"></a>
       <a href="./record_comment.html" id="commentButton" type="button"><img src="../../ui_image/parent.png"></a>
     </div>
-    <!-- Category Section -->
-    <div id="categorySection" class="section">
-      <p>Category Section</p>
-    </div>
     <!-- Note Section -->
-    <div id="noteSection" class="section">
-      <p>Note Section</p>
-    </div>
+    <div id="noteSection" class="section"><!--ここに動的にファイルを作成させる--></div>
+    <div id="popupOverlay" style="display:none;" onclick="hidePopup_category()">
+      <div id="popupContent" style="display:none;">
+        <p class="close-button" onclick="hidePopup_category()">×</p><br>
+        <p id="popupText"></p>
+        <!-- 画像が表示される場所 -->
+      </div>
+    </div>    
+  </div>
   </main>
   <script>
     // ページが読み込まれた後に実行

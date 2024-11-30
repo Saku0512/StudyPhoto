@@ -14,47 +14,41 @@ if (!isset($_SESSION['username'])) {
 }
 
 $username = $_SESSION['username'];
+$category = isset($_GET['category']) ? $_GET['category'] : null;
+
+if (!$category) {
+    echo json_encode(['error' => 'Category not provided']);
+    exit;
+}
 
 try {
     $pdo = getDatabaseConnection();
     
-    // ログを追加: クエリ開始前
-    error_log("Attempting to fetch images for user: " . $username);
+    // ログを追加
+    error_log("Fetching images for user: $username, category: $category");
     
-    $sql = "SELECT images FROM study_data WHERE username = :username";
+    $sql = "SELECT images 
+            FROM study_data 
+            WHERE username = :username 
+              AND category = :category";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+    $stmt->bindParam(':category', $category, PDO::PARAM_STR);
     $stmt->execute();
 
     $images = [];
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        // 画像ファイルのパスをと結合
-        $images[] = $row['images']; // /var/www/html/uploads/hoge.png
+        $images[] = $row['images']; // パスを格納
     }
-
-    // カテゴリーを取得するクエリ
-    $sqlCategories = "SELECT category_name FROM categories WHERE username = :username";
-    $stmtCategories = $pdo->prepare($sqlCategories);
-    $stmtCategories->bindParam(':username', $username, PDO::PARAM_STR);
-    $stmtCategories->execute();
-
-    $categories = [];
-    while($row = $stmtCategories->fetch(PDO::FETCH_ASSOC)){
-      $categories[] = $row['category_name'];
-    }
-
 
     if (empty($images)) {
-        echo json_encode(['error' => 'No images found']);
+        // 画像がない場合
+        echo json_encode(['message' => 'まだ画像が登録されていません']);
     } else {
-      echo json_encode([
-        'images' => $images,
-        'categories' => $categories
-      ]);
+        echo json_encode(['images' => $images]);
     }
 } catch (PDOException $e) {
-    // エラーをログに記録
+    // 接続失敗時のエラーハンドリング
     error_log("Database error: " . $e->getMessage());
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
-    error_log(mysqli_connect_error());
 }
