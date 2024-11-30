@@ -242,6 +242,31 @@ function loadCategories() {
           imageElement.appendChild(categoryName);
           noteSection.appendChild(imageElement);
         });
+      }else {
+        const categorySelect = document.getElementById("category");
+        const editcategorySelect = document.getElementById("editOptionSelect");
+        const deletecategorySelect = document.getElementById("deleteOptionSelect");
+        categorySelect.innerHTML = '<option value="0">--教科を選択--</option>';
+        editcategorySelect.innerHTML = '<option value="0">--変更する教科を選択--</option>';
+        deletecategorySelect.innerHTML = '<option value="0">--削除する教科を選択--</option>';
+        // 選択するカテゴリーをデータベースと一致させる
+        categoryData.forEach(item => {
+            const option = document.createElement("option");
+            option.textContent = item.category_name;
+            categorySelect.appendChild(option);
+        });
+        // 変更するカテゴリーをデータベースと一致させる
+        categoryData.forEach(item => {
+            const option = document.createElement("option");
+            option.textContent = item.category_name;
+            editcategorySelect.appendChild(option);
+        });
+        // 削除するカテゴリーをデータベースと一致させる
+        categoryData.forEach(item => {
+            const option = document.createElement("option");
+            option.textContent = item.category_name;
+            deletecategorySelect.appendChild(option);
+        });
       }
     })
     .catch(error => console.error('Error loading categories:', error));
