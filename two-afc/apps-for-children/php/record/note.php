@@ -42,12 +42,13 @@ try {
     }
 
     if (empty($images)) {
-        echo json_encode(['error' => 'No images found for this category']);
+        // 画像がない場合
+        echo json_encode(['message' => 'まだ画像が登録されていません']);
     } else {
         echo json_encode(['images' => $images]);
     }
 } catch (PDOException $e) {
-    // エラーをログに記録
+    // 接続失敗時のエラーハンドリング
     error_log("Database error: " . $e->getMessage());
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }

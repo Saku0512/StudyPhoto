@@ -265,13 +265,14 @@ function fetchStudyImages(categoryName) {
         throw new Error(data.error);
       }
 
-      // ポップアップ内に画像を表示
+      // ポップアップ内のコンテンツ
       const popupContent = document.getElementById("popupContent");
       const popupText = document.getElementById("popupText");
 
       popupText.textContent = `選択されたカテゴリー: ${categoryName}`;
-      //popupContent.innerHTML = ''; // 既存の内容をクリア
+      //popupContent.innerHTML = ''; // 既存のコンテンツをクリア
 
+      // 画像がある場合
       if (data.images && data.images.length > 0) {
         data.images.forEach(base64EncodedUrl => {
           try {
@@ -287,15 +288,23 @@ function fetchStudyImages(categoryName) {
             console.error('Failed to decode Base64 URL:', error);
           }
         });
-      } else {
-        popupContent.innerHTML = '<p>No images available for this category.</p>';
+      } else if (data.message) {
+        // messageフィールドがあった場合は画像がないとして処理
+        popupText.innerHTML = `<p>${data.message}</p>`;
       }
 
       // ポップアップを表示
       document.getElementById("popupOverlay").style.display = "block";
       popupContent.style.display = "block";
     })
-    .catch(error => console.error('Error fetching study images:', error));
+    .catch(error => {
+      // エラーが発生した場合は、エラーメッセージを表示
+      console.error('Error fetching study images:', error);
+      const popupContent = document.getElementById("popupContent");
+      popupContent.innerHTML = '<p>画像の読み込み中にエラーが発生しました。</p>';
+      document.getElementById("popupOverlay").style.display = "block";
+      popupContent.style.display = "block";
+    });
 }
 
 // ポップアップを非表示にし、画像をリセット

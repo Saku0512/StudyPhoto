@@ -25,14 +25,13 @@
     </div>
     <!-- Note Section -->
     <div id="noteSection" class="section"><!--ここに動的にファイルを作成させる--></div>
-    <!-- ポップアップ用オーバーレイ -->
-    <div id="popupOverlay" onclick="hidePopup_category()" style="display: none;">
-    <!-- ポップアップコンテンツ -->
-    <div id="popupContent" style="display: none;">
-      <p id="popupText"></p>
-      <span class="close-button" onclick="hidePopup_category()">×</span>
-      <!-- ここに画像が追加される -->
-    </div>
+    <div id="popupOverlay" style="display:none;" onclick="hidePopup_category()">
+      <div id="popupContent" style="display:none;">
+        <p class="close-button" onclick="hidePopup_category()">×</p><br>
+        <p id="popupText"></p>
+        <!-- 画像が表示される場所 -->
+      </div>
+    </div>    
   </div>
   </main>
   <script>
