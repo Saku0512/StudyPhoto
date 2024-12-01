@@ -27,7 +27,7 @@ try {
     // ログを追加
     error_log("Fetching images for user: $username, category: $category");
     
-    $sql = "SELECT images 
+    $sql = "SELECT study_time, created_at, images
             FROM study_data 
             WHERE username = :username 
               AND category = :category";
@@ -38,7 +38,11 @@ try {
 
     $images = [];
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $images[] = $row['images']; // パスを格納
+        $images[] = [
+          'study_time' => $row['study_time'],
+          'study_date' => $row['created_at'],
+          'image_path' => $row['images']
+        ]; // パスを格納
     }
 
     if (empty($images)) {

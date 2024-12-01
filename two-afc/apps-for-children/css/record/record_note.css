@@ -112,7 +112,7 @@ body {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: none; /* 初期状態は非表示 */
-  z-index: 1000;
+  z-index: 100;
 }
 
 /* ポップアップコンテンツのスタイル */
@@ -129,6 +129,7 @@ body {
   max-height: 90%;
   overflow: auto;
   display: none; /* 初期状態は非表示 */
+  z-index: 101;
 }
 
 /* テキストや追加画像のスタイル */
@@ -136,6 +137,7 @@ body {
   margin-bottom: 20px;
   font-size: 16px;
   color: #333;
+  width: 500px;
 }
 /* 閉じるボタン */
 .close-button {
@@ -147,4 +149,33 @@ body {
   cursor: pointer;
   padding: 0;
   margin: 0;
+}
+
+.popup-image-large {
+  max-width: 80%;
+  max-height: auto;
+  width: 80%;
+  height: auto;
+  display: block;
+  /*margin: 0 aut*/
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+tr{
+  width: 250px;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+  width: 250px;
+}
+
+th {
+  background-color: #f4f4f4;
 }
