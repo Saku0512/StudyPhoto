@@ -26,13 +26,14 @@
     <!-- Note Section -->
     <div id="noteSection" class="section"><!--ここに動的にファイルを作成させる--></div>
     <div id="popupOverlay" style="display:none;" onclick="hidePopup_category()">
-      <div id="popupContent" style="display:none;">
+      <div id="popupContent" style="display:none;" onclick="event.stopPropagation()">
         <p class="close-button" onclick="hidePopup_category()">×</p><br>
-        <p id="popupText"></p>
-        <!-- 画像が表示される場所 -->
+        <div id="popupText">
+          <!--ここに動的にテーブルを作成させる-->
+        </div>
       </div>
     </div>    
-  </div>
+    </div>
   </main>
   <script>
     // ページが読み込まれた後に実行

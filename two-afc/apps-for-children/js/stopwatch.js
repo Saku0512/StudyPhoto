@@ -1,6 +1,10 @@
 let timer;
 let elapsedSeconds = 0;
 let isRunning = false;
+let startTime; // 開始時刻
+let endTime; // 終了時刻
+let totalElapsedSeconds = 0; // 累計経過時間
+let elapsedTime = [];
 
 // 時間表示を更新する関数
 function updateTimeDisplay() {
@@ -22,8 +26,10 @@ function restoreTimer() {
     updateTimeDisplay();
 
     // タイマーがスタートしていたかどうかも確認する
-    if(localStorage.getItem('isRunning') === 'turue') {
-       startTimer(); // 以前動いていた場合は再スタート
+    if(localStorage.getItem('isRunning') === 'true') {
+        startTime = new Date(localStorage.getItem('startTime')); // 開始時刻を復元
+        totalElapsedSeconds = savedElapsedSeconds; // 累計経過時間を復元
+        startTimer(); // 以前動いていた場合は再スタート
     }
 }
 
@@ -33,6 +39,11 @@ function startTimer() {
         isRunning = true;  // タイマーが動作中であることを記録
         document.getElementById('start-btn').style.display = 'none';  // スタートボタンを隠す
         document.getElementById('stop-btn').style.display = 'inline';  // ストップボタンを表示する
+
+        // 現在の時刻を開始時刻として保存
+        const start = new Date();
+        startTime = start.getHours().toString().padStart(2, '0') + ':' + start.getMinutes().toString().padStart(2, '0');
+        localStorage.setItem('startTime', startTime);
 
         // タイマーを1秒ごとに更新
         timer = setInterval(() => {
@@ -53,9 +64,23 @@ function stopTimer() {
         document.getElementById('start-btn').style.display = 'inline';  // スタートボタンを表示する
         document.getElementById('stop-btn').style.display = 'none';  // ストップボタンを隠す
 
-        // 経過時間を記録
+        // 終了時刻を記録
+        const end = new Date();
+        endTime = end.getHours().toString().padStart(2, '0') + ':' + end.getMinutes().toString().padStart(2, '0');
+
+        const elapsedPeriod = startTime + '-' + endTime;  // "xx:xx-yy:yy" 形式
+        elapsedTime.push(elapsedPeriod);
+        localStorage.setItem('elapsedTime', JSON.stringify(elapsedTime));
+        console.log('経過時間リスト:', elapsedTime);
+
+        // 累計経過時間を更新
         localStorage.setItem('stopwatchTime', elapsedSeconds);
-        localStorage.setItem('isRunning', 'false'); // 停止したことを保存
+
+        // 終了時刻を記録
+        localStorage.setItem('endTime', endTime.toString());
+
+        // 停止したことを保存
+        localStorage.setItem('isRunning', 'false');
     }
 }
 

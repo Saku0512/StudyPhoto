@@ -27,20 +27,29 @@ function saveStudySession() {
     return; // 画像がない場合は処理を中断
   }
 
+  // localStorageから経過時間を取得
+  const elapsedPeriod = localStorage.getItem('elapsedTime');
+  
+  // 経過時間がnullまたは空であればデフォルト値を設定
+  const formattedElapsedTime = elapsedPeriod ? elapsedPeriod.replace(/[\[\]"]+/g, '') : 'no_elapsed_time';
+
+  console.log("経過時間:", formattedElapsedTime);  // デバッグ用
+
   // 送信するデータを準備
   const formData = new FormData();
   formData.append('category', category);
   formData.append('study_time', studyTime);
+  formData.append('SspentTime', formattedElapsedTime);  // 経過時間を送信
 
   // 選択された画像をFormDataに追加
   selectedImages.forEach((image) => {
       formData.append('images[]', image);
   });
 
-  // 送信するデータをコンソールに表示（デバッグ用）
-  console.log("Sending category:", category);
-  console.log("Sending study time:", studyTime);
-  console.log("Sending images:", selectedImages);
+  // データを送信する前にFormDataの内容を確認（デバッグ用）
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ': ' + pair[1]);  // 送信されるデータを表示
+  }
 
   // データをサーバーに送信
   fetch('../../php/save_study_data.php', {
@@ -50,15 +59,12 @@ function saveStudySession() {
   .then(response => response.json())  // サーバーからのレスポンスがJSONであることを確認
   .then(data => {
     if (data.success) {
-        //console.log("Data saved successfully:", data);
-        //alert("データが正常に保存されました。");
+        alert("データが正常に保存されました。");
     } else {
-        //console.error("Error saving data:", data.error);
         alert("エラーが発生しました: " + data.error);
     }
   })
   .catch(error => {
-    //console.error('Error:', error);
     alert("通信エラーが発生しました。");
   });
 }
