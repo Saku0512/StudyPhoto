@@ -27,7 +27,7 @@ try {
     // ログを追加
     error_log("Fetching images for user: $username, category: $category");
     
-    $sql = "SELECT study_time, created_at, images
+    $sql = "SELECT study_time, created_at, images, SspentTime
             FROM study_data 
             WHERE username = :username 
               AND category = :category";
@@ -41,7 +41,8 @@ try {
         $images[] = [
           'study_time' => $row['study_time'],
           'study_date' => $row['created_at'],
-          'image_path' => $row['images']
+          'image_path' => $row['images'],
+          'SspentTime' => $row['SspentTime']
         ]; // パスを格納
     }
 

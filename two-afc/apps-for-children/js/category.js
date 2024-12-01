@@ -335,8 +335,21 @@ function fetchStudyImages(categoryName) {
         
           // 勉強日
           const studyDateCell = document.createElement('td');
-          studyDateCell.textContent = imageData.study_date;
+          const studyDate = new Date(imageData.study_date); // Dateオブジェクトに変換
+          const formattedDate = studyDate.toLocaleDateString('ja-JP'); // 'yyyy/MM/dd'形式で取得
+          // SspentTimeが文字列の場合、コンマで分割して改行を挿入
+          let formattedSpendTime = imageData.SspentTime;
+          if (typeof formattedSpendTime === 'string') {
+            // コンマで分割し、それぞれの要素を改行で区切る
+            formattedSpendTime = formattedSpendTime.split(',').join(',<br>'); // 文字列をコンマで分割し、改行を挿入
+          } else if (Array.isArray(formattedSpendTime)) {
+            // すでに配列の場合はそのまま改行を挿入
+            formattedSpendTime = formattedSpendTime.join('<br>');
+          }
+
+          studyDateCell.innerHTML = formattedDate + '<br>' + formattedSpendTime; // 日付と改行された時間帯を表示
           row.appendChild(studyDateCell);
+          console.log(formattedSpendTime);
 
           // 勉強時間
           const studyTimeCell = document.createElement('td');
