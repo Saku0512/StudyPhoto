@@ -6,32 +6,40 @@ include('db_connection.php');
 // アップロードディレクトリの設定
 $uploadDir = '/var/www/html/uploads/';
 
-error_reporting(E_ALL);
 ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 // ディレクトリが存在しない場合は作成
 if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true); // 権限を777にして、すべてのユーザーが書き込みできるようにする
+    if (!mkdir($uploadDir, 0777, true)) {
+        echo json_encode(['success' => false, 'error' => 'ディレクトリの作成に失敗しました。']);
+        exit;
+    }
 }
 
 // 書き込み権限の確認
 if (!is_writable($uploadDir)) {
-  echo json_encode(['success' => false, 'error' => 'ディレクトリに書き込み権限がありません。']);
-  exit;
+    echo json_encode(['success' => false, 'error' => 'ディレクトリに書き込み権限がありません。']);
+    exit;
 }
 
 // POSTデータとファイルデータの取得
 $images = $_FILES['images'] ?? null;
-$username = $_SESSION['username'] ?? null;  // ユーザー名の取得方法を適切に変更してください（セッション等で）
+$username = $_SESSION['username'] ?? null;
 
-// ファイルの存在確認
+// 必須データの確認
+if ($username === null) {
+    echo json_encode(['success' => false, 'error' => 'ユーザーがログインしていません。']);
+    exit;
+}
+
 if ($images === null || empty($images['tmp_name'])) {
     echo json_encode(['success' => false, 'error' => '画像が選択されていません。']);
     exit;
 }
 
-$allowedTypes = ['image/jpeg', 'image/png', 'image/gif']; // 許可されたファイルタイプ
-$maxFileSize = 10 * 1024 * 1024; // 最大ファイルサイズ (10MB)
+$allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/PNG', 'image/JPG', 'image/JPEG', 'image/GIF']; // 許可されたファイルタイプ
+$maxFileSize = 10 * 1024 * 1024 * 8; // 最大ファイルサイズ (10MB)
 
 $uploadedImagePaths = []; // アップロードされた画像パスを格納
 
@@ -45,26 +53,38 @@ foreach ($images['tmp_name'] as $key => $tmpName) {
     }
 
     // ファイルタイプとサイズの確認
-    if (!in_array($images['type'][$key], $allowedTypes)) {
-        echo json_encode(['success' => false, 'error' => '許可されていないファイルタイプです。']);
+    $fileType = mime_content_type($tmpName); // MIMEタイプを取得
+    if (!in_array($fileType, $allowedTypes)) {
+        echo json_encode(['success' => false, 'error' => "許可されていないファイルタイプです: $fileType"]);
         exit;
     }
 
     if ($images['size'][$key] > $maxFileSize) {
-        echo json_encode(['success' => false, 'error' => 'ファイルサイズが大きすぎます。']);
-        exit;
+      echo json_encode([
+        'success' => false,
+        'error' => 'ファイルサイズが大きすぎます。許可されている最大サイズは ' . ($maxFileSize / 1024 / 1024) . ' MB です。'
+      ]);
+      exit;
+    }
+    if ($images['error'][$key] === UPLOAD_ERR_INI_SIZE) {
+      echo json_encode([
+          'success' => false,
+          'error' => 'ファイルサイズがサーバーで許可されている最大値を超えています。'
+      ]);
+      exit;
     }
 
     // ユニークなファイル名を生成
-    $uniqueName = uniqid() . '_' . basename($images['name'][$key]);
+    $extension = strtolower(pathinfo($images['name'][$key], PATHINFO_EXTENSION));
+    $uniqueName = uniqid() . '.' . $extension;
     $targetFilePath = $uploadDir . $uniqueName;
 
     // ファイルを指定されたディレクトリに移動
     if (move_uploaded_file($tmpName, $targetFilePath)) {
         $uploadedImagePaths[] = $targetFilePath; // 成功した場合、パスを配列に追加
     } else {
-        echo json_encode([ 
-            'success' => false, 
+        echo json_encode([
+            'success' => false,
             'error' => '画像のアップロードに失敗しました。',
             'debug' => [
                 'tmpName' => $tmpName,
@@ -78,21 +98,20 @@ foreach ($images['tmp_name'] as $key => $tmpName) {
 }
 
 // 画像パスを暗号化
-$encryptedImagePaths = array_map('base64_encode', $uploadedImagePaths); // base64で暗号化
-$encryptedImages = implode(",", $encryptedImagePaths); // カンマ区切りで保存
+$encryptedImagePaths = array_map('base64_encode', $uploadedImagePaths);
+$encryptedImages = implode(",", $encryptedImagePaths);
 
 // その他のPOSTデータ
 $category = $_POST['category'] ?? '';
 $studyTime = $_POST['study_time'] ?? '';
 
-// データベースに保存
 try {
     // データベース接続の取得
     $pdo = getDatabaseConnection();
 
     // INSERTクエリの準備
-    $sql = "INSERT INTO study_data (username, category, study_time, images) 
-            VALUES (:username, :category, :study_time, :images)";
+    $sql = "INSERT INTO study_data (username, category, study_time, images, created_at) 
+            VALUES (:username, :category, :study_time, :images, NOW())";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':username', $username);
@@ -103,9 +122,7 @@ try {
     // クエリの実行
     $stmt->execute();
 
-    echo json_encode([
-        'success' => true,
-    ]);
+    echo json_encode(['success' => true]);
 } catch (PDOException $e) {
     echo json_encode([
         'success' => false,

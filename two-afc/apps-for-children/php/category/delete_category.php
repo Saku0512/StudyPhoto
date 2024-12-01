@@ -29,14 +29,17 @@ try {
     // db_connection.php の getDatabaseConnection() を使用
     $pdo = getDatabaseConnection();
 
-    $stmt = $pdo->prepare("DELETE FROM categories WHERE category_name = :category_name AND username = :username");
-    $stmt->execute(['category_name' => $category_name, 'username' => $username]);
+    $stmt_category = $pdo->prepare("DELETE FROM categories WHERE category_name = :category_name AND username = :username");
+    $stmt_category->execute(['category_name' => $category_name, 'username' => $username]);
 
-    if ($stmt->rowCount() > 0) {
+    $stmt_studydata = $pdo->prepare("DELETE FROM study_data WHERE category = :category");
+    $stmt_studydata->execute(['category' => $category_name]);
+
+    if ($stmt_category->rowCount() > 0) {
         echo json_encode(["status" => "success"]);
     } else {
         echo json_encode(["status" => "error", "message" => "カテゴリーが見つかりませんでした。"]);
     }
 } catch (PDOException $e) {
-    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+  echo json_encode(["status" => "error", "message" => "データベースエラー: " . $e->getMessage()]);
 }

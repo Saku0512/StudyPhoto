@@ -28,32 +28,54 @@ try {
 
   $pdo = getDatabaseConnection();
 
-  // SQL準備
-  $stmt = $pdo->prepare("
-      UPDATE categories
-      SET category_name = :new_category_name
-      WHERE category_name = :old_category_name AND username = :username
+  // トランザクションを開始
+  $pdo->beginTransaction();
+
+  // categories テーブルのカテゴリー名を更新
+  $stmt_categories = $pdo->prepare("
+    UPDATE categories
+    SET category_name = :new_category_name
+    WHERE category_name = :old_category_name AND username = :username
   ");
-  // SQL実行
-  $stmt->execute([
+  $stmt_categories->execute([
     ':new_category_name' => $new_category_name,
     ':old_category_name' => $old_category_name,
     ':username' => $username
   ]);
 
-  // 成功した場合
-  if ($stmt->rowCount() > 0) {
+  // study_data テーブルのカテゴリー名を更新
+  $stmt_studydata = $pdo->prepare("
+    UPDATE study_data
+    SET category = :new_category_name
+    WHERE category = :old_category_name
+  ");
+  $stmt_studydata->execute([
+    ':new_category_name' => $new_category_name,
+    ':old_category_name' => $old_category_name
+  ]);
+
+  // トランザクションをコミット
+  $pdo->commit();
+
+  // 変更が成功した場合
+  if ($stmt_categories->rowCount() > 0 || $stmt_studydata->rowCount() > 0) {
     echo json_encode(["status" => "success"]);
   } else {
-    echo json_encode(["status" => "error", "message" => "カテゴリーが見つかりませんでした。"]);
+    echo json_encode(["status" => "error", "message" => "カテゴリーの更新に失敗しました。"]);
   }
 } catch (PDOException $e) {
+  // トランザクションのロールバック
+  $pdo->rollBack();
+
   // エラーログを表示
   echo json_encode([
-      "status" => "error",
-      "message" => "データベースエラー: " . $e->getMessage(),
-      "error_info" => $stmt->errorInfo()  // SQLエラー情報を表示
+    "status" => "error",
+    "message" => "データベースエラー: " . $e->getMessage(),
+    "error_info" => $stmt->errorInfo()  // SQLエラー情報を表示
   ]);
 } catch (Exception $e) {
-  echo json_encode((["status" => "error", "message" => "Error: " . $e->getMessage()]));
+  // トランザクションのロールバック
+  $pdo->rollBack();
+
+  echo json_encode(["status" => "error", "message" => "Error: " . $e->getMessage()]);
 }

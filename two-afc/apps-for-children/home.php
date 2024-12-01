@@ -52,7 +52,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
       <div class="contents">
         <a href="./html/study/study.html" class="study">勉強する</a>
         <div class="space-h"></div>
-        <a href="#" class="note" onclick="showPopup()">記録する</a>
+        <a href="./html/record/record_time.html" class="note">記録する</a>
       </div>
       <div class="footer" type="button">
         <button class="setting" onclick="showSPopup()">設定</button>
@@ -65,13 +65,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
           <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
         </div>
         <a href="./php/contact.php" class="contact">問い合わせ</a>
-      </div>
-      <div class="overlay" id="overlay" onclick="hidePopup()"></div>
-      <div class="popup" id="popup">
-        <div class="tab">
-          <a href="html/record/record_time.html" class="me">自分の記録</a>
-          <a href="html/record/record_time.html" class="parent">保護者</a>
-        </div>
       </div>
     </main>
     <script type="text/javascript" defer>
@@ -86,16 +79,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
       }
       function hideSPopup() {
         document.getElementById("settingPanel").style.display = "none";
-      }
-
-      function showPopup() {
-        document.getElementById("overlay").style.display = "block";
-        document.getElementById("popup").classList.add("active");
-      }
-
-      function hidePopup() {
-        document.getElementById("overlay").style.display = "none";
-        document.getElementById("popup").classList.remove("active");
       }
 
       function saveRecord() {
