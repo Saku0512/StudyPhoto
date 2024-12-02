@@ -4,94 +4,113 @@ let chartInstance;
 
 // グラフの初期設定
 function createChart(labelUnit) {
-  const data = generateChartData(labelUnit); // ラベルに基づいてデータを生成する
-  const config = {
-    type: 'line',
-    data: {
-      labels: data.labels,
-      datasets: [{
-        label: '学習時間',
-        data: data.values,
-        fill: false,
-        borderColor: 'blue',
-        tension: 0.1
-      }]
-    },
-    options: {
-      scales: {
-        x: {
-          type: 'time',
-          time: {
-            unit: labelUnit // ここで週、月、年を指定
-          }
-        },
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  };
-
-  if (chartInstance) {
-    chartInstance.destroy(); // 既存のチャートがあれば破棄
-  }
-
-  chartInstance = new Chart(chartContext, config);
-}
-
-// サンプルのデータ生成（実際にはAPIやDBからデータを取得する）
-//ここからデータベースとつなげるところ
-function generateChartData(unit) {
-  const now = new Date();
-  let labels = [];
-  let values = [];
+  // Fetchデータの取得
+  console.log("Fetching data for:", labelUnit);
   
-  // データを週、月、年ごとに生成
-  if (unit === 'week') {
-    for (let i = 0; i < 7; i++) {
-      labels.push(new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)); // 過去7日分のラベル
-      values.push(Math.floor(Math.random() * 10) + 1); // ランダムなデータ
-    }
-  } else if (unit === 'month') {
-    for (let i = 0; i < 30; i++) {
-      labels.push(new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)); // 過去30日分のラベル
-      values.push(Math.floor(Math.random() * 10) + 1); // ランダムなデータ
-    }
-  } else if (unit === 'year') {
-    for (let i = 0; i < 12; i++) {
-      labels.push(new Date(now.getFullYear(), now.getMonth() - i, 1)); // 過去12ヶ月分のラベル
-      values.push(Math.floor(Math.random() * 100) + 10); // ランダムなデータ
-    }
-  }
+  fetch(`../../php/record/time.php?unit=${encodeURIComponent(labelUnit)}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      // エラーデータのチェック
+      if (data.error) {
+        console.error('Error from server:', data.error);
+        return;
+      }
 
-  return { labels, values };
+      // 取得したデータを数値に変換
+      const values = data.values.map(value => {
+        const numericValue = parseFloat(value);
+        return isNaN(numericValue) ? 0 : numericValue;
+      });
+
+      // チャートの設定
+      const config = {
+        type: 'line',
+        data: {
+          labels: data.labels,  // 日時ラベル
+          datasets: [{
+            label: '学習時間',
+            data: values,  // 学習時間データ
+            fill: false,
+            borderColor: 'blue',
+            tension: 0.1
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'time',
+              time: {
+                unit: labelUnit  // 単位（週、月、年など）
+              }
+            },
+            y: {
+              beginAtZero: true  // Y軸を0から開始
+            }
+          }
+        }
+      };
+
+      // 既存のチャートがあれば破棄して新しいチャートを描画
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+      chartInstance = new Chart(chartContext, config);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
 }
-//ここで終了
 
-// ボタンのクリックイベントを設定
-document.querySelector('.side_unit_week').addEventListener('click', () => {
-  createChart('week');
-});
-document.querySelector('.side_unit_mounth').addEventListener('click', () => {
-  createChart('month');
-});
-document.querySelector('.side_unit_year').addEventListener('click', () => {
-  createChart('year');
-});
-
-
-// ページが読み込まれたときに初期グラフを表示（例えば、週単位のグラフ）
-window.addEventListener('load', () => {
-  createChart('week');
-});
-
-// DOM の読み込み完了後に実行する処理
+// DOMContentLoaded イベントでボタンのクリックイベントを設定
 document.addEventListener('DOMContentLoaded', () => {
+  const weekButton = document.querySelector('.side_unit_week');
+  if (weekButton) {
+    weekButton.addEventListener('click', () => {
+      createChart('week');  // 週単位のデータを表示
+    });
+  } else {
+    console.warn("Week button not found!");
+  }
+
+  const monthButton = document.querySelector('.side_unit_month');
+  if (monthButton) {
+    monthButton.addEventListener('click', () => {
+      createChart('month');  // 月単位のデータを表示
+    });
+  } else {
+    console.warn("Month button not found!");
+  }
+
+  const yearButton = document.querySelector('.side_unit_year');
+  if (yearButton) {
+    yearButton.addEventListener('click', () => {
+      createChart('year');  // 年単位のデータを表示
+    });
+  } else {
+    console.warn("Year button not found!");
+  }
+
+  // ページが読み込まれたときに初期グラフを表示（週単位）
+  createChart('week');
+  
+  // ローカルストレージから選択されたカテゴリを表示
   const selectedCategory = localStorage.getItem("selectedCategory");
-  console.log(selectedCategory);
-  if(selectedCategory) {
-    document.getElementById("displayCategory").textContent = selectedCategory;
+  if (selectedCategory) {
+    const displayCategory = document.getElementById("displayCategory");
+    if (displayCategory) {
+      displayCategory.textContent = selectedCategory;
+    } else {
+      console.warn("Display category element not found.");
+    }
   }
 });
-
-
