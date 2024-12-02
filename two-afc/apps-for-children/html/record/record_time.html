@@ -8,161 +8,17 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> <!-- Date-fns adapter -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js"></script> <!-- date-fns CDN -->
   <link rel="stylesheet" href="../../css/scss/load.css" />
+  <link rel="stylesheet" href="../../css/record/record_time.css" />
   <script src="../../js/load.js" defer></script>
+  <script src="../../js/record.js" defer></script>
+  <script src="../../js/calender.js" defer></script>
   <title>記録を振り返る</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body, html {
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      width: 100vw;
-      text-align: center;
-      font-family: Arial, sans-serif;
-    }
-    .main {
-      width: 100%;
-    }
-    .tab {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      display: flex;
-      gap: 10px;
-      width: 100%;
-      justify-content: flex-start;
-    }
-    .tab a, .tab button {
-      font-size: 18px;
-      height: 40px;
-      width: 40px;
-      padding: 10px 20px;
-      margin-right: auto;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    .tab a img {
-      height: 65px;
-      width: 65px;
-    }
-    .tab a.active::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -15px;
-      height: 2px;
-      background-color: blue;
-    }
-    .section {
-      width: 100%;
-      margin-top: 60px;
-    }
-    @media (max-width: 600px) {
-      .tab {
-        align-items: center;
-      }
-      .side_unit {
-        width: 90%;
-      }
-    }
-    .chart-container {
-      width: 80%;
-      max-height: 600px;
-      height: 30vh;
-      margin-top: 2vh auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .side_unit {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      flex-direction: column;
-      width: 100%;
-      height: 20vh;
-      margin: auto;
-    }
-    .side_unit_button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5vw;
-      width: 80vh;
-      height: 5vh;
-    }
-    .side_unit_button button {
-      width: 10vw;
-      height: 3vh;
-    }
-    .side_unit_week, .side_unit_mounth, .side_unit_year {
-      background-color: #4870BD;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    .year-mouth-daybutton {
-      left: 0;
-      right: 0;
-    }
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 99;
-    }
-    .popup {
-      display: none;
-      position: fixed;
-      top: 30%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 84vw;
-      padding: 20px;
-      background-color: white;
-      border: 1px solid black;
-      z-index: 100;
-    }
-    .popup.active {
-      display: block;
-    }
-    .calendar {
-      margin-top: 2vh;
-    }
-    .calendar-header h2 {
-      font-size: 2rem;
-      font-weight: bold;
-    }
-    .calendar-days .day-name {
-      font-weight: bold;
-    }
-  </style>
 </head>
-
 <body>
   <div class="loading active">
     <div class="loading__icon"></div>
     <p class="loading__text">loading</p>
   </div>
-  
   <main>
     <div class="tab">
       <a href="../../home.php"><img src="../../ui_image/return.png" alt="Return"></a>
@@ -170,7 +26,6 @@
       <a href="./record_note.html" id="noteButton" type="button"><img src="../../ui_image/book.png" alt="Note Record"></a>
       <a href="./record_comment.html" id="commentButton" type="button"><img src="../../ui_image/parent.png" alt="Comment Record"></a>
     </div>
-    
     <div id="timerSection" class="section">
       <div class="side_unit">
         <p class="side_unit_text">横軸の単位を選択してください</p>
@@ -185,7 +40,6 @@
       </div>
       <p id="displayCategory"></p>
     </div>
-
     <button class="year-mouth-daybutton" onclick="showPopup11()">y/m/dの記録</button>
     <div class="overlay" id="overlay" onclick="hidePopup()"></div>
     <div class="popup" id="popup">
@@ -208,10 +62,6 @@
       </div>
     </div>
   </main>
-
-  <script src="../../js/record.js" defer></script>
-  <script src="../../js/calender.js" defer></script>
-
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
