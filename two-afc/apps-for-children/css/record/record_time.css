@@ -71,6 +71,7 @@ body, html {
   height: 30vh;
   margin: auto;
   margin-top: 2vh;
+  margin-bottom: 2vh;
   display: flex;
   align-items: center;
   justify-content: center;
