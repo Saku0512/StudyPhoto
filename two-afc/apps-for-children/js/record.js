@@ -1,4 +1,3 @@
-// Chart.jsで使用するデータの基本設定
 const chartContext = document.getElementById('studyChart').getContext('2d');
 let chartInstance;
 
@@ -6,7 +5,7 @@ let chartInstance;
 function createChart(labelUnit) {
   // Fetchデータの取得
   console.log("Fetching data for:", labelUnit);
-  
+
   fetch(`../../php/record/time.php?unit=${encodeURIComponent(labelUnit)}`, {
     method: 'GET',
     headers: {
@@ -20,25 +19,31 @@ function createChart(labelUnit) {
       return response.json();
     })
     .then(data => {
-      // エラーデータのチェック
       if (data.error) {
         console.error('Error from server:', data.error);
         return;
       }
 
-      // 取得したデータを数値に変換
+      if (!data.labels || !data.values) {
+        console.error('Invalid data format received:', data);
+        return;
+      }
+
+      // データのチェックと変換
+      const labels = data.labels.map(label => new Date(label)); // 日時ラベルをDate形式に変換
       const values = data.values.map(value => {
         const numericValue = parseFloat(value);
         return isNaN(numericValue) ? 0 : numericValue;
       });
 
+      const FontSize = 18;
       // チャートの設定
       const config = {
         type: 'line',
         data: {
-          labels: data.labels,  // 日時ラベル
+          labels: labels, // 日時ラベル
           datasets: [{
-            label: '学習時間',
+            label: '学習時間 (時間)',
             data: values,  // 学習時間データ
             fill: false,
             borderColor: 'blue',
@@ -46,15 +51,41 @@ function createChart(labelUnit) {
           }]
         },
         options: {
+          responsive: true,
           scales: {
             x: {
               type: 'time',
               time: {
-                unit: labelUnit  // 単位（週、月、年など）
+                unit: labelUnit, // 単位（week, month, year）
+                tooltipFormat: 'yyyy-MM-dd', // ツールチップのフォーマット
+              },
+              title: {
+                display: true,
+                text: '日付',
+                font: {
+                  size: FontSize
+                }
+              },
+              ticks: {
+                font: {
+                  size: FontSize
+                }
               }
             },
             y: {
-              beginAtZero: true  // Y軸を0から開始
+              beginAtZero: true, // Y軸を0から開始
+              title: {
+                display: true,
+                text: '学習時間 (時間)',
+                font: {
+                  size: FontSize
+                }
+              },
+              ticks: {
+                font: {
+                  size: FontSize
+                }
+              }
             }
           }
         }
@@ -73,36 +104,18 @@ function createChart(labelUnit) {
 
 // DOMContentLoaded イベントでボタンのクリックイベントを設定
 document.addEventListener('DOMContentLoaded', () => {
+  // 期間ボタンのイベント設定
   const weekButton = document.querySelector('.side_unit_week');
-  if (weekButton) {
-    weekButton.addEventListener('click', () => {
-      createChart('week');  // 週単位のデータを表示
-    });
-  } else {
-    console.warn("Week button not found!");
-  }
-
   const monthButton = document.querySelector('.side_unit_month');
-  if (monthButton) {
-    monthButton.addEventListener('click', () => {
-      createChart('month');  // 月単位のデータを表示
-    });
-  } else {
-    console.warn("Month button not found!");
-  }
-
   const yearButton = document.querySelector('.side_unit_year');
-  if (yearButton) {
-    yearButton.addEventListener('click', () => {
-      createChart('year');  // 年単位のデータを表示
-    });
-  } else {
-    console.warn("Year button not found!");
-  }
 
-  // ページが読み込まれたときに初期グラフを表示（週単位）
+  if (weekButton) weekButton.addEventListener('click', () => createChart('week'));
+  if (monthButton) monthButton.addEventListener('click', () => createChart('month'));
+  if (yearButton) yearButton.addEventListener('click', () => createChart('year'));
+
+  // 初期グラフを週単位で表示
   createChart('week');
-  
+
   // ローカルストレージから選択されたカテゴリを表示
   const selectedCategory = localStorage.getItem("selectedCategory");
   if (selectedCategory) {
