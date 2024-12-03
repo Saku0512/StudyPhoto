@@ -10,11 +10,12 @@ sudo apt install -y apache2 mysql-server php libapache2-mod-php php-mysql curl
 sudo systemctl restart apache2
 
 # Gitを使ってChildAppをクローン
+username=$(whoami)
 cd /var/www/html
+sudo chown -R $username:$username /var/www/html
 git clone git@github.com:ComonRaven/ChildApp.git
 mkdir /var/www/html/uploads
 sudo chmod -R 777 /var/www/html/uploads
-username=$(whoami)
 sudo chown -R $username:$username /var/www/html/uploads
 
 # 1. /etc/hosts にエントリを追加
@@ -34,6 +35,11 @@ sudo bash -c "cat > $vhost_conf <<EOL
         AllowOverride All
         Require all granted
     </Directory>
+    <Directory /var/www/html/uploads>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
 
     ErrorLog ${APACHE_LOG_DIR}/childapp_error.log
     CustomLog ${APACHE_LOG_DIR}/childapp_access.log combined
@@ -41,17 +47,16 @@ sudo bash -c "cat > $vhost_conf <<EOL
 EOL"
 
 # 3. パーミッション設定
-sudo chown -R $USER:$USER /var/www/html/ChildApp
+sudo chown -R $username:$username /var/www/html/ChildApp
 sudo chmod -R 755 /var/www/html/ChildApp
 
 # 4. 仮想ホストの有効化
 sudo a2ensite childapp.localhost.conf
 
 # 5. Apacheを再起動
-sudo systemctl reload apache2
+sudo systemctl restart apache2
 
-# Apacheの動作確認
-curl http://childapp.localhost
+
 
 echo "Apache設定が完了しました。childapp.localhostにアクセスして動作確認してください。"
 
@@ -63,7 +68,7 @@ MYSQL_DB="childapp_test"
 
 # MySQL rootユーザーでログインして作業を行う
 echo "MySQL rootパスワードの設定を行います..."
-sudo mysql -u root -p $MYSQL_ROOT_PASSWORD <<EOF
+sudo mysql -u root <<EOF
 # 1. データベースの作成
 CREATE DATABASE IF NOT EXISTS $MYSQL_DB;
 
@@ -75,34 +80,33 @@ GRANT ALL PRIVILEGES ON $MYSQL_DB.* TO '$MYSQL_USER'@'localhost';
 USE $MYSQL_DB;
 
 CREATE TABLE IF NOT EXISTS users (
-  id VARCHAR(8) NOT NULL,
-  username VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE KEY email (email),
-  UNIQUE KEY username (username)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+    id VARCHAR(8) NOT NULL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
 # 4. categoriesテーブル作成
 CREATE TABLE IF NOT EXISTS categories (
-  id INT NOT NULL AUTO_INCREMENT,
-  username VARCHAR(255) NOT NULL,
-  category_name VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id),
-  KEY username (username),
-  CONSTRAINT categories_ibfk_1 FOREIGN KEY (username) REFERENCES users(username)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    category_name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (username) REFERENCES users(username)
+);
 
 # 5. study_dataテーブル作成
 CREATE TABLE IF NOT EXISTS study_data (
-  id INT NOT NULL AUTO_INCREMENT,
-  username VARCHAR(50) NOT NULL,
-  category VARCHAR(50) NOT NULL,
-  study_time VARCHAR(20) NOT NULL,
-  images TEXT,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3;
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    study_time VARCHAR(20) NOT NULL,
+    SspentTime TEXT NOT NULL,
+    images TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
 # 6. 権限の再ロード
 FLUSH PRIVILEGES;
