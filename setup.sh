@@ -13,6 +13,7 @@ sudo systemctl restart apache2
 username=$(whoami)
 cd /var/www/html
 sudo chown -R $username:$username /var/www/html
+sudo chmod -R 755 /var/www/html
 git clone git@github.com:ComonRaven/ChildApp.git
 mkdir /var/www/html/uploads
 sudo chmod -R 777 /var/www/html/uploads
@@ -35,6 +36,9 @@ sudo bash -c "cat > $vhost_conf <<EOL
         AllowOverride All
         Require all granted
     </Directory>
+
+    # アップロードディレクトリへのエイリアス設定
+    Alias /uploads /var/www/html/uploads
     <Directory /var/www/html/uploads>
         Options Indexes FollowSymLinks
         AllowOverride All
@@ -59,6 +63,7 @@ sudo systemctl restart apache2
 
 
 echo "Apache設定が完了しました。childapp.localhostにアクセスして動作確認してください。"
+curl childapp.localhost
 
 # MySQLの設定
 MYSQL_ROOT_PASSWORD="kH_vYyTq4nLK7_zj5NSfb"
