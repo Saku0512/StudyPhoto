@@ -208,8 +208,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="text">
             <div class="loginbuttons">
-                <button onclick="showForm('signupForm')">サインアップ</button>
-                <button onclick="showForm('loginForm')">サインイン</button>
+                <button onclick="showForm('signupForm')">ユーザー登録</button>
+                <button onclick="showForm('loginForm')">ユーザーログイン</button>
             </div>
             <form id="signupForm" action="" method="post">
                 <label for="username">ユーザー名:</label>

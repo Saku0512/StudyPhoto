@@ -52,7 +52,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
       <div class="contents">
         <a href="./html/study/study.html" class="study">勉強する</a>
         <div class="space-h"></div>
-        <a href="./html/record/record_time.html" class="note">記録する</a>
+        <a href="./html/record/record_time.html" class="note">記録を見る</a>
       </div>
       <div class="footer" type="button">
         <button class="setting" onclick="showSPopup()">設定</button>
