@@ -76,7 +76,7 @@ main {
 #category{
   height: 4vh;
   width: 40vw;
-  font-size: 13px;
+  font-size: 18px;
   text-align: center;
 }
 #category option{
@@ -87,7 +87,7 @@ main {
   width: 40vw;
   padding: 2px 6px;
   text-align: center;
-  font-size: 14px;
+  font-size: 18px;
   background-color: #4870BD;
   color: white;
   border: none;
