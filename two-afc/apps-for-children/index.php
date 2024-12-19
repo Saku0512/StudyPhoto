@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dbUsername = $_POST['username'] ?? null;
     $dbEmail = $_POST['email'] ?? null;
     $dbPassword = $_POST['password'] ?? null;
+    $dbId = $_POST['id'] ?? null;
 
     if (!empty($dbUsername) && !empty($dbEmail) && !empty($dbPassword)) {
         //メールアドレスの形式検証
@@ -140,6 +141,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $message = "全てのフィールドを入力してください";
         }
+    } else if (isset($_POST['guardian'])) {
+        // ログイン情報を取得
+        $loginUsername = $_POST['guardian_username'] ?? null;
+        $loginId = $_POST['guardian_id'] ?? null;
+
+        if (!empty($loginUsername) && !empty($loginId)) {
+            $conn = new mysqli($servername, $username, $password, $db_name);
+            if ($conn->connect_error) {
+                die('接続失敗： '. $conn->connect_error);
+            }
+
+            $loginSql = "SELECT username, id FROM users WHERE username = ? AND id = ?";
+            $loginStmt = $conn->prepare($loginSql);
+            $loginStmt->bind_param("ss", $loginUsername, $loginId);
+            $loginStmt->execute();
+            $loginResult = $loginStmt->get_result();
+          
+            if ($loginResult->num_rows > 0) {
+                //ログイン成功
+                $guardianUser = $loginResult->fetch_assoc();
+                session_start();
+                $_SESSION['guardian_username'] = $guardianUser['username'];
+                $_SESSION['guardian_id'] = $guardianUser['id'];
+                $message = "保護者ログイン成功";
+                header("Location: guardian_home.php"); // 保護者用のホームページにリダイレクト
+                exit;
+            } else {
+                // 照合失敗
+                $message = "ユーザー名またはIDが正しくありません";
+            }
+        } else {
+            $message = "全てのフィールドを入力してください";
+        }
     } else {
         $message = "全てのフィールドを入力してください";
     }
@@ -181,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             justify-content: center;
             gap: 10vw;
         }
-        #signupForm, #loginForm {
+        #signupForm, #loginForm, #guardianForm {
             display: none;
             flex-direction: column;
             align-items: center;
@@ -197,6 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function showForm(formId) {
             document.getElementById("signupForm").style.display = "none";
             document.getElementById("loginForm").style.display = "none";
+            document.getElementById("guardianForm").style.display = "none";
             document.getElementById(formId).style.display = "flex";
         }
     </script>
@@ -210,6 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="loginbuttons">
                 <button onclick="showForm('signupForm')">ユーザー登録</button>
                 <button onclick="showForm('loginForm')">ユーザーログイン</button>
+                <button onclick="showForm('guardianForm')">保護者ログイン</button>
             </div>
             <form id="signupForm" action="" method="post">
                 <label for="username">ユーザー名:</label>
@@ -226,6 +262,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="login_password">パスワード:</label>
                 <input type="password" id="login_password" name="login_password" required><br>
                 <button type="submit" name="login">ログイン</button>
+            </form>
+            <form id="guardianForm" action="" method="post">
+                <label for="guardian_username">子どものユーザー名：</label>
+                <input type="text" id="guardian_username" name="guardian_username" required><br>
+                <label for="guardian_id">子どものID：</label>
+                <input type="password" id="guardian_id" name="guardian_id" required><br>
+                <button type="submit" name="guardian">ログイン</button>
             </form>
         </div>
     </main>
