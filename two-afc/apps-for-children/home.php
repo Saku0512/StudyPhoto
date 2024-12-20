@@ -58,9 +58,12 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         <button class="setting" onclick="showSPopup()">設定</button>
         <div class="settingPanel" id="settingPanel">
           <p>設定</p>
-          <p>ユーザー名: <?php echo htmlspecialchars($user['username']); ?></p>
-          <p>ユーザーID: <?php echo htmlspecialchars($user['id']); ?></p>
-          <p>メールアドレス: <?php echo htmlspecialchars($user['email']); ?></p>
+          <p>ユーザー名: 
+            <pre class="code-block"><?php echo htmlspecialchars($user['username']); ?></pre></p>
+          <p>ユーザーID: 
+            <pre class="code-block"><?php echo htmlspecialchars($user['id']); ?></pre></p>
+          <p>メールアドレス: 
+            <pre class="code-block"><?php echo htmlspecialchars($user['email']); ?></pre></p>
           <div class="button-container2">
             <button onclick="hideSPopup()">閉じる</button>
             <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>

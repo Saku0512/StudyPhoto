@@ -158,6 +158,8 @@ main {
   border: 1px solid black; /* ボーダー */
   padding: 20px; /* 内側の余白 */
   z-index: 100; /* z-indexを設定して上に表示 */
+  font-size: 30px;
+  text-align: left;
 }
 .settingPanel button {
   height: 7vh; /* ボタンの高さ */
@@ -167,18 +169,22 @@ main {
   border-radius: 5px; /* 角丸 */
 }
 
-.settingPanel .button-container2 button {
+.settingPanel .button-container2 {
   display: flex;
   justify-content: space-between; /* ボタン間に均等なスペースを配置 */
   margin-top: 20px; /* 上部に余白 */
+  button {
+    flex: 1; /* ボタンの幅を均等にする */
+    height: 7vh;
+    width: auto;
+    font-size: 20px;
+    border-radius: 5px;
+    margin: 0;
+    max-width: 150px;
+    gap: 5vw;
+  }
 }
 
-.settingPanel .button-container2 button {
-  flex: 1; /* ボタンを均等に広げる（必要に応じて） */
-  height: 7vh; /* ボタンの高さ */
-  font-size: 20px; /* ボタンの文字サイズ */
-  border-radius: 5px; /* ボタンの角丸 */
-}
 .contact {
   height: 7vh;
   width: 42vw;
@@ -251,4 +257,15 @@ main {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 99;
+}
+
+/* 設定画面のコード風に出力 */
+.code-block {
+  background-color: #2c2f33; /* 灰色背景 */
+  color: #ffffff;          /* 白文字 */
+  padding: 8px;            /* 内側の余白 */
+  border-radius: 5px;      /* 角丸 */
+  font-family: 'Courier New', monospace; /* 等幅フォント */
+  overflow-x: auto;        /* 横スクロールを許可 */
+  margin: 8px 0;           /* 上下の間隔 */
 }

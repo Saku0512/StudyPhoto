@@ -25,9 +25,9 @@ if ($userId === null or $userName === null) {
             <div class="settingPanel" id="settingPanel">
                 <p>設定</p>
                 <p>ユーザー名: 
-                <pre class="code-block"><?php echo htmlspecialchars($userName); ?></pre></p>
+                  <pre class="code-block"><?php echo htmlspecialchars($userName); ?></pre></p>
                 <p>ユーザーID: 
-                <pre class="code-block"><?php echo htmlspecialchars($userId); ?></pre></p> 
+                  <pre class="code-block"><?php echo htmlspecialchars($userId); ?></pre></p> 
                 </p>
                 <button onclick="hideSPopup()">閉じる</button>
                 <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
