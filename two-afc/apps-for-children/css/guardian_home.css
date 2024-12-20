@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* サイズ計算を正確にする */
+}
+
 .footer {
   margin-top: auto;
   padding: 0;
@@ -21,7 +27,7 @@
 .settingPanel {
   display: none; /* 初期状態は非表示 */
   position: fixed; /* 固定位置 */
-  top: 30%; /* 上からの位置 */
+  top: 50%; /* 上からの位置 */
   left: 50%; /* 左からの位置 */
   transform: translate(-50%, -50%); /* 中央に配置 */
   font-size: 30px;
@@ -32,9 +38,50 @@
   padding: 20px; /* 内側の余白 */
   z-index: 100; /* z-indexを設定して上に表示 */
 }
+
+.settingPanel button {
+  height: 7vh;
+  width: 37vw;
+  font-size: 30px;
+  border-radius: 5px;
+}
+.settingPanel .button-container2 {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+/* スマホ向け設定パネルスタイル */
+@media (max-width: 600px) {
+  .button-container2 {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .button-container2 button {
+    width: 100%;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
+/* タブレット向け設定パネルスタイル */
+@media (min-width: 601px) and (max-width: 900px) {
+  .button-container2 {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .button-container2 button {
+    width: 100%;
+    height: 50px;
+    font-size: 25px;
+  }
+}
+
 .contact {
   height: 7vh;
   width: 37vw;
+  text-decoration: none;
 }
 .popup {
   display: none;

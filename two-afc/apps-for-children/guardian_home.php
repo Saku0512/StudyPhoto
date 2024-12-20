@@ -28,9 +28,10 @@ if ($userId === null or $userName === null) {
                   <pre class="code-block"><?php echo htmlspecialchars($userName); ?></pre></p>
                 <p>ユーザーID: 
                   <pre class="code-block"><?php echo htmlspecialchars($userId); ?></pre></p> 
-                </p>
-                <button onclick="hideSPopup()">閉じる</button>
-                <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
+                <div class="button-container2">
+                  <button onclick="hideSPopup()">閉じる</button>
+                  <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
+                </div>
             </div>
         <a href="./php/contact.php" class="contact">問い合わせ</a>
       </div>
