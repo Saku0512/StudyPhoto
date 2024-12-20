@@ -33,7 +33,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 <html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewpot" content="width=device-width , initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/home.css" />
     <link rel="stylesheet" href="css/scss/load.css" />
@@ -58,11 +58,16 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         <button class="setting" onclick="showSPopup()">設定</button>
         <div class="settingPanel" id="settingPanel">
           <p>設定</p>
-          <p>ユーザー名: <?php echo htmlspecialchars($user['username']); ?></p>
-          <p>ユーザーID: <?php echo htmlspecialchars($user['id']); ?></p>
-          <p>メールアドレス: <?php echo htmlspecialchars($user['email']); ?></p>
-          <button onclick="hideSPopup()">閉じる</button>
-          <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
+          <p>ユーザー名: 
+            <pre class="code-block"><?php echo htmlspecialchars($user['username']); ?></pre></p>
+          <p>ユーザーID: 
+            <pre class="code-block"><?php echo htmlspecialchars($user['id']); ?></pre></p>
+          <p>メールアドレス: 
+            <pre class="code-block"><?php echo htmlspecialchars($user['email']); ?></pre></p>
+          <div class="button-container2">
+            <button onclick="hideSPopup()">閉じる</button>
+            <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
+          </div>
         </div>
         <a href="./php/contact.php" class="contact">問い合わせ</a>
       </div>
