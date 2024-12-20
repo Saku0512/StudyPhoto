@@ -1,3 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* サイズ計算を正確にする */
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden; /* 横スクロールを非表示にする */
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  height: 100vh;
+  width: 100vw;
+}
+
 .footer {
   margin-top: auto;
   padding: 0;
@@ -21,7 +46,7 @@
 .settingPanel {
   display: none; /* 初期状態は非表示 */
   position: fixed; /* 固定位置 */
-  top: 30%; /* 上からの位置 */
+  top: 50%; /* 上からの位置 */
   left: 50%; /* 左からの位置 */
   transform: translate(-50%, -50%); /* 中央に配置 */
   font-size: 30px;
@@ -32,9 +57,50 @@
   padding: 20px; /* 内側の余白 */
   z-index: 100; /* z-indexを設定して上に表示 */
 }
+
+.settingPanel button {
+  height: 7vh;
+  width: 37vw;
+  font-size: 30px;
+  border-radius: 5px;
+}
+.settingPanel .button-container2 {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+/* スマホ向け設定パネルスタイル */
+@media (max-width: 600px) {
+  .button-container2 {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .button-container2 button {
+    width: 100%;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
+/* タブレット向け設定パネルスタイル */
+@media (min-width: 601px) and (max-width: 900px) {
+  .button-container2 {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .button-container2 button {
+    width: 100%;
+    height: 50px;
+    font-size: 25px;
+  }
+}
+
 .contact {
   height: 7vh;
   width: 37vw;
+  text-decoration: none;
 }
 .popup {
   display: none;
@@ -74,4 +140,10 @@
   font-family: 'Courier New', monospace; /* 等幅フォント */
   overflow-x: auto;        /* 横スクロールを許可 */
   margin: 8px 0;           /* 上下の間隔 */
+}
+
+.hide_show_userName, .hide_show_id {
+  height: 1em; /* テキストの高さに合わせる */
+  width: auto; /* 縦横比を保つ */
+  vertical-align: middle; /* テキストの中央に揃える */
 }
