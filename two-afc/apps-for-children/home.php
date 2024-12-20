@@ -28,6 +28,8 @@ $stmt->bindParam(":id", $userId);
 $stmt->execute();
 
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+$passwordHidden = str_repeat('*', strlen($_SESSION['password'] ?? ''));
+$idHidden = str_repeat('*', strlen($user['id'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -59,11 +61,17 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         <div class="settingPanel" id="settingPanel">
           <p>設定</p>
           <p>ユーザー名: 
+            <img class="editName" id="editName" src="./ui_image/pencil.png">
             <pre class="code-block"><?php echo htmlspecialchars($user['username']); ?></pre></p>
           <p>ユーザーID: 
-            <pre class="code-block"><?php echo htmlspecialchars($user['id']); ?></pre></p>
+            <img class="hide_show_Id" id="toggleId" src="./ui_image/close_eye.png">
+            <pre class="code-block" id="idField" data-id="<?php echo htmlspecialchars($user['id']); ?>"><?php echo $idHidden; ?></pre></p> <!--$user['id']-->
           <p>メールアドレス: 
             <pre class="code-block"><?php echo htmlspecialchars($user['email']); ?></pre></p>
+          <p>パスワード: 
+            <img class="hide_show_Pass" id="togglePass" src="./ui_image/close_eye.png">
+            <img class="editPass" id="editPass" src="./ui_image/pencil.png">
+            <pre class="code-block" id="passwordField" data-password="<?php echo htmlspecialchars($_SESSION['password']); ?>"><?php echo $passwordHidden; ?></pre></p>
           <div class="button-container2">
             <button onclick="hideSPopup()">閉じる</button>
             <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
@@ -90,6 +98,33 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         alert("記録が保存されました。");
         hidePopup();
       }
+      document.getElementById("togglePass").addEventListener("click", function() {
+        const imgElement = this; // クリックされた要素を取得
+        const passwordField = document.getElementById("passwordField"); // パスワードの要素を取得
+        const currentSrc = imgElement.getAttribute("src");
+
+        // 画像を切り替え、パスワードの表示・非表示を制御
+        if (currentSrc === "./ui_image/close_eye.png") {
+          imgElement.setAttribute("src", "./ui_image/open_eye.png");
+          passwordField.textContent = passwordField.dataset.password; // 表示
+        } else {
+          imgElement.setAttribute("src", "./ui_image/close_eye.png");
+          passwordField.textContent = "*".repeat(passwordField.dataset.password.length); // 非表示
+        }
+      });
+      document.getElementById("toggleId").addEventListener('click', function() {
+        const imgElement = this;
+        const idField = document.getElementById("idField");
+        const currentSrc = imgElement.getAttribute("src");
+
+        if (currentSrc === "./ui_image/close_eye.png") {
+          imgElement.setAttribute("src", "./ui_image/open_eye.png");
+          idField.textContent = idField.dataset.id;
+        } else {
+          imgElement.setAttribute("src", "./ui_image/close_eye.png");
+          idField.textContent = "*".repeat(idField.dataset.id.length);
+        }
+      });
     </script>
   </body>
 </html>

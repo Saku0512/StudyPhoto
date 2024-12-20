@@ -190,7 +190,11 @@ main {
     font-size: 25px;
   }
 }
-
+.hide_show_Pass, .hide_show_Id, .editPass, .editName {
+  height: 1em; /* テキストの高さに合わせる */
+  width: auto; /* 縦横比を保つ */
+  vertical-align: middle; /* テキストの中央に揃える */
+}
 /* ポップアップ */
 .popup {
   display: none;

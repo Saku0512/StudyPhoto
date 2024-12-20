@@ -4,6 +4,25 @@
   box-sizing: border-box; /* サイズ計算を正確にする */
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden; /* 横スクロールを非表示にする */
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  height: 100vh;
+  width: 100vw;
+}
+
 .footer {
   margin-top: auto;
   padding: 0;
@@ -121,4 +140,10 @@
   font-family: 'Courier New', monospace; /* 等幅フォント */
   overflow-x: auto;        /* 横スクロールを許可 */
   margin: 8px 0;           /* 上下の間隔 */
+}
+
+.hide_show_userName, .hide_show_id {
+  height: 1em; /* テキストの高さに合わせる */
+  width: auto; /* 縦横比を保つ */
+  vertical-align: middle; /* テキストの中央に揃える */
 }
