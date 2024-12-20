@@ -18,8 +18,8 @@ body {
 }
 .return a{
   font-size: 18px;
-  height: 40px;
-  width: 40px;
+  height: 20px;
+  width: 20px;
   padding: 10px 20px;
   margin: 5px;
   border-radius: 5px;
@@ -57,8 +57,8 @@ body {
 }
 .timer-container h1 img {
   text-align: center;
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
 }
 
 .start-container button img {
