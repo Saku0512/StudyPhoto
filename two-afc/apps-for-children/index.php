@@ -1,9 +1,5 @@
 <?php
 session_start();
-// デバッグ用
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 function generateRandomID($conn) {
     $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -213,13 +209,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .loginbuttons {
             display: flex;
             justify-content: center;
-            gap: 10vw;
+            gap: 8vw;
+            height: 60px;
+            button {
+                font-size: 20px;
+            }
         }
         #signupForm, #loginForm, #guardianForm {
             display: none;
             flex-direction: column;
             align-items: center;
             margin: 20px;
+            label, button, input {
+                font-size: 20px;
+            }
+            button {
+                height: 35px;
+                width: 120px;
+            }
         }
     </style>
     <script>
@@ -267,7 +274,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="guardian_username">子どものユーザー名：</label>
                 <input type="text" id="guardian_username" name="guardian_username" required><br>
                 <label for="guardian_id">子どものID：</label>
-                <input type="password" id="guardian_id" name="guardian_id" required><br>
+                <input type="text" id="guardian_id" name="guardian_id" required><br>
                 <button type="submit" name="guardian">ログイン</button>
             </form>
         </div>

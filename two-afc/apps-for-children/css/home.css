@@ -1,6 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* サイズ計算を正確にする */
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* スクロールを非表示にする（必要に応じて） */
+}
+
+body {
+  min-height: 100vh; /* ビューポートの高さを確保 */
+  display: flex; /* 中央揃えやレイアウト調整用 */
+  flex-direction: column; /* 上下方向に配置 */
+}
 main {
   border-color: black;
   border: 5px;
+  height: 100vh;
+  width: 100vw;
 }
 .logo, .contents, .footer {
   text-align: center;
@@ -9,13 +30,18 @@ main {
 .logo{
   display: flex;
   justify-content: center;
+  align-items: center;
   margin: 0 auto 0;
-  height: 600px;
-  width: 600px;
+  width: 80vw;
+  aspect-ratio: 1/1; /* 縦横比を１：１にする */
+  max-height: 600px;
+  max-width: 600px;
+  object-fit: cover;
 }
 .logo img{
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 .contents {
   display: flex;
@@ -34,6 +60,22 @@ main {
   text-align: center;
   font-size: 60px;
   text-decoration: none;
+}
+/* スマホ向けスタイル */
+@media (max-width: 600px) {
+  .contents a {
+    height: 12vh;
+    width: 70vw;
+    font-size: 40px;
+  }
+}
+/* タブレット向けスタイル */
+@media (min-width: 601px) and (max-width: 900px) {
+  .contents a {
+    height: 10vh;
+    width: 60vw;
+    font-size: 50px;
+  }
 }
 
 .study {
@@ -57,21 +99,53 @@ main {
   padding: 0;
   display: flex;
   justify-content: center;
-  gap: 10vw;
+  gap: 5vw;
+  width: 100vw;
 }
 .footer a , .footer button{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 60px;
+  font-size: 6vw;
   border-radius: 15px;
   background-color: #4870BD;
   color: white;
-}
-.setting {
   height: 7vh;
   width: 37vw;
+  max-height: 100px;
+  max-width: 300px;
 }
+.setting, .contact {
+  object-fit: cover;
+}
+@media screen and (max-width: 600px) {
+  .footer a, .footer button {
+    font-size: 8vw;
+    height: 10vh;
+    width: 45vw;
+    max-height: 80px;
+    max-width: 250px;
+  }
+}
+@media screen and (min-width: 601px) and (max-width: 900px) {
+  .footer a, .footer button {
+    font-size: 4vw;
+    height: 8vh;
+    width: 40vw;
+    max-height: 90px;
+    max-width: 270px;
+  }
+}
+@media screen and (min-width: 901px) {
+  .footer a, .footer button {
+    font-size: 6vw;
+    height: 8vh;
+    width: 40vw;
+    max-height: none;
+    max-width: none;
+  }
+}
+
 .settingPanel {
   display: none; /* 初期状態は非表示 */
   position: fixed; /* 固定位置 */
@@ -85,10 +159,29 @@ main {
   padding: 20px; /* 内側の余白 */
   z-index: 100; /* z-indexを設定して上に表示 */
 }
+.settingPanel button {
+  height: 7vh; /* ボタンの高さ */
+  width: 37%;  /* ボタンの幅 (親要素の37%) */
+  font-size: 20px;
+  margin: 0;  /* マージンリセット */
+  border-radius: 5px; /* 角丸 */
+}
 
+.settingPanel .button-container2 button {
+  display: flex;
+  justify-content: space-between; /* ボタン間に均等なスペースを配置 */
+  margin-top: 20px; /* 上部に余白 */
+}
+
+.settingPanel .button-container2 button {
+  flex: 1; /* ボタンを均等に広げる（必要に応じて） */
+  height: 7vh; /* ボタンの高さ */
+  font-size: 20px; /* ボタンの文字サイズ */
+  border-radius: 5px; /* ボタンの角丸 */
+}
 .contact {
   height: 7vh;
-  width: 37vw;
+  width: 42vw;
 }
 .popup {
   display: none;
