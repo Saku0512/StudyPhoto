@@ -30,6 +30,8 @@ $stmt->execute();
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 $passwordHidden = str_repeat('*', strlen($_SESSION['password'] ?? ''));
 $idHidden = str_repeat('*', strlen($user['id'] ?? ''));
+$nameHidden = str_repeat('*', strlen($user['username'] ?? ''));
+$emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -40,6 +42,7 @@ $idHidden = str_repeat('*', strlen($user['id'] ?? ''));
     <link rel="stylesheet" href="css/home.css" />
     <link rel="stylesheet" href="css/scss/load.css" />
     <script src="./js/load.js" defer></script>
+    <script src="./js/home.js" defer></script>
     <title>ホーム</title>
   </head>
   <body>
@@ -61,13 +64,15 @@ $idHidden = str_repeat('*', strlen($user['id'] ?? ''));
         <div class="settingPanel" id="settingPanel">
           <p>設定</p>
           <p>ユーザー名: 
+            <img class="hide_show_Name" id="toggleName" src="./ui_image/close_eye.png">
             <img class="editName" id="editName" src="./ui_image/pencil.png">
-            <pre class="code-block"><?php echo htmlspecialchars($user['username']); ?></pre></p>
+            <pre class="code-block" id="nameField" data-name="<?php echo htmlspecialchars($user['username']); ?>"><?php echo $nameHidden; ?></pre></p>
           <p>ユーザーID: 
             <img class="hide_show_Id" id="toggleId" src="./ui_image/close_eye.png">
             <pre class="code-block" id="idField" data-id="<?php echo htmlspecialchars($user['id']); ?>"><?php echo $idHidden; ?></pre></p> <!--$user['id']-->
           <p>メールアドレス: 
-            <pre class="code-block"><?php echo htmlspecialchars($user['email']); ?></pre></p>
+            <img class="hide_show_Email" id="toggleEmail" src="./ui_image/close_eye.png">
+            <pre class="code-block" id="emailField" data-email="<?php echo htmlspecialchars($user['email']); ?>"><?php echo $emailHidden; ?></pre></p>
           <p>パスワード: 
             <img class="hide_show_Pass" id="togglePass" src="./ui_image/close_eye.png">
             <img class="editPass" id="editPass" src="./ui_image/pencil.png">
@@ -80,51 +85,5 @@ $idHidden = str_repeat('*', strlen($user['id'] ?? ''));
         <a href="./php/contact.php" class="contact">問い合わせ</a>
       </div>
     </main>
-    <script type="text/javascript" defer>
-      // タイマーをリセット
-      document.querySelector('a[href="./html/study/study.html"]').addEventListener('click', () => {
-        localStorage.removeItem('stopwatchTime');
-        localStorage.removeItem('isRunning');
-      });
-
-      function showSPopup() {
-        document.getElementById("settingPanel").style.display = "block";
-      }
-      function hideSPopup() {
-        document.getElementById("settingPanel").style.display = "none";
-      }
-
-      function saveRecord() {
-        alert("記録が保存されました。");
-        hidePopup();
-      }
-      document.getElementById("togglePass").addEventListener("click", function() {
-        const imgElement = this; // クリックされた要素を取得
-        const passwordField = document.getElementById("passwordField"); // パスワードの要素を取得
-        const currentSrc = imgElement.getAttribute("src");
-
-        // 画像を切り替え、パスワードの表示・非表示を制御
-        if (currentSrc === "./ui_image/close_eye.png") {
-          imgElement.setAttribute("src", "./ui_image/open_eye.png");
-          passwordField.textContent = passwordField.dataset.password; // 表示
-        } else {
-          imgElement.setAttribute("src", "./ui_image/close_eye.png");
-          passwordField.textContent = "*".repeat(passwordField.dataset.password.length); // 非表示
-        }
-      });
-      document.getElementById("toggleId").addEventListener('click', function() {
-        const imgElement = this;
-        const idField = document.getElementById("idField");
-        const currentSrc = imgElement.getAttribute("src");
-
-        if (currentSrc === "./ui_image/close_eye.png") {
-          imgElement.setAttribute("src", "./ui_image/open_eye.png");
-          idField.textContent = idField.dataset.id;
-        } else {
-          imgElement.setAttribute("src", "./ui_image/close_eye.png");
-          idField.textContent = "*".repeat(idField.dataset.id.length);
-        }
-      });
-    </script>
   </body>
 </html>

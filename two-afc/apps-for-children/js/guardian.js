@@ -3,6 +3,18 @@ function showSPopup() {
 }
 function hideSPopup() {
   document.getElementById("settingPanel").style.display = "none";
+
+  // 各フィールドをの要素を取得
+  const nameField = document.getElementById("userNameField");
+  const idField = document.getElementById("userIdField");
+
+  // ユーザー名、IDを「*」に戻す
+  nameField.textContent = "*".repeat(nameField.dataset.username.length);
+  idField.textContent = "*".repeat(idField.dataset.userid.length);
+
+  // アイコンを非表示状態に戻す
+  document.getElementById("toggleUserName").setAttribute("src", "./ui_image/close_eye.png");
+  document.getElementById("toggleId").setAttribute("src", "./ui_image/close_eye.png");
 }
 
 document.getElementById("toggleUserName").addEventListener("click", function() {
