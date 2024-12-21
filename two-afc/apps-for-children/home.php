@@ -26,8 +26,98 @@ if ($userId === null) {
 $stmt = $pdo->prepare("SELECT id, username, email FROM users WHERE id = :id");
 $stmt->bindParam(":id", $userId);
 $stmt->execute();
-
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// POSTリクエストで更新処理が送信された場合
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  try {
+    // JSONデータを受け取る
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    // 更新するフィールドと新しい値
+    if (isset($input['field']) && isset($input['newValue'])) {
+      $field = $input['field'];
+      $newValue = $input['newValue'];
+
+      $pdo->beginTransaction();  // トランザクション開始
+
+      if ($field === 'nameField') {
+        // ユーザー名の更新処理
+
+        // ユーザーIDに基づいて現在のユーザー名を取得
+        $stmt = $pdo->prepare("SELECT username FROM users WHERE id = :id");
+        $stmt->bindParam(":id", $userId);
+        $stmt->execute();
+        $oldUsername = $stmt->fetchColumn(); // 現在のユーザー名
+
+        if (!$oldUsername) {
+          // ユーザーが見つからなかった場合
+          throw new Exception("ユーザーが見つかりませんでした。");
+        }
+
+        // ユーザー名が既に存在するかをチェック
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username AND id != :id");
+        $stmt->bindParam(":username", $newValue);
+        $stmt->bindParam(":id", $userId);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+
+        if ($count > 0) {
+          // ユーザー名がすでに存在する場合は、エラーメッセージを返す
+          echo json_encode(['success' => false, 'error' => 'このユーザー名は既に使用されています。']);
+          exit();
+        }
+
+        // 最初に、users テーブルの username を更新
+        $stmt = $pdo->prepare("UPDATE users SET username = :username WHERE id = :id");
+        $stmt->bindParam(":username", $newValue);
+        $stmt->bindParam(":id", $userId);
+        if (!$stmt->execute()) {
+          throw new Exception("users テーブルの更新に失敗しました。");
+        }
+
+        // 次に、categories テーブルの関連するレコードを更新
+        $stmt = $pdo->prepare("UPDATE categories SET username = :newUsername WHERE username = :oldUsername");
+        $stmt->bindParam(":newUsername", $newValue);
+        $stmt->bindParam(":oldUsername", $oldUsername);
+        if (!$stmt->execute()) {
+          throw new Exception("categories テーブルの更新に失敗しました。");
+        }
+
+        // さらに、study_data テーブルの関連するレコードを更新
+        $stmt = $pdo->prepare("UPDATE study_data SET username = :newUsername WHERE username = :oldUsername");
+        $stmt->bindParam(":newUsername", $newValue);
+        $stmt->bindParam(":oldUsername", $oldUsername);
+        if (!$stmt->execute()) {
+          throw new Exception("study_data テーブルの更新に失敗しました。");
+        }
+      } elseif ($field === 'passwordField') {
+        // パスワードの更新処理
+        $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
+        $newValue = password_hash($newValue, PASSWORD_DEFAULT); // パスワードをハッシュ化
+        $stmt->bindParam(":password", $newValue);
+        $stmt->bindParam(":id", $userId);
+        if (!$stmt->execute()) {
+          throw new Exception("パスワードの更新に失敗しました。");
+        }
+      }
+
+      $pdo->commit();  // トランザクション確定
+
+      // 成功レスポンス
+      echo json_encode(['success' => true]);
+    } else {
+      // 必要なデータが不足している場合
+      throw new Exception('Invalid data received.');
+    }
+  } catch (Exception $e) {
+    $pdo->rollBack();  // エラー発生時にロールバック
+    // エラーが発生した場合、エラーメッセージを返す
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+  }
+  exit();
+}
+
 $passwordHidden = str_repeat('*', strlen($_SESSION['password'] ?? ''));
 $idHidden = str_repeat('*', strlen($user['id'] ?? ''));
 $nameHidden = str_repeat('*', strlen($user['username'] ?? ''));
@@ -69,7 +159,7 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
             <pre class="code-block" id="nameField" data-name="<?php echo htmlspecialchars($user['username']); ?>"><?php echo $nameHidden; ?></pre></p>
           <p>ユーザーID: 
             <img class="hide_show_Id" id="toggleId" src="./ui_image/close_eye.png">
-            <pre class="code-block" id="idField" data-id="<?php echo htmlspecialchars($user['id']); ?>"><?php echo $idHidden; ?></pre></p> <!--$user['id']-->
+            <pre class="code-block" id="idField" data-id="<?php echo htmlspecialchars($user['id']); ?>"><?php echo $idHidden; ?></pre></p>
           <p>メールアドレス: 
             <img class="hide_show_Email" id="toggleEmail" src="./ui_image/close_eye.png">
             <pre class="code-block" id="emailField" data-email="<?php echo htmlspecialchars($user['email']); ?>"><?php echo $emailHidden; ?></pre></p>
