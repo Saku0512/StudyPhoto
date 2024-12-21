@@ -190,10 +190,20 @@ main {
     font-size: 25px;
   }
 }
-.hide_show_Pass, .hide_show_Id, .editPass, .editName {
+.hide_show_Pass, .hide_show_Id, .hide_show_Name, .hide_show_Email, .check-icon, .editPass, .editName {
   height: 1em; /* テキストの高さに合わせる */
   width: auto; /* 縦横比を保つ */
   vertical-align: middle; /* テキストの中央に揃える */
+}
+
+.edit-input {
+  width: 200px;
+  font-size: 30px;
+}
+
+.check-icon {
+  margin-left: 10px;
+  cursor: pointer;
 }
 /* ポップアップ */
 .popup {
