@@ -148,11 +148,13 @@ function toggleEdit(imgElement, targetFieldId) {
       checkImg.addEventListener('click', function() {
         const inputElement = document.getElementById(targetFieldId);
         saveEdit(inputElement, targetFieldId);
-      
-        // cross_mark.png を削除
-        const crossImg = imgElement.parentElement.querySelector("img[src='./ui_image/check_mark.png']");
-        if (crossImg) {
-          crossImg.remove();
+
+        // cross_mark.png を pencil.png に戻す
+        imgElement.setAttribute("src", "./ui_image/pencil.png");
+
+        // check_mark.png を削除
+        if (checkImg) {
+          checkImg.remove();
         }
       });
     }
