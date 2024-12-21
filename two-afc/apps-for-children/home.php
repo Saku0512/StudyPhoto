@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("UPDATE categories SET username = :newUsername WHERE username = :oldUsername");
         $stmt->bindParam(":newUsername", $newValue);
         $stmt->bindParam(":oldUsername", $oldUsername);
+        
         if (!$stmt->execute()) {
           throw new Exception("categories テーブルの更新に失敗しました。");
         }
