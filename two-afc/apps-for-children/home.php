@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("UPDATE categories SET username = :newUsername WHERE username = :oldUsername");
         $stmt->bindParam(":newUsername", $newValue);
         $stmt->bindParam(":oldUsername", $oldUsername);
-        
+
         if (!$stmt->execute()) {
           throw new Exception("categories テーブルの更新に失敗しました。");
         }
@@ -123,6 +123,7 @@ $passwordHidden = str_repeat('*', strlen($_SESSION['password'] ?? ''));
 $idHidden = str_repeat('*', strlen($user['id'] ?? ''));
 $nameHidden = str_repeat('*', strlen($user['username'] ?? ''));
 $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
