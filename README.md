@@ -3,7 +3,7 @@
 two-afcディレクトリの中の、apps-for-childrenディレクトリで基本操作してほしい。<br>
 # 進捗 <br>
 <del>・ホーム画面UI →佑作 </del><br>
-・ホーム画面動作 → 佑作 <br>
+<del>・ホーム画面動作 → 佑作 </del><br>
 <del>・タイマー画面UI → 千慈 </del><br>
 <del>・タイマー画面動作 → 千慈 </del><br>
 <del>・登録画面UI → 倖誠 </del><br>
