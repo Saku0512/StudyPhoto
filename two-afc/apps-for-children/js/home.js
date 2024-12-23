@@ -182,7 +182,7 @@ function saveEdit(inputElement, targetFieldId) {
   };
 
   // fetchを使ってデータをPHPに送信
-  fetch('../home.php', {
+  fetch('./home.php', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
