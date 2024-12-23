@@ -223,3 +223,35 @@ function restoreText(inputElement, targetFieldId) {
     console.error("原本の値が存在しません: " + targetFieldId);
   }
 }
+
+// すべてのコピーアイコンにイベントリスナーを追加
+document.querySelectorAll('.copyName, .copyId, .copyEmail, .copyPass').forEach(function (icon) {
+  icon.addEventListener('click', function () {
+    let fieldId;
+    let fieldName;  // アラート用のフィールド名
+
+    if (icon.classList.contains('copyName')) {
+      fieldId = 'nameField';
+      fieldName = 'ユーザー名';
+    } else if (icon.classList.contains('copyId')) {
+      fieldId = 'idField';
+      fieldName = 'ユーザーID';
+    } else if (icon.classList.contains('copyEmail')) {
+      fieldId = 'emailField';
+      fieldName = 'メールアドレス';
+    } else {
+      fieldId = 'passwordField';
+      fieldName = 'パスワード';
+    }
+
+    // 該当フィールドのテキストを取得
+    const text = document.getElementById(fieldId).getAttribute('data-' + fieldId.replace('Field', ''));
+
+    // クリップボードにコピー
+    navigator.clipboard.writeText(text).then(function () {
+      alert(fieldName + 'をクリップボードにコピーしました。');
+    }).catch(function (err) {
+      console.error('コピーに失敗しました:', err);
+    });
+  });
+});
