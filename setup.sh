@@ -113,6 +113,18 @@ CREATE TABLE IF NOT EXISTS study_data (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+ALTER TABLE categories DROP FOREIGN KEY categories_ibfk_1;
+ALTER TABLE categories ADD CONSTRAINT categories_ibfk_1 
+FOREIGN KEY (username) REFERENCES users(username) 
+ON UPDATE CASCADE;
+
+ALTER TABLE study_data DROP FOREIGN KEY fk_study_data_username;
+
+ALTER TABLE study_data
+ADD CONSTRAINT fk_study_data_username
+FOREIGN KEY (username) REFERENCES users(username)
+ON DELETE CASCADE;
+
 # 6. 権限の再ロード
 FLUSH PRIVILEGES;
 

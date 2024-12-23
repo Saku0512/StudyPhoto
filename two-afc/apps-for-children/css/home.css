@@ -190,7 +190,7 @@ main {
     font-size: 25px;
   }
 }
-.hide_show_Pass, .hide_show_Id, .hide_show_Name, .hide_show_Email, .check-icon, .editPass, .editName {
+.hide_show_Pass, .hide_show_Id, .hide_show_Name, .hide_show_Email, .check-icon, .editPass, .editName, .copyName, .copyId, .copyEmail, .copyPass {
   height: 1em; /* テキストの高さに合わせる */
   width: auto; /* 縦横比を保つ */
   vertical-align: middle; /* テキストの中央に揃える */

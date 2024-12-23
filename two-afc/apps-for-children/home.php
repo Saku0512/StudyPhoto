@@ -158,16 +158,20 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
           <p>ユーザー名: 
             <img class="hide_show_Name" id="toggleName" src="./ui_image/close_eye.png">
             <img class="editName" id="editName" src="./ui_image/pencil.png">
+            <img class="copyName" id="copyName" src="./ui_image/copy_mark.png">
             <pre class="code-block" id="nameField" data-name="<?php echo htmlspecialchars($user['username']); ?>"><?php echo $nameHidden; ?></pre></p>
           <p>ユーザーID: 
             <img class="hide_show_Id" id="toggleId" src="./ui_image/close_eye.png">
+            <img class="copyId" id="copyId" src="./ui_image/copy_mark.png">
             <pre class="code-block" id="idField" data-id="<?php echo htmlspecialchars($user['id']); ?>"><?php echo $idHidden; ?></pre></p>
           <p>メールアドレス: 
             <img class="hide_show_Email" id="toggleEmail" src="./ui_image/close_eye.png">
+            <img class="copyEmail" id="copyEmail" src="./ui_image/copy_mark.png">
             <pre class="code-block" id="emailField" data-email="<?php echo htmlspecialchars($user['email']); ?>"><?php echo $emailHidden; ?></pre></p>
           <p>パスワード: 
             <img class="hide_show_Pass" id="togglePass" src="./ui_image/close_eye.png">
             <img class="editPass" id="editPass" src="./ui_image/pencil.png">
+            <img class="copyPass" id="copyPass" src="./ui_image/copy_mark.png">
             <pre class="code-block" id="passwordField" data-password="<?php echo htmlspecialchars($_SESSION['password']); ?>"><?php echo $passwordHidden; ?></pre></p>
           <div class="button-container2">
             <button onclick="hideSPopup()">閉じる</button>
