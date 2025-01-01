@@ -30,7 +30,7 @@ try {
     $sql = "SELECT study_time, created_at, images, SspentTime
             FROM study_data 
             WHERE username = :username 
-              AND category = :category";
+            AND category = :category";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':username', $username, PDO::PARAM_STR);
     $stmt->bindParam(':category', $category, PDO::PARAM_STR);
@@ -39,10 +39,10 @@ try {
     $images = [];
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $images[] = [
-          'study_time' => $row['study_time'],
-          'study_date' => $row['created_at'],
-          'image_path' => $row['images'],
-          'SspentTime' => $row['SspentTime']
+            'study_time' => $row['study_time'],
+            'study_date' => $row['created_at'],
+            'image_path' => $row['images'],
+            'SspentTime' => $row['SspentTime']
         ]; // パスを格納
     }
 

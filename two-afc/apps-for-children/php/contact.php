@@ -58,11 +58,11 @@ if (isset($_POST['back']) && $_POST['back']) {
 } else if (isset($_POST['send']) && $_POST['send']) {
     // 送信ボタンを押したとき
     $massage = 
-      "お問い合わせを受け付けました。\r\n"
-      . "お名前: " . $_SESSION['fullname'] . "\r\n"
-      . "email: " . $_SESSION['email'] . "\r\n"
-      . "お問い合わせ内容:\r\n"
-      . $_SESSION['message'];
+        "お問い合わせを受け付けました。\r\n"
+        . "お名前: " . $_SESSION['fullname'] . "\r\n"
+        . "email: " . $_SESSION['email'] . "\r\n"
+        . "お問い合わせ内容:\r\n"
+        . $_SESSION['message'];
 
     // メール送信
     require 'vendor/autoload.php';
@@ -94,7 +94,7 @@ if (isset($_POST['back']) && $_POST['back']) {
         $_SESSION = array(); // セッションをリセット
         $mode = 'send';
     } catch (Exception $e) {
-        $errmessage[] = "メール送信に失敗しました。再度お試しください。 {$mail->ErrorInfo}";
+        $errmessage[] = "メール送信に失敗しました。再度お試しくください。 {$mail->ErrorInfo}";
         $mode = 'input';
     }
 }
@@ -119,7 +119,7 @@ if (isset($_POST['back']) && $_POST['back']) {
         <?php if ($mode == 'input') { ?>
             <!-- 入力画面 -->
             <?php if ($errmessage): ?>
-                <div style="color:red"><?php echo implode('<br>', $errmessage); ?></div>
+            <div style="color:red"><?php echo implode('<br>', $errmessage); ?></div>
             <?php endif; ?>
             <form method="post" action="./contact.php">
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">

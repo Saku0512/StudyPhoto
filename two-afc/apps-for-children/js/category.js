@@ -82,11 +82,11 @@ function addOption() {
     }
 
     fetch('../../php/category/add_category.php', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: `category_name=${encodeURIComponent(optionName)}`
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `category_name=${encodeURIComponent(optionName)}`
     })
     .then(response => {
         console.log('Response Status:', response.status); // ステータスコードを表示
@@ -112,46 +112,46 @@ function addOption() {
 }
 
 function editOption() {
-  const oldOptionName = document.getElementById('editOptionSelect').value;
-  const newOptionName = document.getElementById('editOptionName').value;
+    const oldOptionName = document.getElementById('editOptionSelect').value;
+    const newOptionName = document.getElementById('editOptionName').value;
 
 
-  if (!oldOptionName || !newOptionName) {
-      alert("変更する教科名を選択し、新しい教科名を入力してください。");
-      return;
-  }
+    if (!oldOptionName || !newOptionName) {
+        alert("変更する教科名を選択し、新しい教科名を入力してください。");
+        return;
+    }
 
-  fetch('../../php/category/edit_category.php', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: `old_category_name=${encodeURIComponent(oldOptionName)}&new_category_name=${encodeURIComponent(newOptionName)}`
-  })
-  .then(response => {
-      console.log('Response Status:', response.status); // ステータスコードを表示
-      if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.text(); // レスポンスをJSONとして取得
-  })
-  .then(text => {
-    console.log('Raw Response:', text); // サーバーからのレスポンスを確認
-    return JSON.parse(text);
-  })
-  .then(data => {
-      console.log('Response Data:', data); // レスポンス内容を表示
-      if (data.status === "success") {
-          alert("カテゴリーが変更されました。");
-          hidePopup();
-          loadCategories(); // カテゴリー一覧を更新
-      } else {
-          alert(data.message); // エラーメッセージを表示
-      }
-  })
-  .catch(error => {
-      console.error('Error editing category:', error);
-  });
+    fetch('../../php/category/edit_category.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `old_category_name=${encodeURIComponent(oldOptionName)}&new_category_name=${encodeURIComponent(newOptionName)}`
+    })
+    .then(response => {
+        console.log('Response Status:', response.status); // ステータスコードを表示
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text(); // レスポンスをJSONとして取得
+    })
+    .then(text => {
+        console.log('Raw Response:', text); // サーバーからのレスポンスを確認
+        return JSON.parse(text);
+    })
+    .then(data => {
+        console.log('Response Data:', data); // レスポンス内容を表示
+        if (data.status === "success") {
+            alert("カテゴリーが変更されました。");
+            hidePopup();
+            loadCategories(); // カテゴリー一覧を更新
+        } else {
+            alert(data.message); // エラーメッセージを表示
+        }
+    })
+    .catch(error => {
+        console.error('Error editing category:', error);
+    });
 }
 function deleteOption() {
     const optionToDelete = document.getElementById('deleteOptionSelect').value;
@@ -183,268 +183,269 @@ function deleteOption() {
 }
 
 function loadCategories() {
-  fetch('../../php/category/get_category.php', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+    fetch('../../php/category/get_category.php', {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+    })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
     })
     .then(categoryData => {
-      // Ensure categoryData is an array
-      if (Array.isArray(categoryData)) {
-        const currentPage = window.location.pathname;
+        // Ensure categoryData is an array
+        if (Array.isArray(categoryData)) {
+            const currentPage = window.location.pathname;
 
-        if (currentPage.includes("record_note.html")) {
-          const noteSection = document.getElementById("noteSection");
-          if (!noteSection) return;
+            if (currentPage.includes("record_note.html")) {
+                const noteSection = document.getElementById("noteSection");
+                if (!noteSection) return;
 
-          noteSection.innerHTML = "";
+                noteSection.innerHTML = "";
 
-          categoryData.forEach(item => {
-            const imageElement = document.createElement('div');
-            imageElement.classList.add('image-container');
+                categoryData.forEach(item => {
+                    const imageElement = document.createElement('div');
+                    imageElement.classList.add('image-container');
 
-            // 画像を表示
-            const img = document.createElement('img');
-            img.src = '../../ui_image/file_close.png';
-            img.alt = `${item.category_name}の画像`;
-            img.classList.add('category-image', item.category_name);
+                    // 画像を表示
+                    const img = document.createElement('img');
+                    img.src = '../../ui_image/file_close.png';
+                    img.alt = `${item.category_name}の画像`;
+                    img.classList.add('category-image', item.category_name);
 
-            // 画像クリックイベント
-            img.addEventListener('click', () => {
-              const clickedClassName = item.category_name;
-              const imageClassName = img.classList.contains(clickedClassName);
+                    // 画像クリックイベント
+                    img.addEventListener('click', () => {
+                        const clickedClassName = item.category_name;
+                        const imageClassName = img.classList.contains(clickedClassName);
 
-              if (imageClassName) {
-                const closedImage = '../../ui_image/file_close.png';
-                const openedImage = '../../ui_image/file_open.png';
+                        if (imageClassName) {
+                            const closedImage = '../../ui_image/file_close.png';
+                            const openedImage = '../../ui_image/file_open.png';
 
-                // 画像を切り替え
-                img.src = img.src.includes('file_close.png') ? openedImage : closedImage;
+                            // 画像を切り替え
+                            img.src = img.src.includes('file_close.png') ? openedImage : closedImage;
 
-                // ポップアップに画像を表示
-                fetchStudyImages(clickedClassName);
-              } else {
-                console.log(`一致しない: ${clickedClassName} vs ${imageClassName}`);
-              }
-            });
+                            // ポップアップに画像を表示
+                            fetchStudyImages(clickedClassName);
+                        } else {
+                            console.log(`一致しない: ${clickedClassName} vs ${imageClassName}`);
+                        }
+                    });
+                
 
-            // カテゴリー名を表示
-            const categoryName = document.createElement('span');
-            categoryName.classList.add('category-name');
-            categoryName.textContent = item.category_name;
+                    // カテゴリー名を表示
+                    const categoryName = document.createElement('span');
+                    categoryName.classList.add('category-name');
+                    categoryName.textContent = item.category_name;
 
-            imageElement.appendChild(img);
-            imageElement.appendChild(categoryName);
-            noteSection.appendChild(imageElement);
-          });
+                    imageElement.appendChild(img);
+                    imageElement.appendChild(categoryName);
+                    noteSection.appendChild(imageElement);
+                });
+            } else {
+                const categorySelect = document.getElementById("category");
+                const editcategorySelect = document.getElementById("editOptionSelect");
+                const deletecategorySelect = document.getElementById("deleteOptionSelect");
+                categorySelect.innerHTML = '<option value="0">--教科を選択--</option>';
+                editcategorySelect.innerHTML = '<option value="0">--変更する教科を選択--</option>';
+                deletecategorySelect.innerHTML = '<option value="0">--削除する教科を選択--</option>';
+
+                // Ensure categoryData is an array before using .forEach()
+                categoryData.forEach(item => {
+                    const option = document.createElement("option");
+                    option.textContent = item.category_name;
+                    categorySelect.appendChild(option);
+                });
+
+                categoryData.forEach(item => {
+                    const option = document.createElement("option");
+                    option.textContent = item.category_name;
+                    editcategorySelect.appendChild(option);
+                });
+
+                categoryData.forEach(item => {
+                    const option = document.createElement("option");
+                    option.textContent = item.category_name;
+                    deletecategorySelect.appendChild(option);
+                });
+            }
         } else {
-          const categorySelect = document.getElementById("category");
-          const editcategorySelect = document.getElementById("editOptionSelect");
-          const deletecategorySelect = document.getElementById("deleteOptionSelect");
-          categorySelect.innerHTML = '<option value="0">--教科を選択--</option>';
-          editcategorySelect.innerHTML = '<option value="0">--変更する教科を選択--</option>';
-          deletecategorySelect.innerHTML = '<option value="0">--削除する教科を選択--</option>';
-          
-          // Ensure categoryData is an array before using .forEach()
-          categoryData.forEach(item => {
-            const option = document.createElement("option");
-            option.textContent = item.category_name;
-            categorySelect.appendChild(option);
-          });
-
-          categoryData.forEach(item => {
-            const option = document.createElement("option");
-            option.textContent = item.category_name;
-            editcategorySelect.appendChild(option);
-          });
-
-          categoryData.forEach(item => {
-            const option = document.createElement("option");
-            option.textContent = item.category_name;
-            deletecategorySelect.appendChild(option);
-          });
+            console.error('Invalid category data received:', categoryData);
         }
-      } else {
-        console.error('Invalid category data received:', categoryData);
-      }
     })
     .catch(error => console.error('Error loading categories:', error));
 }
 
 // study_data テーブルから画像を取得し、ポップアップに表示
 function fetchStudyImages(categoryName) {
-  if (!categoryName) {
-    console.error('Category name is missing');
-    return;
-  }
+    if (!categoryName) {
+        console.error('Category name is missing');
+        return;
+    }
 
-  fetch(`../../php/record/note.php?category=${encodeURIComponent(categoryName)}`)
+    fetch(`../../php/record/note.php?category=${encodeURIComponent(categoryName)}`)
     .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok: ' + response.status);
-      }
-      const contentType = response.headers.get("Content-Type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("Expected JSON response, but got " + contentType);
-      }
-      return response.json();
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.status);
+        }
+        const contentType = response.headers.get("Content-Type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error("Expected JSON response, but got " + contentType);
+        }
+        return response.json();
     })
     .then(data => {
-      if (data.error) {
-        throw new Error(data.error);
-      }
+        if (data.error) {
+            throw new Error(data.error);
+        }
 
-      // nullチェックを追加
-      const popupContent = document.getElementById("popupContent");
-      const popupText = document.getElementById("popupText");
+        // nullチェックを追加
+        const popupContent = document.getElementById("popupContent");
+        const popupText = document.getElementById("popupText");
 
-      if (!popupContent || !popupText) {
-        console.error("Popup elements not found.");
-        return;
-      }
+        if (!popupContent || !popupText) {
+            console.error("Popup elements not found.");
+            return;
+        }
 
-      // 既存のテキストをクリア
-      popupText.innerHTML = ''; // これで以前のテキストを消去
+        // 既存のテキストをクリア
+        popupText.innerHTML = ''; // これで以前のテキストを消去
 
-      popupText.textContent = `選択されたカテゴリー: ${categoryName}`;
+        popupText.textContent = `選択されたカテゴリー: ${categoryName}`;
 
-      if (data.images && data.images.length > 0) {
-        const table = document.createElement('table');
-        const tableHeader = document.createElement('thead');
-        const tableBody = document.createElement('tbody');
+        if (data.images && data.images.length > 0) {
+            const table = document.createElement('table');
+            const tableHeader = document.createElement('thead');
+            const tableBody = document.createElement('tbody');
 
-        const headerRow = document.createElement('tr');
-        const headers = ['勉強日', '勉強時間', '画像リンク'];
-        headers.forEach(headerText => {
-          const th = document.createElement('th');
-          th.textContent = headerText;
-          headerRow.appendChild(th);
-        });
-        tableHeader.appendChild(headerRow);
-        table.appendChild(tableHeader);
+            const headerRow = document.createElement('tr');
+            const headers = ['勉強日', '勉強時間', '画像リンク'];
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+            table.appendChild(tableHeader);
 
-        data.images.forEach(imageData => {
-          const row = document.createElement('tr');
+            data.images.forEach(imageData => {
+                const row = document.createElement('tr');
         
-          // 勉強日
-          const studyDateCell = document.createElement('td');
-          const studyDate = new Date(imageData.study_date); // Dateオブジェクトに変換
-          const formattedDate = studyDate.toLocaleDateString('ja-JP'); // 'yyyy/MM/dd'形式で取得
-          // SspentTimeが文字列の場合、コンマで分割して改行を挿入
-          let formattedSpendTime = imageData.SspentTime;
-          if (typeof formattedSpendTime === 'string') {
-            // コンマで分割し、それぞれの要素を改行で区切る
-            formattedSpendTime = formattedSpendTime.split(',').join(',<br>'); // 文字列をコンマで分割し、改行を挿入
-          } else if (Array.isArray(formattedSpendTime)) {
-            // すでに配列の場合はそのまま改行を挿入
-            formattedSpendTime = formattedSpendTime.join('<br>');
-          }
+                // 勉強日
+                const studyDateCell = document.createElement('td');
+                const studyDate = new Date(imageData.study_date); // Dateオブジェクトに変換
+                const formattedDate = studyDate.toLocaleDateString('ja-JP'); // 'yyyy/MM/dd'形式で取得
+                // studyTimeが文字列の場合、コンマで分割して改行を挿入
+                let formattedSpendTime = imageData.study_time;
+                if (typeof formattedSpendTime === 'string') {
+                    // コンマで分割し、それぞれの要素を改行で区切る
+                    formattedSpendTime = formattedSpendTime.split(',').join(',<br>');
+                } else if (Array.isArray(formattedSpendTime)) {
+                    // すでに配列の場合はそのまま改行を挿入
+                    formattedSpendTime = formattedSpendTime.join('<br>');
+                }
 
-          studyDateCell.innerHTML = formattedDate + '<br>' + formattedSpendTime; // 日付と改行された時間帯を表示
-          row.appendChild(studyDateCell);
-          console.log(formattedSpendTime);
+                studyDateCell.innerHTML = formattedDate + '<br>' + formattedSpendTime; // 日付と改行された時間帯を表示
+                row.appendChild(studyDateCell);
+                console.log(formattedSpendTime);
 
-          // 勉強時間
-          const studyTimeCell = document.createElement('td');
-          studyTimeCell.textContent = imageData.study_time;
-          row.appendChild(studyTimeCell);
+                // 勉強時間
+                const studyTimeCell = document.createElement('td');
+                studyTimeCell.textContent = imageData.study_time;
+                row.appendChild(studyTimeCell);
         
-          // 画像リンク
-          const imageLinkCell = document.createElement('td');
-          const imageLink = document.createElement('a');
+                // 画像リンク
+                const imageLinkCell = document.createElement('td');
+                const imageLink = document.createElement('a');
         
-          // Base64デコードしてパスを取得
-          if (imageData.image_path) {
-            try {
-              const decodedUrl = Base64.decode(imageData.image_path);  // Base64デコード
-              const imagePath = decodedUrl.replace('/var/www/html', '');  // パスの置換
+                // Base64デコードしてパスを取得
+                if (imageData.image_path) {
+                    try {
+                        const decodedUrl = Base64.decode(imageData.image_path);  // Base64デコード
+                        const imagePath = decodedUrl.replace('/var/www/html', '');  // パスの置換
         
-              imageLink.textContent = '画像リンク';
-              imageLink.href = imagePath;
+                        imageLink.textContent = '画像リンク';
+                        imageLink.href = imagePath;
         
-              // クリックイベントで画像をポップアップ表示
-              imageLink.addEventListener('click', (event) => {
-                event.preventDefault();
-                openImageInPopup(imagePath);
-              });
+                        // クリックイベントで画像をポップアップ表示
+                        imageLink.addEventListener('click', (event) => {
+                            event.preventDefault();
+                            openImageInPopup(imagePath);
+                        });
         
-              imageLinkCell.appendChild(imageLink);
-            } catch (error) {
-              console.error('Failed to decode Base64 URL:', error);
-              imageLinkCell.textContent = '画像の読み込みに失敗しました';
-            }
-          } else {
-            imageLinkCell.textContent = '画像なし';
-          }
+                        imageLinkCell.appendChild(imageLink);
+                    } catch (error) {
+                        console.error('Failed to decode Base64 URL:', error);
+                        imageLinkCell.textContent = '画像の読み込みに失敗しました';
+                    }
+                } else {
+                    imageLinkCell.textContent = '画像なし';
+                }
         
-          row.appendChild(imageLinkCell);
-          tableBody.appendChild(row);
-        });
+                row.appendChild(imageLinkCell);
+                tableBody.appendChild(row);
+            });
 
-        table.appendChild(tableBody);
-        popupText.appendChild(table); // ここでpopupTextにテーブルを追加
-      } else {
-        popupText.innerHTML = '<p>画像が見つかりませんでした。</p>';
-      }
+            table.appendChild(tableBody);
+            popupText.appendChild(table); // ここでpopupTextにテーブルを追加
+        } else {
+            popupText.innerHTML = '<p>画像が見つかりませんでした。</p>';
+        }
 
-      document.getElementById("popupOverlay").style.display = "block";
-      popupContent.style.display = "block";
+        document.getElementById("popupOverlay").style.display = "block";
+        popupContent.style.display = "block";
     })
     .catch(error => {
-      console.error('Error fetching study images:', error);
-      const popupContent = document.getElementById("popupContent");
-      popupContent.innerHTML = '<p>画像の読み込み中にエラーが発生しました。</p>';
-      document.getElementById("popupOverlay").style.display = "block";
-      popupContent.style.display = "block";
+        console.error('Error fetching study images:', error);
+        const popupContent = document.getElementById("popupContent");
+        popupContent.innerHTML = '<p>画像の読み込み中にエラーが発生しました。</p>';
+        document.getElementById("popupOverlay").style.display = "block";
+        popupContent.style.display = "block";
     });
 }
 
 function openImageInPopup(imagePath) {
-  const popupImage = document.createElement('img');
-  popupImage.src = imagePath;
-  popupImage.alt = '画像';
-  popupImage.classList.add('popup-image-large');
+    const popupImage = document.createElement('img');
+    popupImage.src = imagePath;
+    popupImage.alt = '画像';
+    popupImage.classList.add('popup-image-large');
 
-  const popupOverlay = document.getElementById('popupOverlay');
-  const popupContent = document.getElementById('popupContent');
-  //popupContent.innerHTML = ''; // 既存のコンテンツをクリア
-  popupContent.appendChild(popupImage);
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupContent = document.getElementById('popupContent');
+    //popupContent.innerHTML = ''; // 既存のコンテンツをクリア
+    popupContent.appendChild(popupImage);
 
-  popupOverlay.style.display = 'block';
-  popupContent.style.display = 'block';
+    popupOverlay.style.display = 'block';
+    popupContent.style.display = 'block';
 }
 
 // ポップアップを非表示にし、画像をリセット
 function hidePopup_category() {
-  document.getElementById("popupOverlay").style.display = "none";
-  document.getElementById("popupContent").style.display = "none";
+    document.getElementById("popupOverlay").style.display = "none";
+    document.getElementById("popupContent").style.display = "none";
 
   // 画像のみを削除
-  const popupContent = document.getElementById("popupContent");
-  const images_remove = popupContent.querySelectorAll('img');
-  images_remove.forEach(img => {
-    img.remove();  // imgタグを削除
-  });
+    const popupContent = document.getElementById("popupContent");
+    const images_remove = popupContent.querySelectorAll('img');
+    images_remove.forEach(img => {
+        img.remove();  // imgタグを削除
+    });
 
-  const images = document.querySelectorAll('.category-image');
-  images.forEach(img => {
-    if (img.src.includes('file_open.png')) {
-      img.src = '../../ui_image/file_close.png';
-    }
-  });
+    const images = document.querySelectorAll('.category-image');
+    images.forEach(img => {
+        if (img.src.includes('file_open.png')) {
+            img.src = '../../ui_image/file_close.png';
+        }
+    });
 }
 
 // ページが読み込まれたときにカテゴリーを読み込む
 window.onload = function () {
-  loadCategories();
+    loadCategories();
 };
 document.addEventListener('DOMContentLoaded', function () {
-  loadCategories();
+    loadCategories();
 });

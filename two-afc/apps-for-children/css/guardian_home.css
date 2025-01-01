@@ -1,149 +1,182 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box; /* サイズ計算を正確にする */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* サイズ計算を正確にする */
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden; /* 横スクロールを非表示にする */
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden; /* 横スクロールを非表示にする */
 }
 
 body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 main {
-  height: 100vh;
-  width: 100vw;
+    height: 100vh;
+    width: 100vw;
 }
 
 .footer {
-  margin-top: auto;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  gap: 10vw;
+    margin-top: auto;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10vw;
 }
 .footer a , .footer button{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 60px;
-  border-radius: 15px;
-  background-color: #4870BD;
-  color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    border-radius: 15px;
+    background-color: #4870BD;
+    color: white;
 }
 .setting {
-  height: 7vh;
-  width: 37vw;
+    height: 7vh;
+    width: 37vw;
 }
 .settingPanel {
-  display: none; /* 初期状態は非表示 */
-  position: fixed; /* 固定位置 */
-  top: 50%; /* 上からの位置 */
-  left: 50%; /* 左からの位置 */
-  transform: translate(-50%, -50%); /* 中央に配置 */
-  font-size: 30px;
-  width: 80vw; /* 幅 */
-  height: auto; /* 高さは自動 */
-  background-color: white; /* 背景色 */
-  border: 1px solid black; /* ボーダー */
-  padding: 20px; /* 内側の余白 */
-  z-index: 100; /* z-indexを設定して上に表示 */
+    display: none; /* 初期状態は非表示 */
+    position: fixed; /* 固定位置 */
+    top: 50%; /* 上からの位置 */
+    left: 50%; /* 左からの位置 */
+    transform: translate(-50%, -50%); /* 中央に配置 */
+    font-size: 30px;
+    width: 80vw; /* 幅 */
+    height: auto; /* 高さは自動 */
+    background-color: white; /* 背景色 */
+    border: 1px solid black; /* ボーダー */
+    padding: 20px; /* 内側の余白 */
+    z-index: 100; /* z-indexを設定して上に表示 */
 }
 
 .settingPanel button {
-  height: 7vh;
-  width: 37vw;
-  font-size: 30px;
-  border-radius: 5px;
+    height: 7vh;
+    width: 37vw;
+    font-size: 30px;
+    border-radius: 5px;
 }
 .settingPanel .button-container2 {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  gap: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
 }
 
 /* スマホ向け設定パネルスタイル */
 @media (max-width: 600px) {
-  .button-container2 {
-    flex-direction: column;
-    gap: 15px;
-  }
-  .button-container2 button {
-    width: 100%;
-    height: 50px;
-    font-size: 20px;
-  }
+    .button-container2 {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .button-container2 button {
+        width: 100%;
+        height: 50px;
+        font-size: 20px;
+    }
 }
 
 /* タブレット向け設定パネルスタイル */
 @media (min-width: 601px) and (max-width: 900px) {
-  .button-container2 {
-    flex-direction: column;
-    gap: 15px;
-  }
-  .button-container2 button {
-    width: 100%;
-    height: 50px;
-    font-size: 25px;
-  }
+    .button-container2 {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .button-container2 button {
+        width: 100%;
+        height: 50px;
+        font-size: 25px;
+    }
 }
 
 .contact {
-  height: 7vh;
-  width: 37vw;
-  text-decoration: none;
+    height: 7vh;
+    width: 37vw;
+    text-decoration: none;
 }
 .popup {
-  display: none;
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 84vw;
-  height: 35vh;
-  background-color: white;
-  border: 1px solid black;
-  padding: 20px;
-  z-index: 100;
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 84vw;
+    height: 35vh;
+    background-color: white;
+    border: 1px solid black;
+    padding: 20px;
+    z-index: 100;
 }
 .popup.active {
-  display: block;
+    display: block;
 }
 .popup .tab a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 10vh;
-  width: 50vw;
-  border-radius: 15px;
-  text-decoration: none;
-  text-align: center;
-  font-size: 60px;
-  text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10vh;
+    width: 50vw;
+    border-radius: 15px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 60px;
+    text-decoration: none;
 }
 
 /* 設定画面のコード風に出力 */
 .code-block {
-  background-color: #2c2f33; /* 灰色背景 */
-  color: #ffffff;          /* 白文字 */
-  padding: 8px;            /* 内側の余白 */
-  border-radius: 5px;      /* 角丸 */
-  font-family: 'Courier New', monospace; /* 等幅フォント */
-  overflow-x: auto;        /* 横スクロールを許可 */
-  margin: 8px 0;           /* 上下の間隔 */
+    background-color: #2c2f33; /* 灰色背景 */
+    color: #ffffff;          /* 白文字 */
+    padding: 8px;            /* 内側の余白 */
+    border-radius: 5px;      /* 角丸 */
+    font-family: 'Courier New', monospace; /* 等幅フォント */
+    overflow-x: auto;        /* 横スクロールを許可 */
+    margin: 8px 0;           /* 上下の間隔 */
 }
 
 .hide_show_userName, .hide_show_id {
-  height: 1em; /* テキストの高さに合わせる */
-  width: auto; /* 縦横比を保つ */
-  vertical-align: middle; /* テキストの中央に揃える */
+    height: 1em; /* テキストの高さに合わせる */
+    width: auto; /* 縦横比を保つ */
+    vertical-align: middle; /* テキストの中央に揃える */
+}
+
+#studyDataArea {
+    display: block; /* ブロック要素 */
+    margin-top: 2.5vh;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-y: auto; /* 縦にスクロール可能 */
+    overflow-x: hidden; /* 横スクロールを非表示 */
+    max-height: 75vh; /* 縦の7.5割の高さ */
+    height: 75vh; /* 縦の7.5割の高さ */
+    width: 90vw; /* 横の9割の幅 */
+    border: 1px solid #bfbfbf;
+    padding: 10px; /* 少し余白を取る */
+}
+#studyData {
+    width: 100%; /* 表を100%の幅で表示 */
+    margin: 0; /* 不要なマージンを削除 */
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 20px;
+}
+table th, table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+    width: 250px;
+}
+table th {
+    background-color: #f4f4f4;
 }
