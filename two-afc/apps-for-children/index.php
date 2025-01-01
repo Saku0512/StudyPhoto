@@ -275,7 +275,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="guardian_username">子どものユーザー名：</label>
                 <input type="text" id="guardian_username" name="guardian_username" required><br>
                 <label for="guardian_id">子どものID：</label>
-                <input type="text" id="guardian_id" name="guardian_id" required><br>
+                <input type="password" id="guardian_id" name="guardian_id" required><br>
                 <button type="submit" name="guardian">ログイン</button>
             </form>
         </div>
