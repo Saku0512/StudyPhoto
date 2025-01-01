@@ -66,18 +66,18 @@ foreach ($images['tmp_name'] as $key => $tmpName) {
     }
 
     if ($images['size'][$key] > $maxFileSize) {
-      echo json_encode([ 
-        'success' => false, 
-        'error' => 'ファイルサイズが大きすぎます。許可されている最大サイズは ' . ($maxFileSize / 1024 / 1024) . ' MB です。' 
-      ]);
-      exit;
+        echo json_encode([ 
+            'success' => false, 
+            'error' => 'ファイルサイズが大きすぎます。許可されている最大サイズは ' . ($maxFileSize / 1024 / 1024) . ' MB です。' 
+        ]);
+        exit;
     }
     if ($images['error'][$key] === UPLOAD_ERR_INI_SIZE) {
-      echo json_encode([ 
-          'success' => false, 
-          'error' => 'ファイルサイズがサーバーで許可されている最大値を超えています。' 
-      ]);
-      exit;
+        echo json_encode([ 
+            'success' => false, 
+            'error' => 'ファイルサイズがサーバーで許可されている最大値を超えています。' 
+        ]);
+        exit;
     }
 
     // ユニークなファイル名を生成

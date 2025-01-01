@@ -41,5 +41,5 @@ try {
         echo json_encode(["status" => "error", "message" => "カテゴリーが見つかりませんでした。"]);
     }
 } catch (PDOException $e) {
-  echo json_encode(["status" => "error", "message" => "データベースエラー: " . $e->getMessage()]);
+    echo json_encode(["status" => "error", "message" => "データベースエラー: " . $e->getMessage()]);
 }

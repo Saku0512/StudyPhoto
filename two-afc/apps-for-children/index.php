@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $loginStmt->bind_param("ss", $loginUsername, $loginId);
             $loginStmt->execute();
             $loginResult = $loginStmt->get_result();
-          
+
             if ($loginResult->num_rows > 0) {
                 //ログイン成功
                 $guardianUser = $loginResult->fetch_assoc();
