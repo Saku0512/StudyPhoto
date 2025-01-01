@@ -1,181 +1,180 @@
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 body, html {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100vh;
-  width: 100vw;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    width: 100vw;
+    text-align: center;
 }
 .main {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100vh;
-  width: 100vw;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    width: 100vw;
 }
 .tab {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  width: 100%;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
 }
 .tab a, .tab button {
-  font-size: 18px;
-  height: 40px;
-  width: 40px;
-  padding: 10px 20px;
-  margin-right: auto;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative; /* 位置指定を追加 */
+    font-size: 18px;
+    height: 40px;
+    width: 40px;
+    padding: 10px 20px;
+    margin-right: auto;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* 位置指定を追加 */
 }
 .tab a img {
-  height: 65px;
-  width: 65px;
+    height: 65px;
+    width: 65px;
 }
 .tab a.active::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -15px; /* ボーダーの位置を下げるための距離 */
-  height: 2px; /* ボーダーの高さ */
-  background-color: blue; /* ボーダーの色 */
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -15px; /* ボーダーの位置を下げるための距離 */
+    height: 2px; /* ボーダーの高さ */
+    background-color: blue; /* ボーダーの色 */
 }
 .section {
-  width: 100%;
-  margin-top: 10vh;
+    width: 100%;
+    margin-top: 10vh;
 }
 @media (max-width: 600px) {
-  .tab {
-    align-items: center;
-  }
+    .tab {
+        align-items: center;
+    }
 }
 /* 画像のスタイル */
 .study-image {
-  max-width: 100%; /* 画像を親要素に合わせてリサイズ */
-  height: auto;
-  margin: 10px 0;
+    max-width: 100%; /* 画像を親要素に合わせてリサイズ */
+    height: auto;
+    margin: 10px 0;
 }
 
 /* 画像を包むコンテナ */
 .image-container {
-  position: relative; /* 画像とカテゴリー名を重ねるために必要 */
-  display: inline-block; /* 画像とカテゴリー名を横に並べる */
-  margin: 10px;
+    position: relative; /* 画像とカテゴリー名を重ねるために必要 */
+    display: inline-block; /* 画像とカテゴリー名を横に並べる */
+    margin: 10px;
 }
 
 /* 画像のスタイル */
 .category-image {
-  width: calc(500px * 0.7); /* 画像のサイズ  元データ500pxを0.75倍 */
-  height: calc(300px * 0.7); /* 画像のサイズ 元データ300pxを0.75倍*/  
-  object-fit: cover; /* 画像が枠に収まるように調整 */
+    width: calc(500px * 0.7); /* 画像のサイズ  元データ500pxを0.75倍 */
+    height: calc(300px * 0.7); /* 画像のサイズ 元データ300pxを0.75倍*/  
+    object-fit: cover; /* 画像が枠に収まるように調整 */
 }
 
 /* カテゴリー名のスタイル */
 .category-name {
-  position: absolute; /* 画像の上に重ねる */
-  top: 50%; /* 画像の中央に配置 */
-  left: 50%; /* 画像の中央に配置 */
-  transform: translate(-50%, -50%); /* 正確に中央揃えにするために調整 */
-  color: white; /* 文字色 */
-  font-size: 32px;
-  font-weight: bold;
-  text-align: center; /* 中央揃え */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* 文字に影をつけて見やすくする */
+    position: absolute; /* 画像の上に重ねる */
+    top: 50%; /* 画像の中央に配置 */
+    left: 50%; /* 画像の中央に配置 */
+    transform: translate(-50%, -50%); /* 正確に中央揃えにするために調整 */
+    color: white; /* 文字色 */
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center; /* 中央揃え */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* 文字に影をつけて見やすくする */
 }
 /* オーバーレイのスタイル */
 #popupOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: none; /* 初期状態は非表示 */
-  z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none; /* 初期状態は非表示 */
+    z-index: 100;
 }
 
 /* ポップアップコンテンツのスタイル */
 #popupContent {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
-  display: none; /* 初期状態は非表示 */
-  z-index: 101;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+    display: none; /* 初期状態は非表示 */
+    z-index: 101;
 }
 
 /* テキストや追加画像のスタイル */
 #popupText {
-  margin-bottom: 20px;
-  font-size: 16px;
-  color: #333;
-  width: 500px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #333;
+    width: 500px;
 }
 /* 閉じるボタン */
 .close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0;
-  margin: 0;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
 }
 
 .popup-image-large {
-  max-width: 80%;
-  max-height: auto;
-  width: 80%;
-  height: auto;
-  display: block;
-  /*margin: 0 aut*/
+    max-width: 80%;
+    max-height: auto;
+    width: 80%;
+    height: auto;
+    display: block;
+    /*margin: 0 auto;*/
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 tr{
-  width: 250px;
+    width: 250px;
 }
-
 th, td {
-  padding: 8px;
-  text-align: left;
-  border: 1px solid #ddd;
-  width: 250px;
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+    width: 250px;
 }
 
 th {
-  background-color: #f4f4f4;
+    background-color: #f4f4f4;
 }

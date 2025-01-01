@@ -1,137 +1,137 @@
 *{
-  box-sizing: border-box;
-  padding-top: 80;
+    box-sizing: border-box;
+    padding-top: 80;
 }
 @font-face {
-  font-family: 'Corporate-Logo-Medium-ver3';
-  src: url(../font/Corporate-Logo-Medium-ver3.otf) format("opentype");
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'Corporate-Logo-Medium-ver3';
+    src: url(../font/Corporate-Logo-Medium-ver3.otf) format("opentype");
+    font-weight: normal;
+    font-style: normal;
 }
 body{
-  margin: 0;
-  padding: 0;
-  font-family: "Corporate-Logo-Medium-ver3", sans-serif;
-  background-color: white;
-  background: white;
+    margin: 0;
+    padding: 0;
+    font-family: "Corporate-Logo-Medium-ver3", sans-serif;
+    background-color: white;
+    background: white;
 }
 main{
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 /* home画面 */
 .auth {
-  height: 20vh;
-  width: auto;
+    height: 20vh;
+    width: auto;
 }
 
 input, textarea{
-  border-width: 5px;
-  border-style: solid;
-  background-color: white;
-  color: black;
-  width: 95%;
-  height: 44px;
-  -webkit-appearance: none;
+    border-width: 5px;
+    border-style: solid;
+    background-color: white;
+    color: black;
+    width: 95%;
+    height: 44px;
+    -webkit-appearance: none;
 }
 textarea{
-  height: 80px;
-  width: 100%;
-  max-width: 248px;
+    height: 80px;
+    width: 100%;
+    max-width: 248px;
 }
 h1{
-  margin: 0; padding: 0;
-  font-size: 1.4rem;
+    margin: 0; padding: 0;
+    font-size: 1.4rem;
 }
 /* フォーム */
 .Form {
-  margin-top: 80px;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 80vw;
+    margin-top: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80vw;
 }
 .Form-Item {
-  border-top: 1px solid #ddd;
-  padding-top: 24px;
-  padding-bottom: 24px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    border-top: 1px solid #ddd;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .Form-Item-Label {
-  width: 100%;
-  max-width: 40vw;
-  letter-spacing: 0.05em;
-  color: black;
-  font-size: 3vw;
-  margin-bottom: 4px;
+    width: 100%;
+    max-width: 40vw;
+    letter-spacing: 0.05em;
+    color: black;
+    font-size: 3vw;
+    margin-bottom: 4px;
 }
 .Form-Item-Label.isMsg {
-  margin-top: 8px;
-  margin-bottom: auto;
+    margin-top: 8px;
+    margin-bottom: auto;
 }
 .back{
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-left: 40px;
-  margin-bottom: 24px;
-  padding-top: 24px;
-  width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 40px;
+    margin-bottom: 24px;
+    padding-top: 24px;
+    width: 100%;
 }
 .back button {
-  border-radius: 6px;
-  background: #5bc8ac;
-  color: black;
-  font-weight: bold;
-  font-size: 30px;
-  padding: 10px 20px;
-  width: 150px;
-  text-align: center;
+    border-radius: 6px;
+    background: #5bc8ac;
+    color: black;
+    font-weight: bold;
+    font-size: 30px;
+    padding: 10px 20px;
+    width: 150px;
+    text-align: center;
 }
 .back a{
-  color: black;
-  text-decpration: none;
+    color: black;
+    text-decpration: none;
 }
 .Form-Item-Label-Required {
-  border-radius: 6px;
-  margin-right: 8px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  width: 8vw;
-  display: inline-block;
-  text-align: center;
-  background: #5bc8ac;
-  color: black;
-  font-size: 30px;
+    border-radius: 6px;
+    margin-right: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    width: 8vw;
+    display: inline-block;
+    text-align: center;
+    background: #5bc8ac;
+    color: black;
+    font-size: 30px;
 }
 .Form-Item-Input {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-left: 40px;
-  padding-left: 1em;
-  padding-right: 1em;
-  height: 48px;
-  flex: 1;
-  width: 100%;
-  max-width: 410px;
-  background: #eaedf2;
-  font-size: 18px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-left: 40px;
+    padding-left: 1em;
+    padding-right: 1em;
+    height: 48px;
+    flex: 1;
+    width: 100%;
+    max-width: 410px;
+    background: #eaedf2;
+    font-size: 18px;
 }
 .Form-Item-Textarea {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-left: 40px;
-  padding-left: 1em;
-  padding-right: 1em;
-  height: 216px;
-  flex: 1;
-  width: 100%;
-  max-width: 410px;
-  background: #eaedf2;
-  font-size: 18px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-left: 40px;
+    padding-left: 1em;
+    padding-right: 1em;
+    height: 216px;
+    flex: 1;
+    width: 100%;
+    max-width: 410px;
+    background: #eaedf2;
+    font-size: 18px;
 }
