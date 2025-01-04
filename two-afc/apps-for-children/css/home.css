@@ -30,7 +30,7 @@ main {
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    width: 80vw;
+    width: 70vw;
     aspect-ratio: 1/1; /* 縦横比を1:1にする */
     max-height: 600px;
     max-width: 600px;
