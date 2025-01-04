@@ -322,7 +322,7 @@ function fetchStudyImages(categoryName) {
             const tableBody = document.createElement('tbody');
 
             const headerRow = document.createElement('tr');
-            const headers = ['勉強日', '勉強時間', '画像リンク'];
+            const headers = ['勉強日', '勉強時間', 'カテゴリー', '画像リンク'];
             headers.forEach(headerText => {
                 const th = document.createElement('th');
                 th.textContent = headerText;
@@ -338,8 +338,8 @@ function fetchStudyImages(categoryName) {
                 const studyDateCell = document.createElement('td');
                 const studyDate = new Date(imageData.study_date); // Dateオブジェクトに変換
                 const formattedDate = studyDate.toLocaleDateString('ja-JP'); // 'yyyy/MM/dd'形式で取得
-                // studyTimeが文字列の場合、コンマで分割して改行を挿入
-                let formattedSpendTime = imageData.study_time;
+                // SspentTimeが文字列の場合、コンマで分割して改行を挿入
+                let formattedSpendTime = imageData.SspentTime;
                 if (typeof formattedSpendTime === 'string') {
                     // コンマで分割し、それぞれの要素を改行で区切る
                     formattedSpendTime = formattedSpendTime.split(',').join(',<br>');
@@ -356,6 +356,11 @@ function fetchStudyImages(categoryName) {
                 const studyTimeCell = document.createElement('td');
                 studyTimeCell.textContent = imageData.study_time;
                 row.appendChild(studyTimeCell);
+
+                // カテゴリー
+                const categoryCell = document.createElement('td');
+                categoryCell.textContent = imageData.category;
+                row.appendChild(categoryCell);
         
                 // 画像リンク
                 const imageLinkCell = document.createElement('td');
