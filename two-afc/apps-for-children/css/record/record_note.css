@@ -86,8 +86,8 @@ body {
 
 /* 画像のスタイル */
 .category-image {
-    width: calc(500px * 0.7); /* 画像のサイズ  元データ500pxを0.75倍 */
-    height: calc(300px * 0.7); /* 画像のサイズ 元データ300pxを0.75倍*/  
+    width: calc(500px * 0.725); /* 画像のサイズ  元データ500pxを0.725倍 */
+    height: calc(300px * 0.725); /* 画像のサイズ 元データ300pxを0.725倍*/  
     object-fit: cover; /* 画像が枠に収まるように調整 */
 }
 
@@ -102,6 +102,7 @@ body {
     font-weight: bold;
     text-align: center; /* 中央揃え */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* 文字に影をつけて見やすくする */
+    width: 75%;
 }
 /* オーバーレイのスタイル */
 #popupOverlay {
