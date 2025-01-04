@@ -13,12 +13,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('timer-display').textContent = timeString;
 });
 
+selectedImages = [];
+
 function saveStudySession() {
     const category = document.getElementById("category").value;
     const studyTime = document.getElementById("timer-display").textContent;
 
     // 選択された画像のファイルオブジェクトを取得
-    const selectedImages = Array.from(document.querySelectorAll('input[type="file"][name="images[]"]')).flatMap(input => Array.from(input.files));
+    //const selectedImages = Array.from(document.querySelectorAll('input[type="file"][name="images[]"]')).flatMap(input => Array.from(input.files));
+    const photoDisplay = document.getElementById("photoDisplay_id");
+    const imageElements = photoDisplay.getElementsByTagName('img');
+    console.log(imageElements);  // デバッグ用
+    // ファイル選択の input 要素を取得
+    //const fileInputs = document.querySelectorAll('input[type="file"][name="images[]"]');
+    
+    // すべてのファイルを取得
+    //const selectedImages = Array.from(fileInputs).flatMap(input => Array.from(input.files));
+    console.log(selectedImages);  // デバッグ用
+    console.log(selectedImages.length);  // デバッグ用
 
     // 画像が選択されているか確認
     if (selectedImages.length === 0) {
@@ -77,7 +89,7 @@ document.getElementById('saveButton').addEventListener('click', (event) => {
     const photoDisplay = document.getElementById("photoDisplay_id");
     const photoSelected = photoDisplay.innerHTML.trim() !== '';
 
-    if (selectedCategory === "--教科を選択--" && !photoSelected) {
+    if ((selectedCategory === "--教科を選択--" && !photoSelected) || selectedCategory === "0") {
         alert("教科を選択してください。");
         return;
     }
@@ -89,13 +101,6 @@ document.getElementById('saveButton').addEventListener('click', (event) => {
         saveStudySession();
         alert("データが保存されました。");
     }
-});
-
-document.getElementById("confirm-save").addEventListener("click", () => {
-    hideConfirmPopup();
-    saveData();
-    saveStudySession();
-    alert("データが保存されました。");
 });
 
 function showConfirmPopup() {
@@ -138,7 +143,7 @@ function saveData() {
 
     localStorage.setItem('stopwatchTime', '00:00:00');
 
-    window.location.href = '../../home.php'; // ここでもリダイレクト
+    //window.location.href = '../../home.php'; // ここでもリダイレクト
 }
 
 //画像処理
@@ -200,7 +205,8 @@ function capturePhoto() {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.capture = 'enviroment'; // 環境カメラ
+    input.multiple = true;
+    input.capture = 'environment'; // 環境カメラ
     input.onchange = function(event) {
         const files = event.target.files;
         updatePhotoList(files);
@@ -221,6 +227,7 @@ function selectPhoto() {
 
 function updatePhotoList(files) {
     // 新しいファイルを既存のファイルリストに追加
+    selectedImages = [...selectedImages, ...Array.from(files)];
     allPhotos = [...allPhotos, ...Array.from(files)];
     displayPhoto(Array.from(files)); // 全ての写真を表示
 }
