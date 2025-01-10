@@ -17,22 +17,6 @@ function saveStudySession() {
     const category = document.getElementById("category").value;
     const studyTime = document.getElementById("timer-display").textContent;
 
-    // ファイル選択の input 要素を取得
-    const fileInputs = document.querySelectorAll('input[type="file"][name="images[]"]');
-    console.log(fileInputs);  // デバッグ用
-    
-    // すべてのファイルを取得
-    const selectedImages = Array.from(fileInputs).flatMap(input => Array.from(input.files));
-    console.log(selectedImages);  // デバッグ用
-    console.log(selectedImages.length);  // デバッグ用
-
-    // 画像が選択されているか確認
-    if (selectedImages.length === 0) {
-        console.error("No images selected.");
-        alert("画像が選択されていません。");
-        return; // 画像がない場合は処理を中断
-    }
-
     // localStorageから経過時間を取得
     const elapsedPeriod = localStorage.getItem('elapsedTime');
     
@@ -47,18 +31,13 @@ function saveStudySession() {
     formData.append('study_time', studyTime);
     formData.append('SspentTime', formattedElapsedTime);  // 経過時間を送信
 
-    // 選択された画像をFormDataに追加
-    selectedImages.forEach((image) => {
-        formData.append('images[]', image, image.name);
-    });
-
     // データを送信する前にFormDataの内容を確認（デバッグ用）
     for (let pair of formData.entries()) {
         console.log(pair[0] + ': ' + pair[1]);  // 送信されるデータを表示
     }
 
     // データをサーバーに送信
-    fetch('../../php/save_study_data.php', {
+    fetch('../../php/save_formData.php', {
         method: 'POST',
         body: formData
     })
@@ -77,8 +56,8 @@ function saveStudySession() {
         }
     })
     .catch(error => {
-        console.error("通信エラーが発生しました:", error.message);
-        alert("通信エラーが発生しました: " + error.message);
+        console.error("通信エラーが発生しました(js):", error.message);
+        alert("通信エラーが発生しました(js): " + error.message);
     });
 }
 
@@ -99,8 +78,16 @@ document.getElementById('saveButton').addEventListener('click', (event) => {
         alert("画像を選択してください。");
         return;
     } else {
-        saveData(); // 必要に応じてリダイレクトをここでも行う
         saveStudySession();
+        saveData(); // 必要に応じてリダイレクトをここでも行う
+        const form = document.getElementById('imageForm');
+        const fileInput = form.querySelector('input[type="file"][name="images[]"]'); // file input element
+        if(fileInput.files.length === 0){
+            fileInput.click();
+            return;
+        } else {
+            form.submit();
+        }
         alert("データが保存されました。");
     }
 });
@@ -197,6 +184,7 @@ let inputCount = 0; // 作成されたinputタグの数を管理する変数
 
 function capturePhoto() {
     const form = document.getElementById('imageForm'); // formタグを取得
+    const submitButton = form.querySelector('input[type="submit"]'); // submitボタンを取得
     const input = document.createElement('input'); // 新しいinputタグを作成
     input.type = 'file';
     input.accept = 'image/*'; // 画像のみ選択
@@ -205,7 +193,8 @@ function capturePhoto() {
     input.name = 'images[]'; // name属性にimages[]を指定
     input.style = 'display: none'; // 非表示にする
     input.id = `input_${inputCount++}`; // 一意のIDを付与
-    form.appendChild(input); // formにinputを追加
+    // submitボタンの前に画像のinputタグを挿入
+    form.insertBefore(input, submitButton); // submitボタンの前に追加
 
     // ファイル選択後の処理
     input.onchange = function(event) {
@@ -236,6 +225,7 @@ function capturePhoto() {
 // 画像を選択するボタンが押されたときの処理
 function selectPhoto() {
     const form = document.getElementById('imageForm'); // formタグを取得
+    const submitButton = form.querySelector('input[type="submit"]'); // submitボタンを取得
     const input = document.createElement('input'); // 新しいinputタグを作成
     input.type = 'file';
     input.accept = 'image/*'; // 画像のみ選択
@@ -243,7 +233,8 @@ function selectPhoto() {
     input.name = 'images[]'; // name属性にimages[]を指定
     input.style = 'display: none'; // 非表示にする
     input.id = `input_${inputCount++}`; // 一意のIDを付与
-    form.appendChild(input); // formにinputを追加
+    // submitボタンの前に画像のinputタグを挿入
+    form.insertBefore(input, submitButton); // submitボタンの前に追加
 
     // ファイル選択後の処理
     input.onchange = function(event) {
