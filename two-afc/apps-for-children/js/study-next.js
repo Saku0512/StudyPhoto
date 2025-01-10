@@ -13,22 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('timer-display').textContent = timeString;
 });
 
-let selectedImages = [];
-
 function saveStudySession() {
     const category = document.getElementById("category").value;
     const studyTime = document.getElementById("timer-display").textContent;
 
-    // 選択された画像のファイルオブジェクトを取得
-    //const selectedImages = Array.from(document.querySelectorAll('input[type="file"][name="images[]"]')).flatMap(input => Array.from(input.files));
-    //const photoDisplay = document.getElementById("photoDisplay_id");
-    //const imageElements = photoDisplay.getElementsByTagName('img');
-    //console.log(imageElements);  // デバッグ用
     // ファイル選択の input 要素を取得
-    //const fileInputs = document.querySelectorAll('input[type="file"][name="images[]"]');
+    const fileInputs = document.querySelectorAll('input[type="file"][name="images[]"]');
+    console.log(fileInputs);  // デバッグ用
     
     // すべてのファイルを取得
-    //const selectedImages = Array.from(fileInputs).flatMap(input => Array.from(input.files));
+    const selectedImages = Array.from(fileInputs).flatMap(input => Array.from(input.files));
     console.log(selectedImages);  // デバッグ用
     console.log(selectedImages.length);  // デバッグ用
 
