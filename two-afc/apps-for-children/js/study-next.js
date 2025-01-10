@@ -216,6 +216,7 @@ function capturePhoto() {
     input.accept = 'image/*'; // 画像のみ選択
     input.multiple = true; // 複数選択可能
     input.capture = 'environment'; // 環境カメラ
+    input.name = 'images[]'; // name属性にimages[]を指定
     input.style = 'display: none'; // 非表示にする
     input.id = `input_${inputCount++}`; // 一意のIDを付与
     document.body.appendChild(input); // DOMに追加
@@ -252,6 +253,7 @@ function selectPhoto() {
     input.type = 'file';
     input.accept = 'image/*'; // 画像のみ選択
     input.multiple = true; // 複数選択可能
+    input.name = 'images[]'; // name属性にimages[]を指定
     input.style = 'display: none'; // 非表示にする
     input.id = `input_${inputCount++}`; // 一意のIDを付与
     document.body.appendChild(input); // DOMに追加
