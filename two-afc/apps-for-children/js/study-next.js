@@ -224,6 +224,14 @@ function capturePhoto() {
     input.onchange = function(event) {
         const files = Array.from(event.target.files); // 選択されたファイルを配列に変換
 
+        files.forEach(file => {
+            // input要素にファイル名を格納する
+            input.setAttribute('data-image-name', file.name); // data-image-name 属性にファイル名を格納
+
+            console.log('ファイル名:', file.name); // コンソールにファイル名を表示
+            console.log('inputのdata-image-name属性:', input.getAttribute('data-image-name')); // data-image-name属性からファイル名を取得
+        });
+
         // 重複を避けて新しく選ばれたファイルのみを追加
         const newFiles = files.filter(file => 
             !selectedFiles.some(existingFile => existingFile.name === file.name)
@@ -251,6 +259,14 @@ function selectPhoto() {
     // ファイル選択後の処理
     input.onchange = function(event) {
         const files = Array.from(event.target.files); // 選択されたファイルを配列に変換
+
+        files.forEach(file => {
+            // input要素にファイル名を格納する
+            input.setAttribute('data-image-name', file.name); // data-image-name 属性にファイル名を格納
+
+            console.log('ファイル名:', file.name); // コンソールにファイル名を表示
+            console.log('inputのdata-image-name属性:', input.getAttribute('data-image-name')); // data-image-name属性からファイル名を取得
+        });
 
         // 重複を避けて新しく選ばれたファイルのみを追加
         const newFiles = files.filter(file => 
