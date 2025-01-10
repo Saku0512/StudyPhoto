@@ -207,23 +207,36 @@ function hidePhotoOptionsPopup() {
 function hideDeletePhotoPopup() {
     document.getElementById("deletePhotoPopup").style.display = "none";
 }
-
-function capturePhoto() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.multiple = true;
-    input.capture = 'environment'; // 環境カメラ
-    input.onchange = function(event) {
-        const files = event.target.files;
-        updatePhotoList(files);
-        hidePhotoOptionsPopup();
-    };
-    input.click();
-}
-
 let selectedFiles = []; // 選択された画像を管理する配列
 let inputCount = 0; // 作成されたinputタグの数を管理する変数
+
+function capturePhoto() {
+    const input = document.createElement('input'); // 新しいinputタグを作成
+    input.type = 'file';
+    input.accept = 'image/*'; // 画像のみ選択
+    input.multiple = true; // 複数選択可能
+    input.capture = 'environment'; // 環境カメラ
+    input.style = 'display: none'; // 非表示にする
+    input.id = `input_${inputCount++}`; // 一意のIDを付与
+    document.body.appendChild(input); // DOMに追加
+
+    // ファイル選択後の処理
+    input.onchange = function(event) {
+        const files = Array.from(event.target.files); // 選択されたファイルを配列に変換
+
+        // 重複を避けて新しく選ばれたファイルのみを追加
+        const newFiles = files.filter(file => 
+            !selectedFiles.some(existingFile => existingFile.name === file.name)
+        );
+        selectedFiles.push(...newFiles); // 新しいファイルをselectedFilesに追加
+
+        displayPhoto(newFiles); // 新しく選ばれたファイルのみを表示
+        hidePhotoOptionsPopup(); // オプションのポップアップを非表示（未定義の関数）
+        // document.body.removeChild(input); // DOMからinputを削除（任意）
+    };
+
+    input.click(); // ファイル選択ダイアログを表示
+}
 
 // 画像を選択するボタンが押されたときの処理
 function selectPhoto() {
