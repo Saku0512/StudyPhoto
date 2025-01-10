@@ -363,34 +363,36 @@ function fetchStudyImages(categoryName) {
                 row.appendChild(categoryCell);
         
                 // 画像リンク
-                const imageLinkCell = document.createElement('td');
-                const imageLink = document.createElement('a');
+                const pdfLinkCell = document.createElement('td');
+                const pdfLink = document.createElement('a');
         
                 // Base64デコードしてパスを取得
                 if (imageData.image_path) {
                     try {
                         const decodedUrl = Base64.decode(imageData.image_path);  // Base64デコード
                         const imagePath = decodedUrl.replace('/var/www/html', '');  // パスの置換
+
         
-                        imageLink.textContent = '画像リンク';
-                        imageLink.href = imagePath;
+                        pdfLink.textContent = 'PDFリンク';
+                        pdfLink.href = imagePath;
+                        //pdfLink.target = '_blank'; // 新しいタブで開く
         
                         // クリックイベントで画像をポップアップ表示
-                        imageLink.addEventListener('click', (event) => {
+                        pdfLink.addEventListener('click', (event) => {
                             event.preventDefault();
                             openImageInPopup(imagePath);
                         });
         
-                        imageLinkCell.appendChild(imageLink);
+                        pdfLinkCell.appendChild(pdfLink);
                     } catch (error) {
                         console.error('Failed to decode Base64 URL:', error);
-                        imageLinkCell.textContent = '画像の読み込みに失敗しました';
+                        pdfLinkCell.textContent = '画像の読み込みに失敗しました';
                     }
                 } else {
-                    imageLinkCell.textContent = '画像なし';
+                    pdfLinkCell.textContent = '画像なし';
                 }
         
-                row.appendChild(imageLinkCell);
+                row.appendChild(pdfLinkCell);
                 tableBody.appendChild(row);
             });
 
@@ -413,15 +415,12 @@ function fetchStudyImages(categoryName) {
 }
 
 function openImageInPopup(imagePath) {
-    const popupImage = document.createElement('img');
-    popupImage.src = imagePath;
-    popupImage.alt = '画像';
-    popupImage.classList.add('popup-image-large');
-
     const popupOverlay = document.getElementById('popupOverlay');
     const popupContent = document.getElementById('popupContent');
-    //popupContent.innerHTML = ''; // 既存のコンテンツをクリア
-    popupContent.appendChild(popupImage);
+
+    popupContent.innerHTML += `
+    <embed src="${imagePath}" id="pdfViewer" type="application/pdf" width="100%" height="600px">
+    `;
 
     popupOverlay.style.display = 'block';
     popupContent.style.display = 'block';
@@ -434,9 +433,9 @@ function hidePopup_category() {
 
   // 画像のみを削除
     const popupContent = document.getElementById("popupContent");
-    const images_remove = popupContent.querySelectorAll('img');
-    images_remove.forEach(img => {
-        img.remove();  // imgタグを削除
+    const embed_remove = popupContent.querySelectorAll('embed');
+    embed_remove.forEach(embed => {
+        embed.remove();  // imgタグを削除
     });
 
     const images = document.querySelectorAll('.category-image');

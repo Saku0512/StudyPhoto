@@ -154,12 +154,18 @@ try {
         $stmt->execute();
 
         echo json_encode(['success' => true, 'message' => 'Saved images and PDF.']);
+        header('Location: ../../home.php');
+        exit;
     } else {
         echo json_encode(['success' => false, 'error' => 'セッションがありません。']);
+        header('Location: ../../home.php');
+        exit;
     }
 } catch (PDOException $e) {
     echo json_encode([
         'success' => false,
         'error' => 'databaseError: ' . $e->getMessage(),
     ]);
+    header('Location: ../../home.php');
+    exit;
 }

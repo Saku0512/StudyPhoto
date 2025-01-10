@@ -122,7 +122,7 @@ function saveData() {
 
     localStorage.setItem('stopwatchTime', '00:00:00');
 
-    //window.location.href = '../../home.php'; // ここでもリダイレクト
+    window.location.href = '../../home.php'; // ここでもリダイレクト
 }
 
 //画像処理
