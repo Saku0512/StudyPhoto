@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('timer-display').textContent = timeString;
 });
 
-selectedImages = [];
+let selectedImages = [];
 
 function saveStudySession() {
     const category = document.getElementById("category").value;
@@ -21,9 +21,9 @@ function saveStudySession() {
 
     // 選択された画像のファイルオブジェクトを取得
     //const selectedImages = Array.from(document.querySelectorAll('input[type="file"][name="images[]"]')).flatMap(input => Array.from(input.files));
-    const photoDisplay = document.getElementById("photoDisplay_id");
-    const imageElements = photoDisplay.getElementsByTagName('img');
-    console.log(imageElements);  // デバッグ用
+    //const photoDisplay = document.getElementById("photoDisplay_id");
+    //const imageElements = photoDisplay.getElementsByTagName('img');
+    //console.log(imageElements);  // デバッグ用
     // ファイル選択の input 要素を取得
     //const fileInputs = document.querySelectorAll('input[type="file"][name="images[]"]');
     
@@ -55,7 +55,7 @@ function saveStudySession() {
 
     // 選択された画像をFormDataに追加
     selectedImages.forEach((image) => {
-        formData.append('images[]', image);
+        formData.append('images[]', image, image.name);
     });
 
     // データを送信する前にFormDataの内容を確認（デバッグ用）
@@ -68,8 +68,14 @@ function saveStudySession() {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())  // サーバーからのレスポンスがJSONであることを確認
+    .then(Response => {
+        if(!Response.ok) {
+            return Response.text().then(text => {throw new Error(text)});
+        }
+        return Response.json();
+    })
     .then(data => {
+        console.log(data);  // デバッグ用
         if (data.success) {
             alert("データが正常に保存されました。");
         } else {
@@ -77,7 +83,8 @@ function saveStudySession() {
         }
     })
     .catch(error => {
-        alert("通信エラーが発生しました。");
+        console.error("通信エラーが発生しました:", error.message);
+        alert("通信エラーが発生しました: " + error.message);
     });
 }
 
@@ -215,35 +222,53 @@ function capturePhoto() {
     input.click();
 }
 
+let selectedFiles = []; // 選択された画像を管理する配列
+let inputCount = 0; // 作成されたinputタグの数を管理する変数
+
+// 画像を選択するボタンが押されたときの処理
 function selectPhoto() {
-    const input = document.getElementById('fileInput'); // 追加したinputタグを取得 // inputをクリックしてファイル選択ダイアログを表示
+    const input = document.createElement('input'); // 新しいinputタグを作成
+    input.type = 'file';
+    input.accept = 'image/*'; // 画像のみ選択
+    input.multiple = true; // 複数選択可能
+    input.style = 'display: none'; // 非表示にする
+    input.id = `input_${inputCount++}`; // 一意のIDを付与
+    document.body.appendChild(input); // DOMに追加
+
+    // ファイル選択後の処理
     input.onchange = function(event) {
-        const files = event.target.files; // 選択されたファイルを取得
-        updatePhotoList(files); // 画像リストを更新
-        hidePhotoOptionsPopup(); // ポップアップを隠す
+        const files = Array.from(event.target.files); // 選択されたファイルを配列に変換
+
+        // 重複を避けて新しく選ばれたファイルのみを追加
+        const newFiles = files.filter(file => 
+            !selectedFiles.some(existingFile => existingFile.name === file.name)
+        );
+        selectedFiles.push(...newFiles); // 新しいファイルをselectedFilesに追加
+
+        displayPhoto(newFiles); // 新しく選ばれたファイルのみを表示
+        hidePhotoOptionsPopup(); // オプションのポップアップを非表示（未定義の関数）
+        // document.body.removeChild(input); // DOMからinputを削除（任意）
     };
-    input.click();
+
+    input.click(); // ファイル選択ダイアログを表示
 }
 
-function updatePhotoList(files) {
-    // 新しいファイルを既存のファイルリストに追加
-    selectedImages = [...selectedImages, ...Array.from(files)];
-    allPhotos = [...allPhotos, ...Array.from(files)];
-    displayPhoto(Array.from(files)); // 全ての写真を表示
-}
-
+// 画像を表示する
 function displayPhoto(files) {
-    const photoDisplay = document.getElementById('photoDisplay_id'); // IDを修正
-    Array.from(files).forEach(file => {
-        const reader = new FileReader();
+    const photoDisplay = document.getElementById('photoDisplay_id'); // 画像を表示する場所
+
+    files.forEach(file => {
+        const reader = new FileReader(); // ファイルを読み込むためのFileReader
         reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.classList.add('photo_img')
-            photoDisplay.appendChild(img);
+            const img = document.createElement('img'); // 新しい画像要素を作成
+            img.src = e.target.result; // 画像データをセット
+            img.classList.add('photo_img'); // クラスを追加
+            photoDisplay.appendChild(img); // 画像を表示する場所に追加
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file); // 画像ファイルを読み込む
     });
+
+    console.log("表示している写真:", files); // デバッグ用: 表示される写真
 }
 
 function deleteSelectedPhotos() {
