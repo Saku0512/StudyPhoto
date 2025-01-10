@@ -96,23 +96,14 @@ document.getElementById('saveButton').addEventListener('click', (event) => {
     }
 
     if (!photoSelected) {
-        showConfirmPopup();
+        alert("画像を選択してください。");
+        return;
     } else {
         saveData(); // 必要に応じてリダイレクトをここでも行う
         saveStudySession();
         alert("データが保存されました。");
     }
 });
-
-function showConfirmPopup() {
-    document.getElementById("confirm-overlay").style.display = "block";
-    document.getElementById("confirm-popup").style.display = "block";
-}
-
-function hideConfirmPopup() {
-    document.getElementById("confirm-overlay").style.display = "none";
-    document.getElementById("confirm-popup").style.display = "none";
-}
 
 function saveData() {
     const now = new Date();
@@ -205,6 +196,7 @@ let selectedFiles = []; // 選択された画像を管理する配列
 let inputCount = 0; // 作成されたinputタグの数を管理する変数
 
 function capturePhoto() {
+    const form = document.getElementById('imageForm'); // formタグを取得
     const input = document.createElement('input'); // 新しいinputタグを作成
     input.type = 'file';
     input.accept = 'image/*'; // 画像のみ選択
@@ -213,7 +205,7 @@ function capturePhoto() {
     input.name = 'images[]'; // name属性にimages[]を指定
     input.style = 'display: none'; // 非表示にする
     input.id = `input_${inputCount++}`; // 一意のIDを付与
-    document.body.appendChild(input); // DOMに追加
+    form.appendChild(input); // formにinputを追加
 
     // ファイル選択後の処理
     input.onchange = function(event) {
@@ -243,6 +235,7 @@ function capturePhoto() {
 
 // 画像を選択するボタンが押されたときの処理
 function selectPhoto() {
+    const form = document.getElementById('imageForm'); // formタグを取得
     const input = document.createElement('input'); // 新しいinputタグを作成
     input.type = 'file';
     input.accept = 'image/*'; // 画像のみ選択
@@ -250,7 +243,7 @@ function selectPhoto() {
     input.name = 'images[]'; // name属性にimages[]を指定
     input.style = 'display: none'; // 非表示にする
     input.id = `input_${inputCount++}`; // 一意のIDを付与
-    document.body.appendChild(input); // DOMに追加
+    form.appendChild(input); // formにinputを追加
 
     // ファイル選択後の処理
     input.onchange = function(event) {

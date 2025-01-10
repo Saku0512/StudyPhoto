@@ -65,6 +65,7 @@ main {
     width: 84vw;
     margin-top: 2.5vh;
     margin-bottom: 2.5vh;
+    border: none;
 }
 .dropdown{
     display: flex;
