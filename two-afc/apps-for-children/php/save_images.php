@@ -10,13 +10,25 @@ header('Content-Type: application/json');
 
 // データベース接続ファイルの読み込み
 include('db_connection.php');
+// FPDF の読み込み
+require('../../../vendor/autoload.php');
+// 必要なクラスをインポート
+use setasign\Fpdi\Fpdi;
 
 // アップロードディレクトリの設定
-$uploadDir = '/var/www/html/uploads/';
+$uploadDir = '/var/www/html/uploads/images/';
+$pdfUploadDir = '/var/www/html/uploads/pdfs/';
 
-// ディレクトリが存在しない場合は作成
+// imagesディレクトリが存在しない場合は作成
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0777, true)) {
+        echo json_encode(['success' => false, 'error' => 'ディレクトリの作成に失敗しました。']);
+        exit;
+    }
+}
+// pdfsディレクトリが存在しない場合は作成
+if (!is_dir($pdfUploadDir)) {
+    if (!mkdir($pdfUploadDir, 0777, true)) {
         echo json_encode(['success' => false, 'error' => 'ディレクトリの作成に失敗しました。']);
         exit;
     }
@@ -27,6 +39,10 @@ if (!is_writable($uploadDir)) {
     echo json_encode(['success' => false, 'error' => 'ディレクトリに書き込み権限がありません。']);
     exit;
 }
+if (!is_writable($pdfUploadDir)) {
+    echo json_encode(['success' => false, 'error' => 'ディレクトリに書き込み権限がありません。']);
+    exit;
+}   
 
 $username = $_SESSION['username'] ?? null;
 // アップロードされた画像の取得
@@ -93,6 +109,30 @@ foreach ($images as $image) {
         exit;
     }
 }
+
+// 画像をpdf化
+$pdfFileName = uniqid() . '.pdf';
+$pdfFilePath = $pdfUploadDir . $pdfFileName;
+try {
+    $pdf = new Fpdi();
+    $pdf->SetAutoPageBreak(false);
+
+    foreach ($uploadedImagePaths as $imagePath) {
+        $size = getimagesize($imagePath);
+        $width = $size[0];
+        $height = $size[1];
+        $orientation = ($width > $height) ? 'L' : 'P';
+
+        $pdf->AddPage($orientation);
+        // PDFのページサイズに合わせて画像を挿入
+        $pdf->Image($imagePath, 0, 0, 210, 297);
+    }
+
+    $pdf->Output('F', $pdfFilePath); // PDFを保存
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'error' => 'cannot generate PDF: ' . $e->getMessage()]);
+    exit;
+}
 // データベースに保存
 try {
     $pdo = getDatabaseConnection();
@@ -102,15 +142,18 @@ try {
         // 画像パスを暗号化
         $encryptedImagePaths = array_map('base64_encode', $uploadedImagePaths);
         $encryptedImages = implode(",", $encryptedImagePaths);
+
+        // PDFファイルパスを暗号化
+        $encryptedPdfPath = base64_encode($pdfFilePath);
     
         // 画像保存処理
         $sql = "UPDATE study_data SET images = :images, updated_at = NOW() WHERE id = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id', $lastInsertId);
-        $stmt->bindParam(':images', $encryptedImages);
+        $stmt->bindParam(':images', $encryptedPdfPath);
         $stmt->execute();
 
-        echo json_encode(['success' => true, 'message' => '画像が保存されました。']);
+        echo json_encode(['success' => true, 'message' => 'Saved images and PDF.']);
     } else {
         echo json_encode(['success' => false, 'error' => 'セッションがありません。']);
     }
