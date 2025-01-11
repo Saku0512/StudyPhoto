@@ -16,6 +16,9 @@
         <div class="loading__icon"></div>
         <p class="loading__text">loading</p>
     </div>
+    <div class="return">
+        <a href="./study.html"><img src="../../ui_image/return.png"></a>
+    </div>
     <h1 class="timer" id="timer-display">00:00:00</h1>
     
     <div class="dropdown">
@@ -74,7 +77,6 @@
     <div class="photo">
         <button class="photoSelect" onclick="showPhotoOptions()">画像を追加</button>
         <button class="photoDelete" onclick="showDeletePhotoPopup()">画像を削除</button>
-        <input type="file" id="fileInput" name="images[]" multiple style="display: none;" />
     </div>
     <div class="popup_photo" id="photoOptionsPopup">
         <p>画像をどうしますか？</p>
@@ -94,17 +96,10 @@
         <div type="text" id="photoDisplay_id"></div>
     </div>
     <div class="button-container">
-        <button id="saveButton">登録</button>
+        <form action="../../php/save_images.php" method="post" enctype="multipart/form-data" id="imageForm">
+            <input type="submit" id="saveButton" value="登録" />
+        </form>
     </div>
-    <div class="overlay" id="confirm-overlay" onclick="hideConfirmPopup()"></div>
-    <div class="popup" id="confirm-popup">
-        <p>画像が選択されていません。<br>登録しますか？</p>
-        <div class="popupbutton">
-            <button onclick="hideConfirmPopup()" class="cancel">キャンセル</button>
-            <button id="confirm-save" class="add">登録</button>
-        </div>
-    </div>
-    </main>
     <input type="hidden" id="username" value="<?php echo $_SESSION['username']; ?>">
 </body>
 </html>

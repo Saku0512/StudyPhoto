@@ -17,16 +17,6 @@ function saveStudySession() {
     const category = document.getElementById("category").value;
     const studyTime = document.getElementById("timer-display").textContent;
 
-    // 選択された画像のファイルオブジェクトを取得
-    const selectedImages = Array.from(document.querySelectorAll('input[type="file"][name="images[]"]')).flatMap(input => Array.from(input.files));
-
-    // 画像が選択されているか確認
-    if (selectedImages.length === 0) {
-        console.error("No images selected.");
-        alert("画像が選択されていません。");
-        return; // 画像がない場合は処理を中断
-    }
-
     // localStorageから経過時間を取得
     const elapsedPeriod = localStorage.getItem('elapsedTime');
     
@@ -41,23 +31,24 @@ function saveStudySession() {
     formData.append('study_time', studyTime);
     formData.append('SspentTime', formattedElapsedTime);  // 経過時間を送信
 
-    // 選択された画像をFormDataに追加
-    selectedImages.forEach((image) => {
-        formData.append('images[]', image);
-    });
-
     // データを送信する前にFormDataの内容を確認（デバッグ用）
     for (let pair of formData.entries()) {
         console.log(pair[0] + ': ' + pair[1]);  // 送信されるデータを表示
     }
 
     // データをサーバーに送信
-    fetch('../../php/save_study_data.php', {
+    fetch('../../php/save_formData.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())  // サーバーからのレスポンスがJSONであることを確認
+    .then(Response => {
+        if(!Response.ok) {
+            return Response.text().then(text => {throw new Error(text)});
+        }
+        return Response.json();
+    })
     .then(data => {
+        console.log(data);  // デバッグ用
         if (data.success) {
             alert("データが正常に保存されました。");
         } else {
@@ -65,7 +56,8 @@ function saveStudySession() {
         }
     })
     .catch(error => {
-        alert("通信エラーが発生しました。");
+        console.error("通信エラーが発生しました(js):", error.message);
+        alert("通信エラーが発生しました(js): " + error.message);
     });
 }
 
@@ -77,36 +69,28 @@ document.getElementById('saveButton').addEventListener('click', (event) => {
     const photoDisplay = document.getElementById("photoDisplay_id");
     const photoSelected = photoDisplay.innerHTML.trim() !== '';
 
-    if (selectedCategory === "--教科を選択--" && !photoSelected) {
+    if ((selectedCategory === "--教科を選択--" && !photoSelected) || selectedCategory === "0") {
         alert("教科を選択してください。");
         return;
     }
 
     if (!photoSelected) {
-        showConfirmPopup();
+        alert("画像を選択してください。");
+        return;
     } else {
-        saveData(); // 必要に応じてリダイレクトをここでも行う
         saveStudySession();
+        saveData(); // 必要に応じてリダイレクトをここでも行う
+        const form = document.getElementById('imageForm');
+        const fileInput = form.querySelector('input[type="file"][name="images[]"]'); // file input element
+        if(fileInput.files.length === 0){
+            fileInput.click();
+            return;
+        } else {
+            form.submit();
+        }
         alert("データが保存されました。");
     }
 });
-
-document.getElementById("confirm-save").addEventListener("click", () => {
-    hideConfirmPopup();
-    saveData();
-    saveStudySession();
-    alert("データが保存されました。");
-});
-
-function showConfirmPopup() {
-    document.getElementById("confirm-overlay").style.display = "block";
-    document.getElementById("confirm-popup").style.display = "block";
-}
-
-function hideConfirmPopup() {
-    document.getElementById("confirm-overlay").style.display = "none";
-    document.getElementById("confirm-popup").style.display = "none";
-}
 
 function saveData() {
     const now = new Date();
@@ -154,30 +138,29 @@ function showPhotoOptions() {
 }
 
 function showDeletePhotoPopup() {
-    if(allPhotos.length === 0) {
+    if(selectedFiles.length === 0) {
         alert("削除できる写真がありません");
     }else {
         const deletePhotoPopup = document.getElementById("deletePhotoPopup");
         const deletePhotoList = document.getElementById("deletePhotoList");
         deletePhotoList.innerHTML = ""; // 以前の内容をクリア
-        selectedPhotos = []; // 選択状態をリセット
 
-        allPhotos.forEach((photo, index) => {
+        selectedFiles.forEach((photo, index) => {
             const img = document.createElement('img');
             img.src = URL.createObjectURL(photo);
             img.classList.add('photo_img');
 
             img.onclick = function() {
-                // 画像がクリックされたときの処理
-                const isSelected = selectedPhotos.includes(index);
-                if (isSelected) {
-                    // 既に選択されている場合、選択を解除
-                    selectedPhotos = selectedPhotos.filter(photoIndex => photoIndex !== index);
-                    img.style.opacity = '1'; // 元の不透明度に戻す
+                const photoIndex = allPhotos.indexOf(photo);
+
+                if (photoIndex !== -1) {
+                    // 既にallPhotosに含まれている場合、選択を解除
+                    allPhotos.splice(photoIndex, 1);
+                    img.style.opacity = '1.0';
                 } else {
-                    // 選択されていない場合、選択する
-                    selectedPhotos.push(index);
-                    img.style.opacity = '0.5'; // 選択状態を示すために不透明度を下げる
+                    // allPhotosに含まれていない場合、選択を追加
+                    allPhotos.push(photo);
+                    img.style.opacity = '0.5';
                 }
             };
 
@@ -195,54 +178,111 @@ function hidePhotoOptionsPopup() {
 function hideDeletePhotoPopup() {
     document.getElementById("deletePhotoPopup").style.display = "none";
 }
+let selectedFiles = []; // 選択された画像を管理する配列
+let inputCount = 0; // 作成されたinputタグの数を管理する変数
 
 function capturePhoto() {
-    const input = document.createElement('input');
+    const form = document.getElementById('imageForm'); // formタグを取得
+    const submitButton = form.querySelector('input[type="submit"]'); // submitボタンを取得
+    const input = document.createElement('input'); // 新しいinputタグを作成
     input.type = 'file';
-    input.accept = 'image/*';
-    input.capture = 'enviroment'; // 環境カメラ
+    input.accept = 'image/*'; // 画像のみ選択
+    input.multiple = true; // 複数選択可能
+    input.capture = 'environment'; // 環境カメラ
+    input.name = 'images[]'; // name属性にimages[]を指定
+    input.style = 'display: none'; // 非表示にする
+    input.id = `input_${inputCount++}`; // 一意のIDを付与
+    // submitボタンの前に画像のinputタグを挿入
+    form.insertBefore(input, submitButton); // submitボタンの前に追加
+
+    // ファイル選択後の処理
     input.onchange = function(event) {
-        const files = event.target.files;
-        updatePhotoList(files);
-        hidePhotoOptionsPopup();
+        const files = Array.from(event.target.files); // 選択されたファイルを配列に変換
+
+        files.forEach(file => {
+            // input要素にファイル名を格納する
+            input.setAttribute('data-image-name', file.name); // data-image-name 属性にファイル名を格納
+
+            console.log('ファイル名:', file.name); // コンソールにファイル名を表示
+            console.log('inputのdata-image-name属性:', input.getAttribute('data-image-name')); // data-image-name属性からファイル名を取得
+        });
+
+        // 重複を避けて新しく選ばれたファイルのみを追加
+        const newFiles = files.filter(file => 
+            !selectedFiles.some(existingFile => existingFile.name === file.name)
+        );
+        selectedFiles.push(...newFiles); // 新しいファイルをselectedFilesに追加
+
+        displayPhoto(newFiles); // 新しく選ばれたファイルのみを表示
+        hidePhotoOptionsPopup(); // オプションのポップアップを非表示（未定義の関数）
+        // document.body.removeChild(input); // DOMからinputを削除（任意）
     };
-    input.click();
+
+    input.click(); // ファイル選択ダイアログを表示
 }
 
+// 画像を選択するボタンが押されたときの処理
 function selectPhoto() {
-    const input = document.getElementById('fileInput'); // 追加したinputタグを取得 // inputをクリックしてファイル選択ダイアログを表示
+    const form = document.getElementById('imageForm'); // formタグを取得
+    const submitButton = form.querySelector('input[type="submit"]'); // submitボタンを取得
+    const input = document.createElement('input'); // 新しいinputタグを作成
+    input.type = 'file';
+    input.accept = 'image/*'; // 画像のみ選択
+    input.multiple = true; // 複数選択可能
+    input.name = 'images[]'; // name属性にimages[]を指定
+    input.style = 'display: none'; // 非表示にする
+    input.id = `input_${inputCount++}`; // 一意のIDを付与
+    // submitボタンの前に画像のinputタグを挿入
+    form.insertBefore(input, submitButton); // submitボタンの前に追加
+
+    // ファイル選択後の処理
     input.onchange = function(event) {
-        const files = event.target.files; // 選択されたファイルを取得
-        updatePhotoList(files); // 画像リストを更新
-        hidePhotoOptionsPopup(); // ポップアップを隠す
+        const files = Array.from(event.target.files); // 選択されたファイルを配列に変換
+
+        files.forEach(file => {
+            // input要素にファイル名を格納する
+            input.setAttribute('data-image-name', file.name); // data-image-name 属性にファイル名を格納
+
+            console.log('ファイル名:', file.name); // コンソールにファイル名を表示
+            console.log('inputのdata-image-name属性:', input.getAttribute('data-image-name')); // data-image-name属性からファイル名を取得
+        });
+
+        // 重複を避けて新しく選ばれたファイルのみを追加
+        const newFiles = files.filter(file => 
+            !selectedFiles.some(existingFile => existingFile.name === file.name)
+        );
+        selectedFiles.push(...newFiles); // 新しいファイルをselectedFilesに追加
+
+        displayPhoto(newFiles); // 新しく選ばれたファイルのみを表示
+        hidePhotoOptionsPopup(); // オプションのポップアップを非表示（未定義の関数）
+        // document.body.removeChild(input); // DOMからinputを削除（任意）
     };
-    input.click();
+
+    input.click(); // ファイル選択ダイアログを表示
 }
 
-function updatePhotoList(files) {
-    // 新しいファイルを既存のファイルリストに追加
-    allPhotos = [...allPhotos, ...Array.from(files)];
-    displayPhoto(Array.from(files)); // 全ての写真を表示
-}
-
+// 画像を表示する
 function displayPhoto(files) {
-    const photoDisplay = document.getElementById('photoDisplay_id'); // IDを修正
-    Array.from(files).forEach(file => {
-        const reader = new FileReader();
+    const photoDisplay = document.getElementById('photoDisplay_id'); // 画像を表示する場所
+
+    files.forEach(file => {
+        const reader = new FileReader(); // ファイルを読み込むためのFileReader
         reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.classList.add('photo_img')
-            photoDisplay.appendChild(img);
+            const img = document.createElement('img'); // 新しい画像要素を作成
+            img.src = e.target.result; // 画像データをセット
+            img.classList.add('photo_img'); // クラスを追加
+            photoDisplay.appendChild(img); // 画像を表示する場所に追加
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file); // 画像ファイルを読み込む
     });
+
+    console.log("表示している写真:", files); // デバッグ用: 表示される写真
 }
 
 function deleteSelectedPhotos() {
-    // 選択された画像を削除
-    allPhotos = allPhotos.filter((_, index) => !selectedPhotos.includes(index));
-    selectedPhotos = []; // 選択状態をリセット
+    // 選択された画像を allPhotos から削除
+    selectedFiles = selectedFiles.filter(photo => !allPhotos.includes(photo));
+    allPhotos = []; // 選択された画像をリセット
     hideDeletePhotoPopup(); // ポップアップを隠す
     updatePhotoDisplay(); // 表示を更新
 }
@@ -251,7 +291,7 @@ function updatePhotoDisplay() {
     const photoDisplay = document.getElementById('photoDisplay_id');
     photoDisplay.innerHTML = ''; // 以前の内容をクリア
 
-    allPhotos.forEach(photo => {
+    selectedFiles.forEach(photo => {
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = document.createElement('img');
