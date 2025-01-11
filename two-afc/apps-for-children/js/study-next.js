@@ -138,31 +138,33 @@ function showPhotoOptions() {
 }
 
 function showDeletePhotoPopup() {
-    if(allPhotos.length === 0) {
+    if(selectedFiles.length === 0) {
         alert("削除できる写真がありません");
     }else {
         const deletePhotoPopup = document.getElementById("deletePhotoPopup");
         const deletePhotoList = document.getElementById("deletePhotoList");
         deletePhotoList.innerHTML = ""; // 以前の内容をクリア
-        selectedPhotos = []; // 選択状態をリセット
 
-        allPhotos.forEach((photo, index) => {
+        const selectedFilesSet = new Set(selectedFiles);
+
+        selectedFiles.forEach((photo, index) => {
             const img = document.createElement('img');
             img.src = URL.createObjectURL(photo);
             img.classList.add('photo_img');
 
             img.onclick = function() {
-                // 画像がクリックされたときの処理
-                const isSelected = selectedPhotos.includes(index);
-                if (isSelected) {
+                if (selectedFilesSet.has(photo)) {
                     // 既に選択されている場合、選択を解除
-                    selectedPhotos = selectedPhotos.filter(photoIndex => photoIndex !== index);
-                    img.style.opacity = '1'; // 元の不透明度に戻す
+                    selectedFilesSet.delete(photo);
+                    img.style.opacity = '1';
                 } else {
                     // 選択されていない場合、選択する
-                    selectedPhotos.push(index);
-                    img.style.opacity = '0.5'; // 選択状態を示すために不透明度を下げる
+                    selectedFilesSet.add(photo);
+                    img.style.opacity = '0.5';
                 }
+
+                // selectedFilesをSetから配列に更新
+                selectedFiles = Array.from(selectedFilesSet);
             };
 
             deletePhotoList.appendChild(img); // 画像をリストに追加
@@ -282,8 +284,8 @@ function displayPhoto(files) {
 
 function deleteSelectedPhotos() {
     // 選択された画像を削除
-    allPhotos = allPhotos.filter((_, index) => !selectedPhotos.includes(index));
-    selectedPhotos = []; // 選択状態をリセット
+    allPhotos = allPhotos.filter((_, index) => !selectedFiles.includes(index));
+    selectedFiles = []; // 選択状態をリセット
     hideDeletePhotoPopup(); // ポップアップを隠す
     updatePhotoDisplay(); // 表示を更新
 }
