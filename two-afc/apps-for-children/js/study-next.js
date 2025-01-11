@@ -145,26 +145,23 @@ function showDeletePhotoPopup() {
         const deletePhotoList = document.getElementById("deletePhotoList");
         deletePhotoList.innerHTML = ""; // 以前の内容をクリア
 
-        const selectedFilesSet = new Set(selectedFiles);
-
         selectedFiles.forEach((photo, index) => {
             const img = document.createElement('img');
             img.src = URL.createObjectURL(photo);
             img.classList.add('photo_img');
 
             img.onclick = function() {
-                if (selectedFilesSet.has(photo)) {
-                    // 既に選択されている場合、選択を解除
-                    selectedFilesSet.delete(photo);
-                    img.style.opacity = '1';
+                const photoIndex = allPhotos.indexOf(photo);
+
+                if (photoIndex !== -1) {
+                    // 既にallPhotosに含まれている場合、選択を解除
+                    allPhotos.splice(photoIndex, 1);
+                    img.style.opacity = '1.0';
                 } else {
-                    // 選択されていない場合、選択する
-                    selectedFilesSet.add(photo);
+                    // allPhotosに含まれていない場合、選択を追加
+                    allPhotos.push(photo);
                     img.style.opacity = '0.5';
                 }
-
-                // selectedFilesをSetから配列に更新
-                selectedFiles = Array.from(selectedFilesSet);
             };
 
             deletePhotoList.appendChild(img); // 画像をリストに追加
@@ -283,9 +280,9 @@ function displayPhoto(files) {
 }
 
 function deleteSelectedPhotos() {
-    // 選択された画像を削除
-    allPhotos = allPhotos.filter((_, index) => !selectedFiles.includes(index));
-    selectedFiles = []; // 選択状態をリセット
+    // 選択された画像を allPhotos から削除
+    selectedFiles = selectedFiles.filter(photo => !allPhotos.includes(photo));
+    allPhotos = []; // 選択された画像をリセット
     hideDeletePhotoPopup(); // ポップアップを隠す
     updatePhotoDisplay(); // 表示を更新
 }
@@ -294,7 +291,7 @@ function updatePhotoDisplay() {
     const photoDisplay = document.getElementById('photoDisplay_id');
     photoDisplay.innerHTML = ''; // 以前の内容をクリア
 
-    allPhotos.forEach(photo => {
+    selectedFiles.forEach(photo => {
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = document.createElement('img');
