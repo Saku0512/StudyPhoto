@@ -123,9 +123,41 @@ try {
         $height = $size[1];
         $orientation = ($width > $height) ? 'L' : 'P';
 
-        $pdf->AddPage($orientation);
         // PDFのページサイズに合わせて画像を挿入
-        $pdf->Image($imagePath, 0, 0, 210, 297);
+        if ($orientation === 'L') {
+            $pdf->AddPage($orientation,[297, 210]); // 横向き
+        } else {
+            $pdf->AddPage($orientation, [210,297]); //縦向き
+        }
+
+        // アスペクト比を維持するためにサイズを計算
+        $pageWidth = ($orientation === 'L') ? 297 : 210;
+        $pageHeight = ($orientation === 'L') ? 210 : 297;
+        $imageRatio = $width / $height;
+        $pageRatio = $pageWidth / $pageHeight;
+
+        // 縮小比率の調整 (余白削減)
+        $scaleFactor = 1.055; // この値を調整して余白を減らす（0.95は余白を5%減らす）
+
+
+        if ($imageRatio > $pageRatio) {
+            // 幅に合わせて縮小
+            $displayWidth = $pageWidth * $scaleFactor;
+            $displayHeight = ($pageWidth / $imageRatio) * $scaleFactor;
+            $x = 0;
+            //$y = ($pageHeight - $displayHeight) / 2;
+            $y = 0;
+        } else {
+            // 高さに合わせて縮小
+            $displayHeight = $pageHeight * $scaleFactor;
+            $displayWidth = ($pageHeight * $imageRatio) * $scaleFactor;
+            //$x = ($pageWidth - $displayWidth) / 2;
+            $x = 0;
+            $y = 0;
+        }
+
+        // PDFのページサイズに合わせて画像を挿入
+        $pdf->Image(file: $imagePath, x: $x, y: $y, w: $displayWidth, h: $displayHeight);
     }
 
     $pdf->Output('F', $pdfFilePath); // PDFを保存
