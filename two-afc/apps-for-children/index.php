@@ -183,6 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/index.css" />
     <title>子供アプリ</title>
     <style>
         .logo {
@@ -251,9 +252,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="text">
             <div class="loginbuttons">
-                <button onclick="showForm('signupForm')">ユーザー登録</button>
-                <button onclick="showForm('loginForm')">ユーザーログイン</button>
-                <button onclick="showForm('guardianForm')">保護者ログイン</button>
+                <button onclick="showForm('signupForm')" class="btn btn-gradient">ユーザー登録</button>
+                <button onclick="showForm('loginForm')" class="btn btn-gradient">ユーザーログイン</button>
+                <button onclick="showForm('guardianForm')" class="btn btn-gradient">保護者ログイン</button>
             </div>
             <form id="signupForm" action="" method="post">
                 <label for="username">ユーザー名:</label>
