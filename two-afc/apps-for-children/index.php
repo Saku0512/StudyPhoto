@@ -263,21 +263,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="email" id="email" name="email" required><br>
                 <label for="password">パスワード:</label>
                 <input type="password" id="password" name="password" required><br>
-                <button type="submit">登録</button>
+                <button type="submit" class="btn btn-gradient">登録</button>
             </form>
             <form id="loginForm" action="" method="post">
                 <label for="login_username">ユーザー名:</label>
                 <input type="text" id="login_username" name="login_username" required><br>
                 <label for="login_password">パスワード:</label>
                 <input type="password" id="login_password" name="login_password" required><br>
-                <button type="submit" name="login">ログイン</button>
+                <button type="submit" name="login" class="btn btn-gradient">ログイン</button>
             </form>
             <form id="guardianForm" action="" method="post">
                 <label for="guardian_username">子どものユーザー名：</label>
                 <input type="text" id="guardian_username" name="guardian_username" required><br>
                 <label for="guardian_id">子どものID：</label>
                 <input type="password" id="guardian_id" name="guardian_id" required><br>
-                <button type="submit" name="guardian">ログイン</button>
+                <button type="submit" name="guardian" class="btn btn-gradient">ログイン</button>
             </form>
         </div>
     </main>
