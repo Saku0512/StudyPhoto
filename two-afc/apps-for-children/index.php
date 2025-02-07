@@ -185,52 +185,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/index.css" />
     <title>子供アプリ</title>
-    <style>
-        .logo {
-            display: flex;
-            justify-content: center;
-            margin: 0 auto 0;
-            height: 400px;
-            width: 400px;
-        }
-        .logo img {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-        }
-        .text {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            margin: 0 auto 0;
-            margin-top: 20px;
-            width: 80vw;
-        }
-        .loginbuttons {
-            display: flex;
-            justify-content: center;
-            gap: 8vw;
-            height: 60px;
-            button {
-                font-size: 20px;
-            }
-        }
-        #signupForm, #loginForm, #guardianForm {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px;
-            label, button, input {
-                font-size: 20px;
-            }
-            button {
-                height: 35px;
-                width: 120px;
-            }
-        }
-    </style>
     <script>
         window.onload = function(){
             <?php if(!empty($message)): ?>
@@ -252,32 +206,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="text">
             <div class="loginbuttons">
-                <button onclick="showForm('signupForm')" class="btn btn-gradient">ユーザー登録</button>
-                <button onclick="showForm('loginForm')" class="btn btn-gradient">ユーザーログイン</button>
-                <button onclick="showForm('guardianForm')" class="btn btn-gradient">保護者ログイン</button>
+                <button onclick="showForm('signupForm')" class="btn-gradient">新規登録</button>
+                <button onclick="showForm('loginForm')" class="btn-gradient user">ログイン</button>
             </div>
+            <button onclick="showForm('guardianForm')" class="btn-gradient guardian" >保護者<br />ログイン</button>
             <form id="signupForm" action="" method="post">
                 <label for="username">ユーザー名:</label>
-                <input type="text" id="username" name="username" required><br>
+                <input type="text" id="username" name="username" required class="gradient"><br>
                 <label for="email">メールアドレス:</label>
-                <input type="email" id="email" name="email" required><br>
+                <input type="email" id="email" name="email" required class="gradient"><br>
                 <label for="password">パスワード:</label>
-                <input type="password" id="password" name="password" required><br>
-                <button type="submit">登録</button>
+                <input type="password" id="password" name="password" required class="gradient"><br>
+                <button type="submit" class="btn btn-gradient">登録</button>
             </form>
             <form id="loginForm" action="" method="post">
                 <label for="login_username">ユーザー名:</label>
-                <input type="text" id="login_username" name="login_username" required><br>
+                <input type="text" id="login_username" name="login_username" required class="gradient"><br>
                 <label for="login_password">パスワード:</label>
-                <input type="password" id="login_password" name="login_password" required><br>
-                <button type="submit" name="login">ログイン</button>
+                <input type="password" id="login_password" name="login_password" required class="gradient"><br>
+                <button type="submit" name="login" class="btn-gradient" >ログイン</button>
             </form>
             <form id="guardianForm" action="" method="post">
                 <label for="guardian_username">子どものユーザー名：</label>
-                <input type="text" id="guardian_username" name="guardian_username" required><br>
-                <label for="guardian_id">子どものID：</label>
-                <input type="password" id="guardian_id" name="guardian_id" required><br>
-                <button type="submit" name="guardian">ログイン</button>
+                <input type="text" id="guardian_username" name="guardian_username" required class="gradient"><br>
+                <label for="guardian_id">子どものID:</label>
+                <input type="password" id="guardian_id" name="guardian_id" required class="gradient"><br>
+                <button type="submit" name="guardian" class="btn-gradient">ログイン</button>
             </form>
         </div>
     </main>
