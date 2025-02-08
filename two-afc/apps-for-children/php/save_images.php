@@ -68,7 +68,7 @@ if (empty($images)) {
     exit;
 }
 
-$allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/PNG', 'image/JPG', 'image/JPEG', 'image/GIF']; // 許可されたファイルタイプ
+$allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/PNG', 'image/JPG', 'image/JPEG',]; // 許可されたファイルタイプ
 $maxFileSize = 10 * 1024 * 1024 * 8; // 最大ファイルサイズ (10MB)
 
 $uploadedImagePaths = []; // アップロードされた画像パスを格納
