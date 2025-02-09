@@ -47,17 +47,37 @@ if (!is_writable($pdfUploadDir)) {
 $username = $_SESSION['username'] ?? null;
 // アップロードされた画像の取得
 $images = [];
-if (!empty($_FILES['images']['name'][0])) {
-    foreach ($_FILES['images']['tmp_name'] as $key => $tmpName) {
-        $fileName = $_FILES['images']['name'][$key];
-        $fileTmpName = $_FILES['images']['tmp_name'][$key];
-        $fileSize = $_FILES['images']['size'][$key];
-        $fileType = $_FILES['images']['type'][$key];
+if (!empty($_FILES['images'])) {
+    // アップロード制限の確認
+    $maxPostSize = ini_get('post_max_size');
+    $maxFileSize = ini_get('upload_max_filesize');
+    $contentLength = $_SERVER['CONTENT_LENGTH'];
+    
+    if ($contentLength > return_bytes($maxPostSize)) {
+        echo json_encode(['success' => false, 'error' => "POSTサイズ制限（{$maxPostSize}）を超えています"]);
+        exit;
+    }
+    
+    foreach ($_FILES['images']['name'] as $key => $name) {
+        // エラーチェックを追加
+        if ($_FILES['images']['error'][$key] !== UPLOAD_ERR_OK) {
+            $errorMessage = match($_FILES['images']['error'][$key]) {
+                UPLOAD_ERR_INI_SIZE => 'ファイルサイズがPHPの制限を超えています',
+                UPLOAD_ERR_FORM_SIZE => 'ファイルサイズがフォームの制限を超えています',
+                UPLOAD_ERR_PARTIAL => 'ファイルの一部のみがアップロードされました',
+                UPLOAD_ERR_NO_FILE => 'ファイルがアップロードされていません',
+                default => 'アップロードエラーが発生しました'
+            };
+            echo json_encode(['success' => false, 'error' => $errorMessage]);
+            exit;
+        }
+
         $images[] = [
-            'name' => $fileName,
-            'tmp_name' => $fileTmpName,
-            'size' => $fileSize,
-            'type' => $fileType
+            'name' => $name,
+            'tmp_name' => $_FILES['images']['tmp_name'][$key],
+            'size' => $_FILES['images']['size'][$key],
+            'type' => $_FILES['images']['type'][$key],
+            'error' => $_FILES['images']['error'][$key]
         ];
     }
 }
@@ -77,9 +97,20 @@ $uploadedImagePaths = []; // アップロードされた画像パスを格納
 foreach ($images as $image) {
     $tmpName = $image['tmp_name'];
     $fileName = $image['name'];
+
+    // ファイルが正常にアップロードされたか確認
+    if (!is_uploaded_file($tmpName)) {
+        echo json_encode(['success' => false, 'error' => "正常にアップロードされていないファイルです: $fileName"]);
+        exit;
+    }
     
     // ファイルタイプとサイズの確認
     $fileType = mime_content_type($tmpName); // MIMEタイプを取得
+    if ($fileType === false) {
+        echo json_encode(['success' => false, 'error' => "ファイルタイプの取得に失敗しました"]);
+        exit;
+    }
+    
     if (!in_array($fileType, $allowedTypes)) {
         echo json_encode(['success' => false, 'error' => "許可されていないファイルタイプです: $fileType"]);
         exit;
@@ -200,4 +231,20 @@ try {
     ]);
     header('Location: ../../home.php');
     exit;
+}
+
+// ファイル先頭付近に以下の関数を追加
+function return_bytes($val) {
+    $val = trim($val);
+    $last = strtolower($val[strlen($val)-1]);
+    $val = substr($val, 0, -1);
+    switch($last) {
+        case 'g':
+            $val *= 1024;
+        case 'm':
+            $val *= 1024;
+        case 'k':
+            $val *= 1024;
+    }
+    return $val;
 }
