@@ -14,81 +14,92 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function saveStudySession() {
-    const category = document.getElementById("category").value;
-    const studyTime = document.getElementById("timer-display").textContent;
+    return new Promise((resolve, reject) => {
+        const category = document.getElementById("category").value;
+        const studyTime = document.getElementById("timer-display").textContent;
+        const elapsedPeriod = localStorage.getItem('elapsedTime');
+        const formattedElapsedTime = elapsedPeriod ? elapsedPeriod.replace(/[\[\]"]+/g, '') : 'no_elapsed_time';
 
-    // localStorageから経過時間を取得
-    const elapsedPeriod = localStorage.getItem('elapsedTime');
-    
-    // 経過時間がnullまたは空であればデフォルト値を設定
-    const formattedElapsedTime = elapsedPeriod ? elapsedPeriod.replace(/[\[\]"]+/g, '') : 'no_elapsed_time';
+        const formData = new FormData();
+        formData.append('category', category);
+        formData.append('study_time', studyTime);
+        formData.append('SspentTime', formattedElapsedTime);
 
-    console.log("経過時間:", formattedElapsedTime);  // デバッグ用
-
-    // 送信するデータを準備
-    const formData = new FormData();
-    formData.append('category', category);
-    formData.append('study_time', studyTime);
-    formData.append('SspentTime', formattedElapsedTime);  // 経過時間を送信
-
-    // データを送信する前にFormDataの内容を確認（デバッグ用）
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);  // 送信されるデータを表示
-    }
-
-    // データをサーバーに送信
-    fetch('../../php/save_formData.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(Response => {
-        if(!Response.ok) {
-            return Response.text().then(text => {throw new Error(text)});
-        }
-        return Response.json();
-    })
-    .then(data => {
-        console.log(data);  // デバッグ用
-        if (data.success) {
-            alert("データが正常に保存されました。");
-        } else {
-            alert("エラーが発生しました: " + data.error);
-        }
-    })
-    .catch(error => {
-        console.error("通信エラーが発生しました(js):", error.message);
-        alert("通信エラーが発生しました(js): " + error.message);
+        fetch('../../php/save_formData.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                resolve(data);
+            } else {
+                reject(new Error(data.error || 'データの保存に失敗しました'));
+            }
+        })
+        .catch(error => {
+            reject(error);
+        });
     });
 }
 
-document.getElementById('saveButton').addEventListener('click', (event) => {
+document.getElementById('saveButton').addEventListener('click', async (event) => {
     event.preventDefault();
+    
+    // カテゴリーの検証
     const categorySelect = document.getElementById("category");
     const selectedCategory = categorySelect.value;
 
-    const photoDisplay = document.getElementById("photoDisplay_id");
-    const photoSelected = photoDisplay.innerHTML.trim() !== '';
+    // 選択されたファイルが存在するか確認
+    if (selectedFiles.length === 0) {
+        alert("写真を撮影してください。");
+        return;
+    }
 
-    if ((selectedCategory === "--教科を選択--" && !photoSelected) || selectedCategory === "0") {
+    if (selectedCategory === "--教科を選択--" || selectedCategory === "0") {
         alert("教科を選択してください。");
         return;
     }
 
-    if (!photoSelected) {
-        alert("画像を選択してください。");
-        return;
-    } else {
-        saveStudySession();
-        saveData(); // 必要に応じてリダイレクトをここでも行う
-        const form = document.getElementById('imageForm');
-        const fileInput = form.querySelector('input[type="file"][name="images[]"]'); // file input element
-        if(fileInput.files.length === 0){
-            fileInput.click();
-            return;
-        } else {
-            form.submit();
+    // ファイルの検証
+    const form = document.getElementById('imageForm');
+    const fileInputs = form.querySelectorAll('input[type="file"][name="images[]"]');
+    let hasValidFiles = false;
+    let validFileCount = 0;
+
+    // すべてのファイル入力をチェック
+    for (const input of fileInputs) {
+        if (input.files && input.files.length > 0) {
+            // 各ファイルの妥当性チェック
+            for (const file of input.files) {
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/PNG', 'image/JPG', 'image/JPEG'];
+                if (validTypes.includes(file.type) && file.size > 0) {
+                    validFileCount++;
+                }
+            }
         }
-        alert("データが保存されました。");
+    }
+
+    hasValidFiles = validFileCount > 0;
+
+    if (!hasValidFiles) {
+        alert("有効な画像ファイルを選択してください。");
+        return;
+    }
+
+    try {
+        // データの保存を順番に実行
+        await saveStudySession();
+        saveData();
+        form.submit();
+    } catch (error) {
+        console.error('データの保存中にエラーが発生しました:', error);
+        alert('データの保存中にエラーが発生しました。もう一度お試しください。');
     }
 });
 
@@ -181,47 +192,74 @@ function hideDeletePhotoPopup() {
 let selectedFiles = []; // 選択された画像を管理する配列
 let inputCount = 0; // 作成されたinputタグの数を管理する変数
 
+// 写真を撮影する関数
 function capturePhoto() {
-    const form = document.getElementById('imageForm'); // formタグを取得
-    const submitButton = form.querySelector('input[type="submit"]'); // submitボタンを取得
-    const input = document.createElement('input'); // 新しいinputタグを作成
+    const form = document.getElementById('imageForm');
+    const submitButton = form.querySelector('input[type="submit"]');
+    const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/*'; // 画像のみ選択
-    input.multiple = true; // 複数選択可能
-    input.capture = 'environment'; // 環境カメラ
-    input.name = 'images[]'; // name属性にimages[]を指定
-    input.style = 'display: none'; // 非表示にする
-    input.id = `input_${inputCount++}`; // 一意のIDを付与
-    // submitボタンの前に画像のinputタグを挿入
-    form.insertBefore(input, submitButton); // submitボタンの前に追加
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.capture = 'environment';
+    input.name = 'images[]';
+    input.style = 'display: none';
+    input.id = `input_${inputCount++}`;
 
-    // ファイル選択後の処理
-    input.onchange = function(event) {
-        const files = Array.from(event.target.files); // 選択されたファイルを配列に変換
+    input.onchange = async function(event) {
+        if (!event.target.files || event.target.files.length === 0) {
+            console.log('ファイルが選択されていません');
+            return;
+        }
 
-        files.forEach(file => {
-            // input要素にファイル名を格納する
-            input.setAttribute('data-image-name', file.name); // data-image-name 属性にファイル名を格納
+        const files = Array.from(event.target.files);
+        
+        // ファイルの圧縮と処理
+        const processedFiles = await Promise.all(files.map(async file => {
+            // 画像ファイルの検証
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/PNG', 'image/JPG', 'image/JPEG'];
+            if (!validTypes.includes(file.type) || file.size === 0) {
+                console.log(`不正なファイル: ${file.name}`);
+                return null;
+            }
 
-            console.log('ファイル名:', file.name); // コンソールにファイル名を表示
-            console.log('inputのdata-image-name属性:', input.getAttribute('data-image-name')); // data-image-name属性からファイル名を取得
-        });
+            try {
+                // 画像をBlobとして処理
+                const blob = new Blob([file], { type: file.type });
+                const fileName = `photo_${Date.now()}.${file.type.split('/')[1]}`;
+                return new File([blob], fileName, { type: file.type });
+            } catch (error) {
+                console.error('ファイル処理エラー:', error);
+                return null;
+            }
+        }));
 
-        // 重複を避けて新しく選ばれたファイルのみを追加
-        const newFiles = files.filter(file => 
+        // nullを除外し、有効なファイルのみを取得
+        const validFiles = processedFiles.filter(file => file !== null);
+
+        if (validFiles.length === 0) {
+            alert('有効な画像ファイルが処理できませんでした');
+            return;
+        }
+
+        // 重複チェックと追加
+        const newFiles = validFiles.filter(file => 
             !selectedFiles.some(existingFile => existingFile.name === file.name)
         );
-        selectedFiles.push(...newFiles); // 新しいファイルをselectedFilesに追加
+        
+        if (newFiles.length > 0) {
+            selectedFiles.push(...newFiles);
+            displayPhoto(newFiles);
+            console.log(`${newFiles.length}個の新しいファイルが追加されました`);
+        }
 
-        displayPhoto(newFiles); // 新しく選ばれたファイルのみを表示
-        hidePhotoOptionsPopup(); // オプションのポップアップを非表示（未定義の関数）
-        // document.body.removeChild(input); // DOMからinputを削除（任意）
+        hidePhotoOptionsPopup();
     };
 
-    input.click(); // ファイル選択ダイアログを表示
+    form.insertBefore(input, submitButton);
+    input.click();
 }
 
-// 画像を選択するボタンが押されたときの処理
+// selectPhoto関数は画像ファイルを選択させる関数
 function selectPhoto() {
     const form = document.getElementById('imageForm'); // formタグを取得
     const submitButton = form.querySelector('input[type="submit"]'); // submitボタンを取得
@@ -282,6 +320,15 @@ function displayPhoto(files) {
 function deleteSelectedPhotos() {
     // 選択された画像を allPhotos から削除
     selectedFiles = selectedFiles.filter(photo => !allPhotos.includes(photo));
+    const imageForm = document.getElementById('imageForm');
+    const inputs = imageForm.querySelectorAll('input[data-image-name]'); // imageFormないの全てのinputタグを取得
+    // 選択された写真のinputタグを削除
+    inputs.forEach(input => {
+        const imageName = input.getAttribute('data-image-name'); // data-image-name属性からファイル名を取得
+        if (allPhotos.some(file => file.name === imageName)) {
+            input.remove(); // inputタグを削除
+        }
+    });
     allPhotos = []; // 選択された画像をリセット
     hideDeletePhotoPopup(); // ポップアップを隠す
     updatePhotoDisplay(); // 表示を更新
