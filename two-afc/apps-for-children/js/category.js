@@ -302,7 +302,6 @@ function fetchStudyImages(categoryName) {
             throw new Error(data.error);
         }
 
-        // nullチェックを追加
         const popupContent = document.getElementById("popupContent");
         const popupText = document.getElementById("popupText");
 
@@ -311,21 +310,33 @@ function fetchStudyImages(categoryName) {
             return;
         }
 
-        // 既存のテキストをクリア
-        popupText.innerHTML = ''; // これで以前のテキストを消去
-
+        popupText.innerHTML = '';
         popupText.textContent = `選択されたカテゴリー: ${categoryName}`;
 
         if (data.images && data.images.length > 0) {
+            // データを日付で降順にソート
+            data.images.sort((a, b) => {
+                const dateA = new Date(a.study_date);
+                const dateB = new Date(b.study_date);
+                return dateB - dateA; // 降順にするために B - A を使用
+            });
+
             const table = document.createElement('table');
             const tableHeader = document.createElement('thead');
             const tableBody = document.createElement('tbody');
 
             const headerRow = document.createElement('tr');
-            const headers = ['勉強日', '勉強時間', 'カテゴリー', '画像リンク'];
-            headers.forEach(headerText => {
+            const headers = [
+                { id: 'study-date', text: '勉強日' },
+                { id: 'study-time', text: '勉強時間' },
+                { id: 'category', text: 'カテゴリー' },
+                { id: 'image-link', text: '画像リンク' }
+            ];
+
+            headers.forEach(header => {
                 const th = document.createElement('th');
-                th.textContent = headerText;
+                th.id = header.id;
+                th.textContent = header.text;
                 headerRow.appendChild(th);
             });
             tableHeader.appendChild(headerRow);

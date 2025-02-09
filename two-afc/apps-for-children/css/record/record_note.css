@@ -26,19 +26,22 @@ body {
     width: 100vw;
 }
 .tab {
-    position: absolute;
-    top: 10px;
+    position: fixed;
     left: 10px;
     display: flex;
-    justify-content: flex-start;
     gap: 10px;
+    height: 100px;
     width: 100%;
+    justify-content: flex-start;
+    background-color: white;
+    z-index: 10;
 }
 .tab a, .tab button {
     font-size: 18px;
     height: 40px;
     width: 40px;
     padding: 10px 20px;
+    margin-top: 10px;
     margin-right: auto;
     border-radius: 5px;
     border: none;
@@ -128,17 +131,21 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     max-width: 90%;
     max-height: 90%;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: none; /* 初期状態は非表示 */
     z-index: 101;
 }
 
 /* テキストや追加画像のスタイル */
 #popupText {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 20px;
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
-    width: 600px;
+    width: 80vw;
 }
 /* 閉じるボタン */
 .close-button {
@@ -162,18 +169,39 @@ body {
 }
 
 table {
-    width: 100%;
+    width: 80vw;
     border-collapse: collapse;
     margin-top: 10px;
 }
+thead {
+    font-size: 1.5vh;
+}
+tbody {
+    font-size: 1.3vh;
+}
 tr{
     width: 250px;
+    #study-date {
+        width: 15%;
+    }
+    
+    #study-time {
+        width: 6%;
+    }
+    #category {
+        width: 15%;
+    }
+    #image-link {
+        width: 15%;
+    }
 }
 th, td {
-    padding: 8px;
+    padding: 8px 2px;
     text-align: left;
     border: 1px solid #ddd;
-    width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 th {
