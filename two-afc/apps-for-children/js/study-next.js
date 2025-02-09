@@ -282,6 +282,15 @@ function displayPhoto(files) {
 function deleteSelectedPhotos() {
     // 選択された画像を allPhotos から削除
     selectedFiles = selectedFiles.filter(photo => !allPhotos.includes(photo));
+    const imageForm = document.getElementById('imageForm');
+    const inputs = imageForm.querySelectorAll('input[data-image-name]'); // imageFormないの全てのinputタグを取得
+    // 選択された写真のinputタグを削除
+    inputs.forEach(input => {
+        const imageName = input.getAttribute('data-image-name'); // data-image-name属性からファイル名を取得
+        if (allPhotos.some(file => file.name === imageName)) {
+            input.remove(); // inputタグを削除
+        }
+    });
     allPhotos = []; // 選択された画像をリセット
     hideDeletePhotoPopup(); // ポップアップを隠す
     updatePhotoDisplay(); // 表示を更新
