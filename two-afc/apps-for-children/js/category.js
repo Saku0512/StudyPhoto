@@ -302,7 +302,6 @@ function fetchStudyImages(categoryName) {
             throw new Error(data.error);
         }
 
-        // nullチェックを追加
         const popupContent = document.getElementById("popupContent");
         const popupText = document.getElementById("popupText");
 
@@ -311,12 +310,17 @@ function fetchStudyImages(categoryName) {
             return;
         }
 
-        // 既存のテキストをクリア
-        popupText.innerHTML = ''; // これで以前のテキストを消去
-
+        popupText.innerHTML = '';
         popupText.textContent = `選択されたカテゴリー: ${categoryName}`;
 
         if (data.images && data.images.length > 0) {
+            // データを日付で降順にソート
+            data.images.sort((a, b) => {
+                const dateA = new Date(a.study_date);
+                const dateB = new Date(b.study_date);
+                return dateB - dateA; // 降順にするために B - A を使用
+            });
+
             const table = document.createElement('table');
             const tableHeader = document.createElement('thead');
             const tableBody = document.createElement('tbody');
