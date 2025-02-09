@@ -322,10 +322,17 @@ function fetchStudyImages(categoryName) {
             const tableBody = document.createElement('tbody');
 
             const headerRow = document.createElement('tr');
-            const headers = ['勉強日', '勉強時間', 'カテゴリー', '画像リンク'];
-            headers.forEach(headerText => {
+            const headers = [
+                { id: 'study-date', text: '勉強日' },
+                { id: 'study-time', text: '勉強時間' },
+                { id: 'category', text: 'カテゴリー' },
+                { id: 'image-link', text: '画像リンク' }
+            ];
+
+            headers.forEach(header => {
                 const th = document.createElement('th');
-                th.textContent = headerText;
+                th.id = header.id;
+                th.textContent = header.text;
                 headerRow.appendChild(th);
             });
             tableHeader.appendChild(headerRow);

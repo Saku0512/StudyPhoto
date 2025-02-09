@@ -168,18 +168,39 @@ body {
 }
 
 table {
-    width: 100%;
+    width: 80vw;
     border-collapse: collapse;
     margin-top: 10px;
 }
+thead {
+    font-size: 1.5vh;
+}
+tbody {
+    font-size: 1.3vh;
+}
 tr{
     width: 250px;
+    #study-date {
+        width: 15%;
+    }
+    
+    #study-time {
+        width: 6%;
+    }
+    #category {
+        width: 15%;
+    }
+    #image-link {
+        width: 15%;
+    }
 }
 th, td {
-    padding: 8px;
+    padding: 8px 2px;
     text-align: left;
     border: 1px solid #ddd;
-    width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 th {
