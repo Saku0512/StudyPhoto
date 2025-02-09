@@ -130,17 +130,21 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     max-width: 90%;
     max-height: 90%;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: none; /* 初期状態は非表示 */
     z-index: 101;
 }
 
 /* テキストや追加画像のスタイル */
 #popupText {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 20px;
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
-    width: 600px;
+    width: 80vw;
 }
 /* 閉じるボタン */
 .close-button {
