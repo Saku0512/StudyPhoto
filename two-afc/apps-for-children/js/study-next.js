@@ -317,13 +317,7 @@ function cropPhoto(files) {
 
         // 画像読み込み完了後にCropperを初期化
         image.onload = function() {
-            cropper = new Cropper(image, {
-                aspectRatio: NaN, // フリーサイズでトリミング可能
-                viewMode: 1,
-                background: false,
-                zoomable: false,
-                guides: true
-            });
+            cropper = new Cropper(image);
         };
 
         // トリミングボタンのクリックイベント
