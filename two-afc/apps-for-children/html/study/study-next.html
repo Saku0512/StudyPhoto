@@ -9,6 +9,10 @@
     <script src="../../js/load.js" defer></script>
     <script src="../../js/study-next.js" defer></script>
     <script src="../../js/category.js" defer></script>
+    <!-- Cropper.jsのCSSとJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.css" integrity="sha512-087vysR/jM0N5cp13Vlp+ZF9wx6tKbvJLwPO8Iit6J7R+n7uIMMjg37dEgexOshDmDITHYY5useeSmfD1MYiQA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.js" integrity="sha512-lR8d1BXfYQuiqoM/LeGFVtxFyspzWFTZNyYIiE5O2CcAGtTCRRUMLloxATRuLz8EmR2fYqdXYlrGh+D6TVGp3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <title>Stopwatch Next</title>
 </head>
 <body>
@@ -73,6 +77,12 @@
                 <button onclick="deleteOption()" class="add">削除</button>
             </div>
         </div>
+    </div>
+    <div id="cropContainer_overlay"></div>
+    <div id="cropContainer">
+        <p>トリミングしたい部分を選択してください</p>
+        <img id="previewImage" style="max-width: 100%; max-height: 100%;">
+        <button id="cropButton">トリミングを実行</button>
     </div>
     <div class="photo">
         <button class="photoSelect" onclick="showPhotoOptions()">画像を追加</button>
