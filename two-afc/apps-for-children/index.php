@@ -186,18 +186,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/index.css" />
+    <script src="js/index.js" nonce="<?= htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <title>子供アプリ</title>
     <script nonce="<?= htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') ?>">
         window.onload = function(){
             <?php if(!empty($message)): ?>
                 alert("<?php echo addslashes($message); ?>");
             <?php endif; ?>
-        }
-        function showForm(formId) {
-            document.getElementById("signupForm").style.display = "none";
-            document.getElementById("loginForm").style.display = "none";
-            document.getElementById("guardianForm").style.display = "none";
-            document.getElementById(formId).style.display = "flex";
         }
     </script>
 </head>

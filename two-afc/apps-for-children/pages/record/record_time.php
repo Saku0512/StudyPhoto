@@ -16,6 +16,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <script src="../../js/load.js" defer></script>
     <script src="../../js/record.js" defer></script>
     <script src="../../js/calender.js" defer></script>
+    <script nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_DOM.js" defer></script>
     <title>記録を振り返る</title>
 </head>
 <body>
@@ -79,18 +80,5 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
             <div id="calendar-body" class="calendar-body"></div>
         </div>
     </main>
-    <script nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>">
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
-        const tabs = document.querySelectorAll('.tab a'); // すべてのタブを取得
-
-        tabs.forEach(tab => {
-            const tabHref = tab.getAttribute('href').split('/').pop(); // タブのリンクのファイル名を取得
-            if (tabHref === currentPage) {
-                tab.classList.add('active'); // 現在のページに一致するタブにactiveクラスを追加
-            }
-        });
-    });
-    </script>
 </body>
 </html>
