@@ -1,3 +1,6 @@
+<?php
+$CommentNonce = base64_encode(random_bytes(16));
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +29,7 @@
             <p>Comment Section</p>
         </div>
     </main>
-    <script nonce="secure">
+    <script nonce="<?= $CommentNonce ?>">
     // ページが読み込まれた後に実行
     document.addEventListener('DOMContentLoaded', function() {
         const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
