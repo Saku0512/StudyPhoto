@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // ボタンのクリックイベントをJavaScriptで設定
-    const signupButton = document.querySelector('.btn-gradient:nth-of-type(1)');
-    const loginButton = document.querySelector('.btn-gradient:nth-of-type(2)');
-    const guardianButton = document.querySelector('.btn-gradient:nth-of-type(3)');
+    const signupButton = document.getElementById("signupForm");
+    const loginButton = document.getElementById("loginForm");
+    const guardianButton = document.getElementById("guardianForm");
 
     signupButton.addEventListener('click', function() {
         showForm('signupForm');
