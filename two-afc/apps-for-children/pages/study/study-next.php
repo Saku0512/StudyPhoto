@@ -1,6 +1,5 @@
 <?php
-$StudyNextNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-<?= $StudyNextNonce ?>' 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.js'; style-src 'self' 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.css';");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.js'; style-src 'self' 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.css';");
 ?>
 <!DOCTYPE html>
 <html>

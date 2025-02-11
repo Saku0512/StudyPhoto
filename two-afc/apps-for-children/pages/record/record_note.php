@@ -1,6 +1,6 @@
 <?php
 $NoteNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'https://cdn.jsdelivr.net/npm/js-base64/base64.min.js' 'nonce-<?= $NoteNonce ?>';");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'https://cdn.jsdelivr.net/npm/js-base64/base64.min.js' 'nonce-" . $NoteNonce . "';");
 ?>
 <!DOCTYPE html>
 <html>
@@ -40,7 +40,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'https://
             </div>
         </div>
     </main>
-    <script nonce="<?= $NoteNonce ?>">
+    <script nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>">
     // ページが読み込まれた後に実行
     document.addEventListener('DOMContentLoaded', function() {
         const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
