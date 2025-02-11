@@ -11,6 +11,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <link rel="stylesheet" href="../../css/scss/load.css" />
     <link rel="stylesheet" href="../../css/record/record_comment.css" />
     <script src="../../js/load.js" defer></script>
+    <script nonce="<?= htmlspecialchars($CommentNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_DOM.js" defer></script>
     <title>記録を振り返る</title>
 </head>
 <body>
@@ -30,19 +31,5 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
             <p>Comment Section</p>
         </div>
     </main>
-    <script nonce="<?= htmlspecialchars($CommentNonce, ENT_QUOTES, 'UTF-8') ?>">
-    // ページが読み込まれた後に実行
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
-        const tabs = document.querySelectorAll('.tab a'); // すべてのタブを取得
-
-        tabs.forEach(tab => {
-            const tabHref = tab.getAttribute('href').split('/').pop(); // タブのリンクのファイル名を取得
-            if (tabHref === currentPage) {
-                tab.classList.add('active'); // 現在のページに一致するタブにactiveクラスを追加
-            }
-        });
-    });
-    </script>
 </body>
 </html>
