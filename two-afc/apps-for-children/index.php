@@ -185,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/index.css" />
     <title>子供アプリ</title>
-    <script>
+    <script nonce="secure">
         window.onload = function(){
             <?php if(!empty($message)): ?>
                 alert("<?php echo addslashes($message); ?>");
