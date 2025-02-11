@@ -212,25 +212,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button onclick="showForm('guardianForm')" class="btn-gradient guardian" >保護者<br />ログイン</button>
             <form id="signupForm" action="" method="post">
                 <label for="username">ユーザー名:</label>
-                <input type="text" id="username" name="username" required class="gradient"><br>
+                <input type="text" id="username" name="username" required class="gradient" autocomplete="username"><br>
                 <label for="email">メールアドレス:</label>
-                <input type="email" id="email" name="email" required class="gradient"><br>
+                <input type="email" id="email" name="email" required class="gradient" autocomplete="email"><br>
                 <label for="password">パスワード:</label>
-                <input type="password" id="password" name="password" required class="gradient"><br>
+                <input type="password" id="password" name="password" required class="gradient" autocomplete="current-password"><br>
                 <button type="submit" class="btn btn-gradient">登録</button>
             </form>
             <form id="loginForm" action="" method="post">
                 <label for="login_username">ユーザー名:</label>
-                <input type="text" id="login_username" name="login_username" required class="gradient"><br>
+                <input type="text" id="login_username" name="login_username" required class="gradient" autocomplete="username"><br>
                 <label for="login_password">パスワード:</label>
-                <input type="password" id="login_password" name="login_password" required class="gradient"><br>
+                <input type="password" id="login_password" name="login_password" required class="gradient" autocomplete="current-password"><br>
                 <button type="submit" name="login" class="btn-gradient" >ログイン</button>
             </form>
             <form id="guardianForm" action="" method="post">
                 <label for="guardian_username">子どものユーザー名：</label>
-                <input type="text" id="guardian_username" name="guardian_username" required class="gradient"><br>
+                <input type="text" id="guardian_username" name="guardian_username" required class="gradient" autocomplete="username"><br>
                 <label for="guardian_id">子どものID:</label>
-                <input type="password" id="guardian_id" name="guardian_id" required class="gradient"><br>
+                <input type="password" id="guardian_id" name="guardian_id" required class="gradient" autocomplete="current-password"><br>
                 <button type="submit" name="guardian" class="btn-gradient">ログイン</button>
             </form>
         </div>
