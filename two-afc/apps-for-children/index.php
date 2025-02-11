@@ -1,5 +1,6 @@
 <?php
 session_start();
+$FormNonce = base64_encode(random_bytes(16));
 
 function generateRandomID($conn) {
     $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -185,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/index.css" />
     <title>子供アプリ</title>
-    <script nonce="secure">
+    <script nonce="<?= $FormNonce ?>">
         window.onload = function(){
             <?php if(!empty($message)): ?>
                 alert("<?php echo addslashes($message); ?>");
