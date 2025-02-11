@@ -1,7 +1,7 @@
 <?php
 session_start();
 $FormNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-<?= $FormNonce ?>';");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $FormNonce . "';");
 
 function generateRandomID($conn) {
     $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -187,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/index.css" />
     <title>子供アプリ</title>
-    <script nonce="<?= $FormNonce ?>">
+    <script nonce="<?= htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') ?>">
         window.onload = function(){
             <?php if(!empty($message)): ?>
                 alert("<?php echo addslashes($message); ?>");

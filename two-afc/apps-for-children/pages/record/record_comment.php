@@ -1,6 +1,6 @@
 <?php
 $CommentNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-<?= $CommentNonce ?>';");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $CommentNonce . "';");
 ?>
 <!DOCTYPE html>
 <html>
@@ -30,7 +30,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-<?
             <p>Comment Section</p>
         </div>
     </main>
-    <script nonce="<?= $CommentNonce ?>">
+    <script nonce="<?= htmlspecialchars($CommentNonce, ENT_QUOTES, 'UTF-8') ?>">
     // ページが読み込まれた後に実行
     document.addEventListener('DOMContentLoaded', function() {
         const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
