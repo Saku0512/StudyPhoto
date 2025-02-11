@@ -1,3 +1,7 @@
+<?php
+$TimeNonce = base64_encode(random_bytes(16));
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-<?= $TimeNonce ?>' 'https://cdn.jsdelivr.net/npm/chart.js' 'https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns' 'https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js';");
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -75,7 +79,7 @@
             <div id="calendar-body" class="calendar-body"></div>
         </div>
     </main>
-    <script>
+    <script nonce="<?= $TimeNonce ?>">
     document.addEventListener('DOMContentLoaded', function() {
         const currentPage = window.location.pathname.split('/').pop(); // 現在のページのファイル名を取得
         const tabs = document.querySelectorAll('.tab a'); // すべてのタブを取得
