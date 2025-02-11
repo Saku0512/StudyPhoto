@@ -1,5 +1,6 @@
 <?php
 $CommentNonce = base64_encode(random_bytes(16));
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-<?= $CommentNonce ?>';");
 ?>
 <!DOCTYPE html>
 <html>
