@@ -194,6 +194,7 @@ let inputCount = 0; // 作成されたinputタグの数を管理する変数
 
 // 写真を撮影する関数
 function capturePhoto() {
+    console.log('capturePhoto関数が呼び出されました');
     const form = document.getElementById('imageForm');
     const submitButton = form.querySelector('input[type="submit"]');
     const input = document.createElement('input');
@@ -204,8 +205,10 @@ function capturePhoto() {
     input.name = 'images[]';
     input.style = 'display: none';
     input.id = `input_${inputCount++}`;
+    console.log('input要素が作成されました');
 
     input.onchange = async function(event) {
+        console.log('input要素のonchangeイベントが発生しました');
         if (!event.target.files || event.target.files.length === 0) {
             console.log('ファイルが選択されていません');
             return;
@@ -215,6 +218,7 @@ function capturePhoto() {
         
         // ファイルの圧縮と処理
         const processedFiles = await Promise.all(files.map(async file => {
+            console.log('ファイルが選択されています');
             // 画像ファイルの検証
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/PNG', 'image/JPG', 'image/JPEG'];
             if (!validTypes.includes(file.type) || file.size === 0) {
@@ -242,20 +246,19 @@ function capturePhoto() {
         }
 
         // 重複チェックと追加
-        const newFiles = validFiles.filter(file => 
+        let newFiles = validFiles.filter(file => 
             !selectedFiles.some(existingFile => existingFile.name === file.name)
         );
         
         if (newFiles.length > 0) {
+            hidePhotoOptionsPopup();
+            newFiles = await cropPhoto(newFiles);
+            console.log("トリミングされたあとのcount:"+inputCount);
             selectedFiles.push(...newFiles);
             displayPhoto(newFiles);
             console.log(`${newFiles.length}個の新しいファイルが追加されました`);
         }
-
-        hidePhotoOptionsPopup();
     };
-
-    form.insertBefore(input, submitButton);
     input.click();
 }
 
@@ -293,10 +296,81 @@ function selectPhoto() {
 
         displayPhoto(newFiles); // 新しく選ばれたファイルのみを表示
         hidePhotoOptionsPopup(); // オプションのポップアップを非表示（未定義の関数）
-        // document.body.removeChild(input); // DOMからinputを削除（任意）
     };
 
     input.click(); // ファイル選択ダイアログを表示
+}
+
+let cropper = null;
+
+function cropPhoto(files) {
+    return new Promise((resolve) => {
+        document.getElementById('cropContainer').style.display = 'flex';
+        document.getElementById('cropContainer_overlay').style.display = 'block';
+        const image = document.getElementById('previewImage');
+        image.src = URL.createObjectURL(files[0]);
+
+        // 前のCropperインスタンスが存在する場合は破棄
+        if (cropper) {
+            cropper.destroy();
+        }
+
+        // 画像読み込み完了後にCropperを初期化
+        image.onload = function() {
+            cropper = new Cropper(image, {
+                aspectRatio: NaN, // フリーサイズでトリミング可能
+                viewMode: 1,
+                background: false,
+                zoomable: false,
+                guides: true
+            });
+        };
+
+        // トリミングボタンのクリックイベント
+        document.getElementById('cropButton').onclick = async function() {
+            if (!cropper) return;
+
+            // トリミングされた画像を取得
+            const canvas = cropper.getCroppedCanvas();
+            
+            // canvasをBlobに変換
+            canvas.toBlob(async (blob) => {
+                // 新しいFileオブジェクトを作成
+                const croppedFile = new File([blob], files[0].name, {
+                    type: 'image/jpeg',
+                    lastModified: new Date().getTime()
+                });
+
+                // トリミングされたファイルをフォームに追加
+                const form = document.getElementById('imageForm');
+                const submitButton = form.querySelector('input[type="submit"]');
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.name = 'images[]';
+                input.style = 'display: none';
+                input.id = `input_${inputCount}`;
+                console.log("新しく作成したinputのid:"+input.id);
+
+                // ファイルオブジェクトを作成してinputにセット
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                input.files = dataTransfer.files;
+
+                // data-image-name属性にファイル名をセット
+                input.setAttribute('data-image-name', croppedFile.name);
+
+                form.insertBefore(input, submitButton);
+
+                // トリミング後の処理
+                document.getElementById('cropContainer').style.display = 'none';
+                document.getElementById('cropContainer_overlay').style.display = 'none';
+                cropper.destroy();
+                cropper = null;
+
+                resolve([croppedFile]); // トリミングされた画像を返す
+            }, 'image/jpeg');
+        };
+    });
 }
 
 // 画像を表示する

@@ -95,6 +95,27 @@ main {
     white-space: nowrap;
     min-width: 100px;
 }
+#cropContainer{
+    display: none;
+    position: fixed;
+    flex-direction: column;
+    width: 84vw;
+    height: 70vh;
+    background-color: white;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 100;
+}
+#cropContainer_overlay{
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
 .photo{
     display: flex;
     align-items: center;
