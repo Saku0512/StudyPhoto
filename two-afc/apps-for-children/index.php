@@ -203,10 +203,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="text">
             <div class="loginbuttons">
-                <button onclick="showForm('signupForm')" class="btn-gradient">新規登録</button>
-                <button onclick="showForm('loginForm')" class="btn-gradient user">ログイン</button>
+                <button class="btn-gradient">新規登録</button>
+                <button class="btn-gradient user">ログイン</button>
             </div>
-            <button onclick="showForm('guardianForm')" class="btn-gradient guardian" >保護者<br />ログイン</button>
+            <button class="btn-gradient guardian" >保護者<br />ログイン</button>
             <form id="signupForm" action="" method="post">
                 <label for="username">ユーザー名:</label>
                 <input type="text" id="username" name="username" required class="gradient" autocomplete="username"><br>
