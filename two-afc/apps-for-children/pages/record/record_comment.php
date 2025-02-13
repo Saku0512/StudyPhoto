@@ -22,9 +22,9 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <main>
         <div class="tab">
             <a href="../../home.php"><img src="../../ui_image/return.png"></a>
-            <a href="./record_time.html" id="timeButton" type="button"><img src="../../ui_image/clock.png"></a>
-            <a href="./record_note.html" id="noteButton" type="button"><img src="../../ui_image/book.png"></a>
-            <a href="./record_comment.html" id="commentButton" type="button"><img src="../../ui_image/parent.png"></a>
+            <a href="./record_time.php" id="timeButton" type="button"><img src="../../ui_image/clock.png"></a>
+            <a href="./record_note.php" id="noteButton" type="button"><img src="../../ui_image/book.png"></a>
+            <a href="./record_comment.php" id="commentButton" type="button"><img src="../../ui_image/parent.png"></a>
         </div>
         <!-- Comment Section -->
         <div id="commentSection" class="section">

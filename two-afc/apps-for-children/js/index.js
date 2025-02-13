@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // ボタンのクリックイベントをJavaScriptで設定
-    const signupButton = document.getElementById("btn-gradient");
+    const signupButton = document.getElementById("signup");
     const loginButton = document.getElementById("user");
     const guardianButton = document.getElementById("guardian");
 
