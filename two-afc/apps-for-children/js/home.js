@@ -1,5 +1,5 @@
 // タイマーをリセット
-document.querySelector('a[href="./html/study/study.html"]').addEventListener('click', () => {
+document.querySelector('a[href="./pages/study/study.html"]').addEventListener('click', () => {
     localStorage.removeItem('stopwatchTime');
     localStorage.removeItem('isRunning');
 });

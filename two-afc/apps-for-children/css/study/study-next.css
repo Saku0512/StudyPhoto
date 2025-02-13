@@ -95,6 +95,10 @@ main {
     white-space: nowrap;
     min-width: 100px;
 }
+#previewImage{
+    max-width: 100%;
+    max-height: 100%;
+}
 #cropContainer {
     display: none;
     position: fixed;
@@ -143,7 +147,7 @@ main {
     margin-top: 2.5vh;
     gap: 5vw;  
 }
-.photoSelect, .photoGraph, .photoDelete, .cancel_photo{
+.photoSelect, .photoGraph, .photoDelete, .cancel_photo, .photo-Select{
     height: 7vh;
     width: 40vw;
     text-align: center;
@@ -256,13 +260,12 @@ main {
     top: 30%;
     left: 50%;
     transform: translateX(-50%);
-    margin-left: auto;
-    margin-right: auto;
-    width: 84vw;
-    padding: 20px;
     background-color: white;
     border: 1px solid black;
-    z-index: 100;
+    width: 84vw;
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 1000;
 }
 .popup.active {
     display: block;
@@ -298,6 +301,7 @@ main {
     margin-top: 2vh;
     margin-bottom: 2vh;
     border: 1px solid #bfbfbf;
+    font-size: 24px;
 }
 #editSection, #deleteSection {
     text-align: center;
@@ -305,7 +309,7 @@ main {
 #editOptionSelect, #deleteOptionSelect {
     height: 4vh;
     width: 40vw;
-    font-size: 13px;
+    font-size: 24px;
     text-align: center;
 }
 .popupbutton {
@@ -321,7 +325,7 @@ main {
 #addSection, #editSection, #deleteSection {
     margin-top: 2vh;
 }
-.cancel, .add {
+.cancel, .addSubject, .editSubject, .deleteSubject {
     padding: 0;
     margin-top: 0;
     height: 5vh;

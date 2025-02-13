@@ -1,3 +1,6 @@
+let selectedFiles = []; // 選択された画像を管理する配列
+let inputCount = 0; // 作成されたinputタグの数を管理する変数
+
 document.addEventListener('DOMContentLoaded', () => {
     const elapsedSeconds = parseInt(localStorage.getItem('stopwatchTime'), 10) || 0;
 
@@ -11,7 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
         String(seconds).padStart(2, '0');
 
     document.getElementById('timer-display').textContent = timeString;
+
 });
+// 写真の追加ボタン
+document.querySelector(".photoSelect").addEventListener('click', showPhotoOptions);
+// 写真の削除ボタン
+document.querySelector(".photoDelete").addEventListener('click', showDeletePhotoPopup);
+// 写真撮影ボタン
+document.querySelector(".photoGraph").addEventListener('click', capturePhoto);
+// 写真選択ボタン
+document.querySelector(".photo-Select").addEventListener('click', selectPhoto);
+// 写真キャンセルボタン
+document.querySelector(".cancel_photo").addEventListener('click', hidePhotoOptionsPopup);
+// 写真削除キャンセルボタン
+document.querySelector(".delete_cancel").addEventListener('click', hideDeletePhotoPopup);
+// 写真削除ボタン
+document.querySelector(".delete_done").addEventListener('click', deleteSelectedPhotos);
 
 function saveStudySession() {
     return new Promise((resolve, reject) => {
@@ -189,8 +207,7 @@ function hidePhotoOptionsPopup() {
 function hideDeletePhotoPopup() {
     document.getElementById("deletePhotoPopup").style.display = "none";
 }
-let selectedFiles = []; // 選択された画像を管理する配列
-let inputCount = 0; // 作成されたinputタグの数を管理する変数
+
 
 // 写真を撮影する関数
 function capturePhoto() {
@@ -369,20 +386,22 @@ function cropPhoto(files) {
 
 // 画像を表示する
 function displayPhoto(files) {
-    const photoDisplay = document.getElementById('photoDisplay_id'); // 画像を表示する場所
+    const photoDisplay = document.getElementById('photoDisplay_id');
 
     files.forEach(file => {
-        const reader = new FileReader(); // ファイルを読み込むためのFileReader
-        reader.onload = function(e) {
-            const img = document.createElement('img'); // 新しい画像要素を作成
-            img.src = e.target.result; // 画像データをセット
-            img.classList.add('photo_img'); // クラスを追加
-            photoDisplay.appendChild(img); // 画像を表示する場所に追加
+        const img = document.createElement('img');
+        // FileReaderの代わりにBlobURLを使用
+        img.src = URL.createObjectURL(file);
+        img.classList.add('photo_img');
+        photoDisplay.appendChild(img);
+        
+        // メモリリークを防ぐため、画像読み込み後にBlobURLを解放
+        img.onload = () => {
+            URL.revokeObjectURL(img.src);
         };
-        reader.readAsDataURL(file); // 画像ファイルを読み込む
     });
 
-    console.log("表示している写真:", files); // デバッグ用: 表示される写真
+    console.log("表示している写真:", files);
 }
 
 function deleteSelectedPhotos() {
@@ -404,16 +423,18 @@ function deleteSelectedPhotos() {
 
 function updatePhotoDisplay() {
     const photoDisplay = document.getElementById('photoDisplay_id');
-    photoDisplay.innerHTML = ''; // 以前の内容をクリア
+    photoDisplay.innerHTML = '';
 
     selectedFiles.forEach(photo => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.classList.add('photo_img')
-            photoDisplay.appendChild(img);
+        const img = document.createElement('img');
+        // FileReaderの代わりにBlobURLを使用
+        img.src = URL.createObjectURL(photo);
+        img.classList.add('photo_img');
+        photoDisplay.appendChild(img);
+        
+        // メモリリークを防ぐため、画像読み込み後にBlobURLを解放
+        img.onload = () => {
+            URL.revokeObjectURL(img.src);
         };
-        reader.readAsDataURL(photo); //既存の写真も表示
     });
 }

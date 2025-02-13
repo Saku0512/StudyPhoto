@@ -1,5 +1,24 @@
 let isPopupVisible = false;
 
+// 教科を編集
+document.querySelector(".newSubject").addEventListener('click', showPopup);
+// オーバーレイ
+document.getElementById('overlay').addEventListener('click', hidePopup);
+// 追加ボタン
+document.getElementById('addSection').addEventListener('click', () => showSection('addSection'));
+// 変更ボタン
+document.getElementById('editSection').addEventListener('click', () => showSection('editSection'));
+// 削除ボタン
+document.getElementById('deleteSection').addEventListener('click', () => showSection('deleteSection'));
+// キャンセルボタン
+document.querySelectorAll(".cancel").forEach(cancel => cancel.addEventListener('click', hidePopup));
+// 追加ボタン
+document.querySelector(".addSubject").addEventListener('click', addOption);
+// 変更ボタン
+document.querySelector(".editSubject").addEventListener('click', editOption);
+// 削除ボタン
+document.querySelector(".deleteSubject").addEventListener('click', deleteOption);
+
 function showPopup() {
     document.getElementById("overlay").style.display = "block";
     document.getElementById("popup").classList.add("active");
@@ -36,7 +55,13 @@ function hidePopup() {
 
 function showSection(sectionId) {
     document.querySelectorAll('.form-section').forEach(section => section.classList.remove("active"));
-    document.getElementById(sectionId).classList.add("active");
+    if (sectionId === 'addSection') {
+        document.querySelector('.add-popup').classList.add("active");
+    } else if (sectionId === 'editSection') {
+        document.querySelector('.edit-popup').classList.add("active");
+    } else if (sectionId === 'deleteSection') {
+        document.querySelector('.delete-popup').classList.add("active");
+    }
     updateButtonColor(sectionId); // ボタンの色を更新
 
     // ポップアップのサイズを調整
