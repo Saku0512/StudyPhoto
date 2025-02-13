@@ -23,18 +23,25 @@ main {
     width: 100vw;
 }
 
+.title {
+    font-size: 6vw;
+    text-align: center;
+    margin-top: 1vh;
+}
+
 .footer {
     margin-top: auto;
     padding: 0;
     display: flex;
     justify-content: center;
     gap: 10vw;
+    margin-top: 5vh;
 }
 .footer a , .footer button{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 60px;
+    font-size: 6vw;
     border-radius: 15px;
     background-color: #4870BD;
     color: white;

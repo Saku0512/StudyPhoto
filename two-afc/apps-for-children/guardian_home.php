@@ -1,5 +1,7 @@
 <?php
 session_start();
+$GuardianNonce = base64_encode(random_bytes(16));
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $GuardianNonce . "' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js; style-src 'self';");
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -26,12 +28,11 @@ $idHidden = str_repeat('*', strlen($_SESSION['guardian_id'] ?? ''));
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/js-base64/base64.min.js" defer></script>
     <link rel="stylesheet" href="./css/guardian_home.css">
-    <script src="./js/guardian.js" defer></script>
+    <script src="./js/guardian.js" nonce="<?= htmlspecialchars($GuardianNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
 </head>
 <body>
     <main>
-        <h1>保護者用ページ</h1>
-        <p><?php echo htmlspecialchars($userName) ?>の勉強記録</p>
+        <p class="title"><?php echo htmlspecialchars($userName) ?>の勉強記録</p>
         <div id="studyDataArea">
             <div id="studyData"><!-- 動的に生成する --></div>
         </div>
