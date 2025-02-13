@@ -1,210 +1,28 @@
-let isPopupVisible = false;
+// カテゴリーポップアップのオーバーレイ
+document.querySelector("#popupOverlay").addEventListener('click', hidePopup_category);
+// カテゴリーポップアップの表示
+document.getElementById("popupContent").addEventListener('click', event => event.stopPropagation());
+// カテゴリーポップアップの閉じるボタン
+document.querySelector(".close-button").addEventListener('click', hidePopup_category);
 
-// 教科を編集
-document.querySelector(".newSubject").addEventListener('click', showPopup);
-// オーバーレイ
-document.getElementById('overlay').addEventListener('click', hidePopup);
-// 追加ボタン
-document.getElementById('addSection').addEventListener('click', () => showSection('addSection'));
-// 変更ボタン
-document.getElementById('editSection').addEventListener('click', () => showSection('editSection'));
-// 削除ボタン
-document.getElementById('deleteSection').addEventListener('click', () => showSection('deleteSection'));
-// キャンセルボタン
-document.querySelectorAll(".cancel").forEach(cancel => cancel.addEventListener('click', hidePopup));
-// 追加ボタン
-document.querySelector(".addSubject").addEventListener('click', addOption);
-// 変更ボタン
-document.querySelector(".editSubject").addEventListener('click', editOption);
-// 削除ボタン
-document.querySelector(".deleteSubject").addEventListener('click', deleteOption);
+// ポップアップを非表示にし、画像をリセット
+function hidePopup_category() {
+    document.getElementById("popupOverlay").style.display = "none";
+    document.getElementById("popupContent").style.display = "none";
 
-function showPopup() {
-    document.getElementById("overlay").style.display = "block";
-    document.getElementById("popup").classList.add("active");
-    isPopupVisible = true;
-    showSection('addSection'); // 最初に追加フォームを表示
-
-    // フォームの入力をリセット
-    document.getElementById("addOptionName").value = "";
-    document.getElementById("editOptionName").value = "";
-}
-
-// overlayクリック時の動作を無効
-window.onclick = function(event) {
-    const overlay = document.getElementById("overlay");
-    if (overlay) {
-        overlay.addEventListener("click", function(event) {
-            if (isPopupVisible) {
-                event.stopPropagation(); // 何もしない
-                return;
-            } else {
-                hidePopup();
-            }
-        });
-    }
-};
-
-function hidePopup() {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("popup").classList.remove("active");
-    document.querySelectorAll('.form-section').forEach(section => section.classList.remove("active"));
-    resetButtonColor(); // ボタンの色をリセット
-    isPopupVisible = false;
-}
-
-function showSection(sectionId) {
-    document.querySelectorAll('.form-section').forEach(section => section.classList.remove("active"));
-    if (sectionId === 'addSection') {
-        document.querySelector('.add-popup').classList.add("active");
-    } else if (sectionId === 'editSection') {
-        document.querySelector('.edit-popup').classList.add("active");
-    } else if (sectionId === 'deleteSection') {
-        document.querySelector('.delete-popup').classList.add("active");
-    }
-    updateButtonColor(sectionId); // ボタンの色を更新
-
-    // ポップアップのサイズを調整
-    const popup = document.getElementById("popup");
-    if (sectionId === 'addSection') {
-        popup.style.height = '30vh';
-    } else if (sectionId === 'editSection') {
-        popup.style.height = '45vh';
-    } else if (sectionId === 'deleteSection') {
-        popup.style.height = '30vh';
-    }
-}
-
-// ボタンの色をセクションに合わせて更新する関数
-function updateButtonColor(activeSectionId) {
-    const buttons = document.querySelectorAll('.tab button');
-    buttons.forEach(button => {
-        button.style.color = 'black';
+  // 画像のみを削除
+    const popupContent = document.getElementById("popupContent");
+    const embed_remove = popupContent.querySelectorAll('embed');
+    embed_remove.forEach(embed => {
+        embed.remove();  // imgタグを削除
     });
-    if (activeSectionId === 'addSection') {
-        buttons[0].style.color = 'blue';
-    } else if (activeSectionId === 'editSection') {
-        buttons[1].style.color = 'blue';
-    } else if (activeSectionId === 'deleteSection') {
-        buttons[2].style.color = 'blue';
-    }
-}
 
-// ボタンの色をリセット
-function resetButtonColor() {
-    const buttons = document.querySelectorAll('.tab button');
-    buttons.forEach(button => {
-        button.style.color = 'black';
+    const images = document.querySelectorAll('.category-image');
+    images.forEach(img => {
+        if (img.src.includes('file_open.png')) {
+            img.src = '../../ui_image/file_close.png';
+        }
     });
-}
-
-function addOption() {
-    const optionName = document.getElementById('addOptionName').value;
-
-    if (!optionName) {
-        alert("教科名を入力してください。");
-        return;
-    }
-
-    fetch('../../php/category/add_category.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `category_name=${encodeURIComponent(optionName)}`
-    })
-    .then(response => {
-        console.log('Response Status:', response.status); // ステータスコードを表示
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text(); // レスポンスをテキスト形式で表示
-    })
-    .then(text => {
-        console.log('Raw Response:', text); // サーバーからのレスポンスを確認
-        return JSON.parse(text); // 必要ならJSONに変換
-    })
-    .then(data => {
-        if (data.status === "success") {
-            alert("カテゴリーが追加されました。");
-            hidePopup();
-            loadCategories();
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(error => console.error('Error adding category:', error));
-}
-
-function editOption() {
-    const oldOptionName = document.getElementById('editOptionSelect').value;
-    const newOptionName = document.getElementById('editOptionName').value;
-
-
-    if (!oldOptionName || !newOptionName) {
-        alert("変更する教科名を選択し、新しい教科名を入力してください。");
-        return;
-    }
-
-    fetch('../../php/category/edit_category.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `old_category_name=${encodeURIComponent(oldOptionName)}&new_category_name=${encodeURIComponent(newOptionName)}`
-    })
-    .then(response => {
-        console.log('Response Status:', response.status); // ステータスコードを表示
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text(); // レスポンスをJSONとして取得
-    })
-    .then(text => {
-        console.log('Raw Response:', text); // サーバーからのレスポンスを確認
-        return JSON.parse(text);
-    })
-    .then(data => {
-        console.log('Response Data:', data); // レスポンス内容を表示
-        if (data.status === "success") {
-            alert("カテゴリーが変更されました。");
-            hidePopup();
-            loadCategories(); // カテゴリー一覧を更新
-        } else {
-            alert(data.message); // エラーメッセージを表示
-        }
-    })
-    .catch(error => {
-        console.error('Error editing category:', error);
-    });
-}
-function deleteOption() {
-    const optionToDelete = document.getElementById('deleteOptionSelect').value;
-    const username = document.getElementById('username').value;
-
-    if (!optionToDelete) {
-        alert("削除する教科名を選択してください。");
-        return;
-    }
-
-    fetch('../../php/category/delete_category.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `category_name=${encodeURIComponent(optionToDelete)}&username=${encodeURIComponent(username)}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            alert("カテゴリーが削除されました。");
-            hidePopup();
-            loadCategories(); // カテゴリーを再読み込み
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(error => console.error('Error deleting category:', error));
 }
 
 function loadCategories() {
@@ -225,7 +43,7 @@ function loadCategories() {
         if (Array.isArray(categoryData)) {
             const currentPage = window.location.pathname;
 
-            if (currentPage.includes("record_note.html")) {
+            if (currentPage.includes("record_note.php")) {
                 const noteSection = document.getElementById("noteSection");
                 if (!noteSection) return;
 
@@ -386,7 +204,6 @@ function fetchStudyImages(categoryName) {
 
                 studyDateCell.innerHTML = formattedDate + '<br>' + formattedSpendTime; // 日付と改行された時間帯を表示
                 row.appendChild(studyDateCell);
-                console.log(formattedSpendTime);
 
                 // 勉強時間
                 const studyTimeCell = document.createElement('td');
@@ -449,43 +266,25 @@ function fetchStudyImages(categoryName) {
         popupContent.style.display = "block";
     });
 }
-
 function openImageInPopup(imagePath) {
     const popupOverlay = document.getElementById('popupOverlay');
     const popupContent = document.getElementById('popupContent');
-
-    popupContent.innerHTML += `
-    <embed src="${imagePath}" id="pdfViewer" type="application/pdf" width="100%" height="600px">
-    `;
+    
+    // embedタグを作成
+    const embedElement = document.createElement('embed');
+    embedElement.src = imagePath;
+    embedElement.id = 'pdfViewer';
+    embedElement.type = 'application/pdf';
+    embedElement.width = '100%';
+    embedElement.height = '600px';
+    
+    // popupContentに追加
+    popupContent.appendChild(embedElement);
 
     popupOverlay.style.display = 'block';
     popupContent.style.display = 'block';
 }
 
-// ポップアップを非表示にし、画像をリセット
-function hidePopup_category() {
-    document.getElementById("popupOverlay").style.display = "none";
-    document.getElementById("popupContent").style.display = "none";
-
-  // 画像のみを削除
-    const popupContent = document.getElementById("popupContent");
-    const embed_remove = popupContent.querySelectorAll('embed');
-    embed_remove.forEach(embed => {
-        embed.remove();  // imgタグを削除
-    });
-
-    const images = document.querySelectorAll('.category-image');
-    images.forEach(img => {
-        if (img.src.includes('file_open.png')) {
-            img.src = '../../ui_image/file_close.png';
-        }
-    });
-}
-
-// ページが読み込まれたときにカテゴリーを読み込む
-window.onload = function () {
-    loadCategories();
-};
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     loadCategories();
 });

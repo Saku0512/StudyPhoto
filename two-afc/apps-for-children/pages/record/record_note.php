@@ -1,6 +1,6 @@
 <?php
 $NoteNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'https://cdn.jsdelivr.net/npm/js-base64/base64.min.js' 'nonce-" . $NoteNonce . "';");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js 'nonce-" . $NoteNonce . "'; style-src 'self' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js;");
 ?>
 <!DOCTYPE html>
 <html>
@@ -11,8 +11,8 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'https://
     <link rel="stylesheet" href="../../css/main.css" />
     <link rel="stylesheet" href="../../css/scss/load.css" />
     <link rel="stylesheet" href="../../css/record/record_note.css" />
-    <script src="../../js/load.js" defer></script>
-    <script src="../../js/category.js" defer></script>
+    <script src="../../js/load.js" nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
+    <script src="../../js/category-record.js" nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_DOM.js" defer></script>
     <title>記録を振り返る</title>
 </head>
@@ -32,9 +32,9 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'https://
         <div id="noteSection" class="section">
         <!--ここに動的にファイルを作成させる-->
         </div>
-        <div id="popupOverlay" style="display:none;" onclick="hidePopup_category()">
-            <div id="popupContent" style="display:none;" onclick="event.stopPropagation()">
-                <p class="close-button" onclick="hidePopup_category()">×</p><br>
+        <div id="popupOverlay">
+            <div id="popupContent">
+                <p class="close-button">×</p><br>
                 <div id="popupText">
                 <!--ここに動的にテーブルを作成させる-->
                 </div>
