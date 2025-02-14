@@ -37,7 +37,6 @@ $idHidden = str_repeat('*', strlen($_SESSION['guardian_id'] ?? ''));
     <main>
         <p class="title"><?php echo htmlspecialchars($userName) ?>の勉強記録</p>
         <div class="side_unit">
-            <p class="side_unit_text">横軸の単位を選択してください</p>
             <div class="side_unit_button">
                 <button class="side_unit_week">週</button>
                 <button class="side_unit_month">月</button>
