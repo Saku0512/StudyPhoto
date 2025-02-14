@@ -186,9 +186,35 @@ function createChart(labelUnit) {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: '時間'
+                            text: '時間',
+                            font: {
+                                size: window.innerWidth * 0.03 // y軸のタイトルのフォントサイズをvwで設定
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: window.innerWidth * 0.03
+                            }
                         }
                     },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: window.innerWidth * 0.03,
+                                style: 'normal' // イタリック体を解除
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: window.innerWidth * 0.03 // datasets のラベルのフォントサイズ
+                            }
+                        }
+                    }
                 }
             }
         };
