@@ -169,8 +169,8 @@ function createChart(labelUnit) {
                 {
                     label: '勉強時間(時間)',
                     data: [2, 3.5, 4, 2.5, 5, 6, 3],
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: '#4870BD',
+                    borderColor: '#4870BD',
                     borderWidth: 1
                 }
             ]
