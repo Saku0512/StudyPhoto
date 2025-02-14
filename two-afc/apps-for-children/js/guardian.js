@@ -161,7 +161,7 @@ function createChart(labelUnit) {
             labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
         }
 
-        const FontSize = '20vw';
+        const FontSize = 30;
         // チャートの設定
         const chartData = {
             labels: labels,
@@ -188,7 +188,7 @@ function createChart(labelUnit) {
                             display: true,
                             text: '時間'
                         }
-                    }
+                    },
                 }
             }
         };
