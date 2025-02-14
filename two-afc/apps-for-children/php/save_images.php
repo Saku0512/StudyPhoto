@@ -11,7 +11,7 @@ header('Content-Type: application/json');
 // データベース接続ファイルの読み込み
 include('db_connection.php');
 // FPDF の読み込み
-require('../../../vendor/autoload.php');
+require '../vendor/autoload.php';
 // 必要なクラスをインポート
 use setasign\Fpdi\Fpdi;
 
@@ -154,6 +154,33 @@ try {
         $height = $size[1];
         $orientation = ($width > $height) ? 'L' : 'P';
 
+        // 画像フォーマットの確認と変換
+        $imageInfo = getimagesize($imagePath);
+        $tmpJpeg = null;
+        
+        if ($imageInfo !== false) {
+            switch ($imageInfo[2]) {
+                case IMAGETYPE_JPEG:
+                    $tmpJpeg = $imagePath;
+                    break;
+                case IMAGETYPE_PNG:
+                    // PNGをJPEGに変換
+                    $tmpJpeg = sys_get_temp_dir() . '/' . uniqid() . '.jpg';
+                    $image = imagecreatefrompng($imagePath);
+                    // 透明度の処理
+                    $background = imagecreatetruecolor($width, $height);
+                    imagefill($background, 0, 0, imagecolorallocate($background, 255, 255, 255));
+                    imagealphablending($image, true);
+                    imagecopy($background, $image, 0, 0, 0, 0, $width, $height);
+                    imagejpeg($background, $tmpJpeg, 100);
+                    imagedestroy($image);
+                    imagedestroy($background);
+                    break;
+                default:
+                    throw new Exception('未対応の画像形式です');
+            }
+        }
+
         // PDFのページサイズに合わせて画像を挿入
         if ($orientation === 'L') {
             $pdf->AddPage($orientation,[297, 210]); // 横向き
@@ -187,8 +214,13 @@ try {
             $y = 0;
         }
 
-        // PDFのページサイズに合わせて画像を挿入
-        $pdf->Image(file: $imagePath, x: $x, y: $y, w: $displayWidth, h: $displayHeight);
+        // 変換した画像を使用
+        $pdf->Image($tmpJpeg, $x, $y, $displayWidth, $displayHeight);
+
+        // 一時ファイルの削除
+        if ($tmpJpeg !== $imagePath) {
+            unlink($tmpJpeg);
+        }
     }
 
     $pdf->Output('F', $pdfFilePath); // PDFを保存

@@ -10,6 +10,8 @@ document.querySelector(".logout").addEventListener("click", function() {
 const chartContext = document.getElementById('studyChart').getContext('2d');
 let chartInstance;
 
+// 現在の表示期間を追跡するための変数
+let currentDate = new Date();
 
 function showSPopup() {
     document.getElementById("settingPanel").style.display = "block";
@@ -98,84 +100,189 @@ function hideImagePopup() {
     });
 }
 
-function createChart(labelUnit) {
-    // Fetchデータの取得
-    console.log("Fetching data for:", labelUnit);
+const today = new Date();
+const year = today.getFullYear();
+const month = today.getMonth() + 1;
+const day = today.getDate();
+console.log(`年: ${year}, 月: ${month}, 日: ${day}`);
 
-    fetch(`../../php/guardian.php?unit=${encodeURIComponent(labelUnit)}`, {
+function getWeekDates(date) {
+    const currentDate = new Date(date);
+    
+    // 現在の日付が属する週の日曜日を計算
+    const startOfWeek = currentDate.getDate() - currentDate.getDay(); // 日曜日の日付
+    const sunday = new Date(currentDate.setDate(startOfWeek));
+    
+    // 現在の週の日曜日から土曜日までの日付を取得
+    const weekDates = [];
+    for (let i = 0; i < 7; i++) {
+        const day = new Date(sunday);
+        day.setDate(sunday.getDate() + i);
+        // 日付部分を取得してDD形式にする
+        const dayOfMonth = day.getDate(); // 日部分だけを取得
+        weekDates.push(dayOfMonth); // 日付だけを保存
+    }
+
+    return weekDates;
+}
+
+const weekDates = getWeekDates(new Date());
+console.log(weekDates);
+
+// 期間の表示テキストを更新する関数
+function updateSpanSelectText(unit) {
+    const spanText = document.querySelector('.span_select_text');
+    
+    switch(unit) {
+        case 'week':
+            const weekStart = new Date(currentDate);
+            weekStart.setDate(currentDate.getDate() - currentDate.getDay());
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            spanText.textContent = `${weekStart.getMonth() + 1}月${weekStart.getDate()}日～${weekEnd.getMonth() + 1}月${weekEnd.getDate()}日`;
+            break;
+        case 'month':
+            spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`;
+            break;
+        case 'year':
+            spanText.textContent = `${currentDate.getFullYear()}年`;
+            break;
+    }
+}
+
+// 期間移動ボタンのイベントハンドラー
+document.querySelector('.span_select_left').addEventListener('click', () => {
+    const unit = document.querySelector('.side_unit_week').classList.contains('active') ? 'week' :
+                document.querySelector('.side_unit_month').classList.contains('active') ? 'month' : 'year';
+    
+    switch(unit) {
+        case 'week':
+            currentDate.setDate(currentDate.getDate() - 7);
+            break;
+        case 'month':
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            break;
+        case 'year':
+            currentDate.setFullYear(currentDate.getFullYear() - 1);
+            break;
+    }
+    createChart(unit);
+});
+
+document.querySelector('.span_select_right').addEventListener('click', () => {
+    const unit = document.querySelector('.side_unit_week').classList.contains('active') ? 'week' :
+                document.querySelector('.side_unit_month').classList.contains('active') ? 'month' : 'year';
+    
+    switch(unit) {
+        case 'week':
+            currentDate.setDate(currentDate.getDate() + 7);
+            break;
+        case 'month':
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            break;
+        case 'year':
+            currentDate.setFullYear(currentDate.getFullYear() + 1);
+            break;
+    }
+    createChart(unit);
+});
+
+function createChart(labelUnit) {
+    // アクティブなボタンのスタイルを更新
+    document.querySelectorAll('.side_unit_button button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`.side_unit_${labelUnit}`).classList.add('active');
+    
+    // 期間表示テキストを更新
+    updateSpanSelectText(labelUnit);
+
+    // 週の開始日と終了日を取得する関数
+    function getWeekRange(date) {
+        const sunday = new Date(date);
+        sunday.setDate(date.getDate() - date.getDay());
+        const saturday = new Date(sunday);
+        saturday.setDate(sunday.getDate() + 6);
+        return {
+            start: sunday,
+            end: saturday
+        };
+    }
+
+    // 日付をフォーマットする関数
+    function formatDate(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    const weekRange = getWeekRange(currentDate);
+    const apiUrl = `../../php/guardian.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
+
+    fetch(apiUrl, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.error) {
             console.error('Error from server:', data.error);
             return;
         }
 
-        if (!data.labels || !data.values) {
-            console.error('Invalid data format received:', data);
-            return;
+        let labels;
+        switch(labelUnit) {
+            case 'week':
+                // 週表示の場合は曜日
+                labels = ['日', '月', '火', '水', '木', '金', '土'].map((day, i) => {
+                    const date = new Date(weekRange.start);
+                    date.setDate(date.getDate() + i);
+                    return `${day}`;
+                });
+                break;
+            case 'month':
+                // 月表示の場合はその月の日数分の日付
+                const daysInMonth = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth() + 1,
+                    0
+                ).getDate();
+                labels = Array.from({length: daysInMonth}, (_, i) => `${i + 1}日`);
+                break;
+            case 'year':
+                // 年表示の場合は月
+                labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+                break;
         }
         
-        console.log(data);
-        console.log("encodeURIComponent(labelUnit)", encodeURIComponent('week'));
-
-        // データのチェックと変換
-        let labels = data.labels.map(label => new Date(label)); // 日時ラベルをDate形式に変換
-        console.log("labels", labels);
-        /*
-        0:Fri Feb 07 2025 14:26:34 GMT+0900 (日本標準時) {}
-        1:Sun Feb 09 2025 17:09:31 GMT+0900 (日本標準時) {}
-        2:Sun Feb 09 2025 17:15:45 GMT+0900 (日本標準時) {}
-        3:Sun Feb 09 2025 17:24:38 GMT+0900 (日本標準時) {}
-        4:Sun Feb 09 2025 17:31:09 GMT+0900 (日本標準時) {}
-        5:Sun Feb 09 2025 17:37:10 GMT+0900 (日本標準時) {}
-        6:Sun Feb 09 2025 17:37:10 GMT+0900 (日本標準時) {}
-        7:Sun Feb 09 2025 18:22:23 GMT+0900 (日本標準時) {}
-        8:Sun Feb 09 2025 18:55:40 GMT+0900 (日本標準時) {}
-        9:Mon Feb 10 2025 13:34:53 GMT+0900 (日本標準時) {}
-        10:Tue Feb 11 2025 10:59:34 GMT+0900 (日本標準時) {}
-        11:Tue Feb 11 2025 10:59:35 GMT+0900 (日本標準時) {}
-        12:Tue Feb 11 2025 10:59:35 GMT+0900 (日本標準時) {}
-        length: 13
-        */
-        console.log("labelUnit", labelUnit);
-        const values = data.values.map(value => {
-            const numericValue = parseFloat(value);
-            return isNaN(numericValue) ? 0 : numericValue;
-        });
-
-        if (labelUnit === 'week') {
-            labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        } else if (labelUnit === 'month') {
-            labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
-        } else if (labelUnit === 'year') {
-            labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-        }
-
-        const FontSize = 30;
-        // チャートの設定
+        // データの整形
         const chartData = {
             labels: labels,
-            datasets: [
-                {
-                    label: '勉強時間(時間)',
-                    data: [2, 3.5, 4, 2.5, 5, 6, 3],
-                    backgroundColor: '#4870BD',
-                    borderColor: '#4870BD',
-                    borderWidth: 1
-                }
-            ]
+            datasets: [{
+                label: '勉強時間(時間)',
+                data: new Array(labels.length).fill(0),
+                backgroundColor: '#4870BD',
+                borderColor: '#4870BD',
+                borderWidth: 1
+            }]
         };
 
+        // 時間文字列（HH:MM:SS）を時間数に変換する関数
+        const timeToHours = timeStr => {
+            const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+            return Number(((hours + minutes / 60 + seconds / 3600)).toFixed(2));
+        };
+
+        // データの設定
+        if (data.values && Array.isArray(data.values)) {
+            data.values.forEach(record => {
+                const index = record.index;
+                const hours = timeToHours(record.study_time);
+                chartData.datasets[0].data[index] = hours;
+            });
+        }
+
+        // グラフの設定
         const config = {
             type: 'bar',
             data: chartData,
@@ -188,7 +295,7 @@ function createChart(labelUnit) {
                             display: true,
                             text: '時間',
                             font: {
-                                size: window.innerWidth * 0.03 // y軸のタイトルのフォントサイズをvwで設定
+                                size: window.innerWidth * 0.03
                             }
                         },
                         ticks: {
@@ -200,8 +307,7 @@ function createChart(labelUnit) {
                     x: {
                         ticks: {
                             font: {
-                                size: window.innerWidth * 0.03,
-                                style: 'normal' // イタリック体を解除
+                                size: window.innerWidth * 0.03
                             }
                         }
                     }
@@ -211,7 +317,17 @@ function createChart(labelUnit) {
                         position: 'top',
                         labels: {
                             font: {
-                                size: window.innerWidth * 0.03 // datasets のラベルのフォントサイズ
+                                size: window.innerWidth * 0.03
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const hours = context.raw;
+                                const hoursInt = Math.floor(hours);
+                                const minutes = Math.round((hours - hoursInt) * 60);
+                                return `${hoursInt}時間${minutes}分`;
                             }
                         }
                     }
@@ -219,7 +335,6 @@ function createChart(labelUnit) {
             }
         };
 
-        // 既存のチャートがあれば破棄して新しいチャートを描画
         if (chartInstance) {
             chartInstance.destroy();
         }
@@ -236,10 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const weekButton = document.querySelector('.side_unit_week');
     const monthButton = document.querySelector('.side_unit_month');
     const yearButton = document.querySelector('.side_unit_year');
-
-    console.log("weekButton", weekButton);
-    console.log("monthButton", monthButton);
-    console.log("yearButton", yearButton);
 
     if (weekButton) weekButton.addEventListener('click', () => createChart('week'));
     if (monthButton) monthButton.addEventListener('click', () => createChart('month'));

@@ -46,9 +46,6 @@ main {
     margin-top: 2vh;
     margin-left: 1vw;
 }
-.side_unit_text {
-    font-size: 4vw;
-}
 .side_unit_button {
     display: flex;
     justify-content: center;
@@ -195,7 +192,7 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90vw;
+    width: 95vw;
     height: 30vh;
     margin-top: 2vh;
     font-size: 3vw;
@@ -215,4 +212,7 @@ main {
 .span_select_left, .span_select_right {
     width: 10vw;
     height: 10vw;
+}
+.span_select_text {
+    font-size: 3vw;
 }
