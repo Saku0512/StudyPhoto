@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 header('Content-Type: application/json');
 
-require_once './db_connection.php';
+require './db_connection.php';
 
 if (!isset($_SESSION['guardian_username'])) {
     echo json_encode(['error' => 'User not logged in']);
