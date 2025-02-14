@@ -74,8 +74,8 @@ if (isset($_POST['back']) && $_POST['back']) {
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com'; // 自分のSMTPサーバーを設定
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'comonraven113@gmail.com'; // SMTPユーザー名
-        $mail->Password   = 'Hugin13Munin2016'; // SMTPパスワード
+        $mail->Username   = ''; // SMTPユーザー名
+        $mail->Password   = ''; // SMTPパスワード
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587; // ポート番号
 

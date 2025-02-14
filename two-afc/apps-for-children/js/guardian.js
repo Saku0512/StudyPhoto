@@ -1,6 +1,15 @@
-document.addEventListener('DOMContentLoaded', () => {
-    fetchStudyData();
+// 設定ボタン
+document.getElementById("setting").addEventListener("click", showSPopup);
+// 閉じるボタン
+document.getElementById("closeSetting").addEventListener("click", hideSPopup);
+// ログアウトボタン
+document.querySelector(".logout").addEventListener("click", function() {
+    window.location.href = 'php/logout.php';
 });
+
+const chartContext = document.getElementById('studyChart').getContext('2d');
+let chartInstance;
+
 
 function showSPopup() {
     document.getElementById("settingPanel").style.display = "block";
@@ -49,123 +58,6 @@ document.getElementById("toggleId").addEventListener("click", function() {
     }
 });
 
-function fetchStudyData() {
-    try {
-        fetch('./php/guardian.php')
-        .then(response => {
-            if(!response.ok){
-                throw new Error('Network response was not ok');
-            }
-            const contentType = response.headers.get('content-type');
-            if(!contentType || !contentType.includes('application/json')){
-                throw new Error('Expected JSON response, but got " + contentType');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if(data.error){
-                throw new Error(data.error);
-            }
-
-            const studyData = document.getElementById('studyData');
-            if(!studyData){
-                console.error('studyData element not found');
-                return;
-            }
-            studyData.innerHTML = ''; // 中身を空にする
-            if(data.images && data.images.length > 0){
-                const table = document.createElement('table');
-                const tableHeader = document.createElement('thead');
-                const tableBody = document.createElement('tbody');
-
-                const headerRow = document.createElement('tr');
-                const headers = ['勉強日', '勉強時間', 'カテゴリー', '画像リンク'];
-                headers.forEach(headerText => {
-                    const th = document.createElement('th');
-                    th.textContent = headerText;
-                    headerRow.appendChild(th);
-                });
-                tableHeader.appendChild(headerRow);
-                table.appendChild(tableHeader);
-
-                data.images.forEach(imageData => {
-                    const row = document.createElement('tr');
-
-                    // 勉強日
-                    const studyDataCell = document.createElement('td');
-                    const studyDate = new Date(imageData.study_date);
-                    const formattedDate = studyDate.toLocaleDateString('ja-JP');
-                    let formattedSpendTime = imageData.SspentTime;
-                    if(typeof formattedSpendTime === 'string'){
-                        formattedSpendTime = formattedSpendTime.split(',').join(',<br>');
-                    } else if(Array.isArray(formattedSpendTime)){
-                        formattedSpendTime = formattedSpendTime.join('<br>');
-                    }
-                    studyDataCell.innerHTML = formattedDate + '<br>' + formattedSpendTime;
-                    row.appendChild(studyDataCell);
-
-                    // 勉強時間
-                    const studyTimeCell = document.createElement('td');
-                    studyTimeCell.textContent = imageData.study_time;
-                    row.appendChild(studyTimeCell);
-
-                    // カテゴリー
-                    const categoryCell = document.createElement('td');
-                    categoryCell.textContent = imageData.category;
-                    row.appendChild(categoryCell);
-
-                    // 画像リンク
-                    const imageLinkCell = document.createElement('td');
-                    const imageLink = document.createElement('a');
-
-                    // base64デコードしてパスを表示
-                    if(imageData.image_path){
-                        try{
-                            const decodedUrl = Base64.decode(imageData.image_path);
-                            const imagePath = decodedUrl.replace('/var/www/html', '');
-                            imageLink.textContent = '画像リンク';
-                            imageLink.href = imagePath;
-
-                            // クリックイベントで画像をポップアップ表示
-                            imageLink.addEventListener('click', (event) => {
-                                event.preventDefault();
-                                openImageInPopup(imagePath);
-                            });
-
-                            imageLinkCell.appendChild(imageLink);
-                        } catch(error){
-                            console.error('Failed to decode image path:', error);
-                            imageLinkCell.textContent = '画像のパスを取得できませんでした';
-                        }
-                    } else {
-                        imageLinkCell.textContent = '画像なし';
-                    }
-
-                row.appendChild(imageLinkCell);
-                    tableBody.appendChild(row);
-                });
-                table.appendChild(tableBody);
-                studyData.appendChild(table);
-            } else {
-                studyData.innerHTML = '<p>データが見つかりませんでした。</p>';
-            }
-            //overlayとかpopupとかの処理を追加する予定
-        })
-        .catch(error => {
-            console.error('Error fetching study data:', error);
-            const studyData = document.getElementById('studyData');
-            if(studyData){
-                studyData.innerHTML = '<p style="color: red;">データの取得に失敗しました。</p>';
-            }
-        });
-    } catch (error) {
-        console.error('Error fetching study data:', error);
-        const studyData = document.getElementById('studyData');
-        if(studyData){
-            studyData.innerHTML = '<p style="color: red;">データの取得に失敗しました。</p>';
-        }
-    }
-}
 
 // XSS対策のためのHTMLサニタイズ関数
 function sanitizeHTML(str) {
@@ -205,3 +97,128 @@ function hideImagePopup() {
         img.remove();  // imgタグを削除
     });
 }
+
+function createChart(labelUnit) {
+    // Fetchデータの取得
+    console.log("Fetching data for:", labelUnit);
+
+    fetch(`../../php/guardian.php?unit=${encodeURIComponent(labelUnit)}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            console.error('Error from server:', data.error);
+            return;
+        }
+
+        if (!data.labels || !data.values) {
+            console.error('Invalid data format received:', data);
+            return;
+        }
+        
+        console.log(data);
+        console.log("encodeURIComponent(labelUnit)", encodeURIComponent('week'));
+
+        // データのチェックと変換
+        let labels = data.labels.map(label => new Date(label)); // 日時ラベルをDate形式に変換
+        console.log("labels", labels);
+        /*
+        0:Fri Feb 07 2025 14:26:34 GMT+0900 (日本標準時) {}
+        1:Sun Feb 09 2025 17:09:31 GMT+0900 (日本標準時) {}
+        2:Sun Feb 09 2025 17:15:45 GMT+0900 (日本標準時) {}
+        3:Sun Feb 09 2025 17:24:38 GMT+0900 (日本標準時) {}
+        4:Sun Feb 09 2025 17:31:09 GMT+0900 (日本標準時) {}
+        5:Sun Feb 09 2025 17:37:10 GMT+0900 (日本標準時) {}
+        6:Sun Feb 09 2025 17:37:10 GMT+0900 (日本標準時) {}
+        7:Sun Feb 09 2025 18:22:23 GMT+0900 (日本標準時) {}
+        8:Sun Feb 09 2025 18:55:40 GMT+0900 (日本標準時) {}
+        9:Mon Feb 10 2025 13:34:53 GMT+0900 (日本標準時) {}
+        10:Tue Feb 11 2025 10:59:34 GMT+0900 (日本標準時) {}
+        11:Tue Feb 11 2025 10:59:35 GMT+0900 (日本標準時) {}
+        12:Tue Feb 11 2025 10:59:35 GMT+0900 (日本標準時) {}
+        length: 13
+        */
+        console.log("labelUnit", labelUnit);
+        const values = data.values.map(value => {
+            const numericValue = parseFloat(value);
+            return isNaN(numericValue) ? 0 : numericValue;
+        });
+
+        if (labelUnit === 'week') {
+            labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        } else if (labelUnit === 'month') {
+            labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
+        } else if (labelUnit === 'year') {
+            labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+        }
+
+        const FontSize = 30;
+        // チャートの設定
+        const chartData = {
+            labels: labels,
+            datasets: [
+                {
+                    label: '勉強時間(時間)',
+                    data: [2, 3.5, 4, 2.5, 5, 6, 3],
+                    backgroundColor: '#4870BD',
+                    borderColor: '#4870BD',
+                    borderWidth: 1
+                }
+            ]
+        };
+
+        const config = {
+            type: 'bar',
+            data: chartData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '時間'
+                        }
+                    },
+                }
+            }
+        };
+
+        // 既存のチャートがあれば破棄して新しいチャートを描画
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+        chartInstance = new Chart(chartContext, config);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+}
+
+// DOMContentLoaded イベントでボタンのクリックイベントを設定
+document.addEventListener('DOMContentLoaded', () => {
+    // 期間ボタンのイベント設定
+    const weekButton = document.querySelector('.side_unit_week');
+    const monthButton = document.querySelector('.side_unit_month');
+    const yearButton = document.querySelector('.side_unit_year');
+
+    console.log("weekButton", weekButton);
+    console.log("monthButton", monthButton);
+    console.log("yearButton", yearButton);
+
+    if (weekButton) weekButton.addEventListener('click', () => createChart('week'));
+    if (monthButton) monthButton.addEventListener('click', () => createChart('month'));
+    if (yearButton) yearButton.addEventListener('click', () => createChart('year'));
+
+    // 初期グラフを週単位で表示
+    createChart('week');
+});

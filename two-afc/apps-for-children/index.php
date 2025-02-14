@@ -3,6 +3,17 @@ session_start();
 $FormNonce = base64_encode(random_bytes(16));
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $FormNonce . "';");
 
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Dotenv\Dotenv;
+
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 function generateRandomID($conn) {
     $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     $id = "";
@@ -27,10 +38,13 @@ $message = ""; //メッセージを格納する変数
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // データベース接続設定
-    $servername = "localhost";
-    $username = "childapp_user";
-    $password = "sdTJRTPutuXQ-Wlb2WBVE"; // 正しいパスワードを使用
-    $db_name = "childapp_test";
+    $servername = $_ENV['DB_SERVERNAME'] ?? $_SERVER['DB_SERVERNAME'] ?? null;
+    $username = $_ENV['DB_USERNAME'] ?? $_SERVER['DB_USERNAME'] ?? null;
+    $password = $_ENV['DB_USERPASSWORD'] ?? $_SERVER['DB_USERPASSWORD'] ?? null;
+    $db_name = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? null;
+
+
+    var_dump($servername, $username, $password, $db_name);
 
     $dbUsername = $_POST['username'] ?? null;
     $dbEmail = $_POST['email'] ?? null;
