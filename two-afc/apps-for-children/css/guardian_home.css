@@ -240,16 +240,21 @@ main {
 }
 .gurdian_comment_text {
     width: 100%;
-    height: 70%;
+    height: 40%;
     padding: 1vw;
     font-size: 2.5vw;
     resize: none;
     border: 2px solid #4870BD;
     border-radius: 10px;
 }
+.gurdian_comment_title {
+    font-size: 2.5vw;
+    margin-bottom: 1vh;
+}
 .date-input-container {
     width: 100%;
     height: 20%;
+    margin-bottom: 1vh;
 }
 
 .comment-date-input {
@@ -260,6 +265,23 @@ main {
     width: 100%;
     height: 100%;
     font-size: 3vw;
+}
+
+.gurdian_comment_button {
+    width: 100%;
+    height: 20%;
+    margin-top: 1vh;
+    font-size: 2.5vw;
+    background-color: #4870BD;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.gurdian_comment_button:hover {
+    background-color: #3860A0;
 }
 
 /* レスポンシブ対応 */
