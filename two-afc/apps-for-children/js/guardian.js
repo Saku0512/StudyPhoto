@@ -215,7 +215,7 @@ function createChart(labelUnit) {
     }
 
     const weekRange = getWeekRange(currentDate);
-    const apiUrl = `../../php/guardian.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
+    const apiUrl = `../../php/guardian_time.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
 
     fetch(apiUrl, {
         method: 'GET',
@@ -293,7 +293,7 @@ function createChart(labelUnit) {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: '時間',
+                            text: '時間(h)',
                             font: {
                                 size: window.innerWidth * 0.03
                             }
