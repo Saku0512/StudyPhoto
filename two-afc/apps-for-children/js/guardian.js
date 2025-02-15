@@ -382,6 +382,9 @@ function generateColors(categories) {
 function createCategoryChart(unit = 'week') {
     const apiUrl = `../../php/guardian_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
 
+    // span_select_textの内容を取得
+    const spanText = document.querySelector('.span_select_text').textContent;
+
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
@@ -409,7 +412,7 @@ function createCategoryChart(unit = 'week') {
                     datasets: [{
                         data: times,
                         backgroundColor: colors,
-                        borderColor: colors.map(color => color.replace('60%', '50%')), // やや暗い境界線
+                        borderColor: colors.map(color => color.replace('60%', '50%')),
                         borderWidth: 1
                     }]
                 },
@@ -426,7 +429,7 @@ function createCategoryChart(unit = 'week') {
                         },
                         title: {
                             display: true,
-                            text: '科目別学習時間',
+                            text: `${spanText}`,
                             font: {
                                 size: window.innerWidth * 0.03
                             }
