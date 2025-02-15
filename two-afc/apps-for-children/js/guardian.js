@@ -221,6 +221,12 @@ function createTimeChart(labelUnit) {
     // 期間表示テキストを更新
     updateSpanSelectText(labelUnit);
 
+    // 時間文字列（HH:MM:SS）を時間数に変換する関数
+    const timeToHours = timeStr => {
+        const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+        return Number(((hours + minutes / 60 + seconds / 3600)).toFixed(2));
+    };
+
     // 週の開始日と終了日を取得する関数
     function getWeekRange(date) {
         const sunday = new Date(date);
@@ -256,6 +262,11 @@ function createTimeChart(labelUnit) {
             console.error('Error from server:', data.error);
             return;
         }
+
+        // データが空かどうかをチェック
+        const hasData = data.values && data.values.some(record => 
+            timeToHours(record.study_time) > 0
+        );
 
         let labels;
         switch(labelUnit) {
@@ -298,12 +309,6 @@ function createTimeChart(labelUnit) {
             }]
         };
 
-        // 時間文字列（HH:MM:SS）を時間数に変換する関数
-        const timeToHours = timeStr => {
-            const [hours, minutes, seconds] = timeStr.split(':').map(Number);
-            return Number(((hours + minutes / 60 + seconds / 3600)).toFixed(2));
-        };
-
         // データの設定
         if (data.values && Array.isArray(data.values)) {
             data.values.forEach(record => {
@@ -313,7 +318,7 @@ function createTimeChart(labelUnit) {
             });
         }
 
-        // グラフの設定
+        // グラフの設定を修正
         const config = {
             type: 'bar',
             data: chartData,
@@ -361,10 +366,45 @@ function createTimeChart(labelUnit) {
                                 return `${hoursInt}時間${minutes}分`;
                             }
                         }
+                    },
+                    noData: {
+                        text: '勉強データはありません',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        font: {
+                            size: window.innerWidth * 0.04
+                        }
                     }
                 }
             }
         };
+
+        // データがない場合の表示設定を追加
+        if (!hasData) {
+            // グラフの色を薄く設定
+            chartData.datasets[0].backgroundColor = 'rgba(72, 112, 189, 0.3)';
+            chartData.datasets[0].borderColor = 'rgba(72, 112, 189, 0.3)';
+
+            // プラグインの定義を追加
+            const noDataPlugin = {
+                id: 'noData',
+                afterDraw: (chart) => {
+                    if (!hasData) {
+                        const {ctx, width, height} = chart;
+                        ctx.save();
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.font = `${chart.options.plugins.noData.font.size}px sans-serif`;
+                        ctx.fillStyle = '#666';
+                        ctx.fillText(chart.options.plugins.noData.text, width / 2, height / 2);
+                        ctx.restore();
+                    }
+                }
+            };
+
+            // プラグインを追加
+            config.plugins = [noDataPlugin];
+        }
 
         if (chartInstance) {
             chartInstance.destroy();
