@@ -166,7 +166,7 @@ document.querySelector('.span_select_left').addEventListener('click', () => {
             currentDate.setFullYear(currentDate.getFullYear() - 1);
             break;
     }
-    createChart(unit);
+    createTimeChart(unit);
 });
 
 document.querySelector('.span_select_right').addEventListener('click', () => {
@@ -184,10 +184,10 @@ document.querySelector('.span_select_right').addEventListener('click', () => {
             currentDate.setFullYear(currentDate.getFullYear() + 1);
             break;
     }
-    createChart(unit);
+    createTimeChart(unit);
 });
 
-function createChart(labelUnit) {
+function createTimeChart(labelUnit) {
     // アクティブなボタンのスタイルを更新
     document.querySelectorAll('.side_unit_button button').forEach(btn => {
         btn.classList.remove('active');
@@ -352,10 +352,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const monthButton = document.querySelector('.side_unit_month');
     const yearButton = document.querySelector('.side_unit_year');
 
-    if (weekButton) weekButton.addEventListener('click', () => createChart('week'));
-    if (monthButton) monthButton.addEventListener('click', () => createChart('month'));
-    if (yearButton) yearButton.addEventListener('click', () => createChart('year'));
+    if (weekButton) weekButton.addEventListener('click', () => createTimeChart('week'));
+    if (monthButton) monthButton.addEventListener('click', () => createTimeChart('month'));
+    if (yearButton) yearButton.addEventListener('click', () => createTimeChart('year'));
 
     // 初期グラフを週単位で表示
-    createChart('week');
+    createTimeChart('week');
 });
