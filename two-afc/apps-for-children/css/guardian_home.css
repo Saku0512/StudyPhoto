@@ -249,14 +249,17 @@ main {
 }
 .date-input-container {
     width: 100%;
-    height: 10%;
+    height: 20%;
 }
 
 .comment-date-input {
-    padding: 5px;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-right: 10px;
+    width: 100%;
+    height: 100%;
+    font-size: 3vw;
 }
 
 /* レスポンシブ対応 */

@@ -210,6 +210,14 @@ function createTimeChart(labelUnit) {
     });
     document.querySelector(`.side_unit_${labelUnit}`).classList.add('active');
     
+    // 日付入力欄の制御
+    const commentDateInput = document.getElementById('commentDate');
+    if (labelUnit === 'day') {
+        commentDateInput.value = formatDate(currentDate);
+    } else {
+        commentDateInput.value = 'yyyy-mm-dd';
+    }
+    
     // 期間表示テキストを更新
     updateSpanSelectText(labelUnit);
 
@@ -503,6 +511,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yearButton) yearButton.addEventListener('click', () => {
         createTimeChart('year');
         createCategoryChart('year');
+    });
+
+    // 日付入力欄の変更イベントを追加
+    const commentDateInput = document.getElementById('commentDate');
+    commentDateInput.addEventListener('change', (e) => {
+        currentDate = new Date(e.target.value);
+        // 日ボタンをアクティブにしてグラフを更新
+        createTimeChart('day');
+        createCategoryChart('day');
     });
 
     // 初期表示
