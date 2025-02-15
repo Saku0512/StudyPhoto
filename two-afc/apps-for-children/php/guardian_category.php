@@ -25,6 +25,27 @@ try {
     
     // 期間に応じてSQLクエリを変更
     switch($unit) {
+        case 'day':
+            error_log("Category Chart - Day: " . $date->format('Y-m-d'));
+            
+            $sql = "SELECT 
+                    c.category_name,
+                    COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(s.study_time))), '00:00:00') as total_time
+                   FROM categories c
+                   LEFT JOIN study_data s ON s.username = c.username 
+                   AND s.category = c.category_name 
+                   AND s.username = :username 
+                   AND DATE(s.created_at) = :date
+                   WHERE c.username = :username
+                   GROUP BY c.category_name
+                   HAVING TIME_TO_SEC(total_time) > 0
+                   ORDER BY total_time DESC";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':username', $userName, PDO::PARAM_STR);
+            $stmt->bindValue(':date', $date->format('Y-m-d'));
+            break;
+            
         case 'week':
             $startDate = clone $date;
             $startDate->modify('last sunday');

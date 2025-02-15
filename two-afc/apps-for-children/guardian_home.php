@@ -38,6 +38,7 @@ $idHidden = str_repeat('*', strlen($_SESSION['guardian_id'] ?? ''));
         <p class="title"><?php echo htmlspecialchars($userName) ?>の勉強記録</p>
         <div class="side_unit">
             <div class="side_unit_button">
+                <button class="side_unit_day">日</button>
                 <button class="side_unit_week">週</button>
                 <button class="side_unit_month">月</button>
                 <button class="side_unit_year">年</button>

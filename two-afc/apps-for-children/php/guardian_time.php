@@ -67,6 +67,18 @@ try {
                    GROUP BY MONTH(created_at), index_num
                    ORDER BY MONTH(created_at)";
             break;
+
+        case 'day':
+            $sql = "SELECT 
+                    HOUR(created_at) as hour,
+                    SEC_TO_TIME(SUM(TIME_TO_SEC(study_time))) as study_time,
+                    HOUR(created_at) as index_num
+                   FROM study_data 
+                   WHERE username = :username 
+                   AND DATE(created_at) = :date
+                   GROUP BY HOUR(created_at)
+                   ORDER BY HOUR(created_at)";
+            break;
     }
     
     $stmt = $pdo->prepare($sql);
@@ -86,6 +98,10 @@ try {
             
         case 'year':
             $stmt->bindValue(':year', $date->format('Y'));
+            break;
+
+        case 'day':
+            $stmt->bindValue(':date', $date->format('Y-m-d'));
             break;
     }
 

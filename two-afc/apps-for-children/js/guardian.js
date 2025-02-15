@@ -132,11 +132,14 @@ function getWeekDates(date) {
 const weekDates = getWeekDates(new Date());
 console.log(weekDates);
 
-// 期間の表示テキストを更新する関数
+// 期間の表示テキストを更新する関数を修正
 function updateSpanSelectText(unit) {
     const spanText = document.querySelector('.span_select_text');
     
     switch(unit) {
+        case 'day':
+            spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月${currentDate.getDate()}日`;
+            break;
         case 'week':
             const weekStart = new Date(currentDate);
             weekStart.setDate(currentDate.getDate() - currentDate.getDay());
@@ -153,12 +156,16 @@ function updateSpanSelectText(unit) {
     }
 }
 
-// 期間移動ボタンのイベントハンドラー
+// 期間移動ボタンのイベントハンドラーを修正
 document.querySelector('.span_select_left').addEventListener('click', () => {
-    const unit = document.querySelector('.side_unit_week').classList.contains('active') ? 'week' :
+    const unit = document.querySelector('.side_unit_day').classList.contains('active') ? 'day' :
+                document.querySelector('.side_unit_week').classList.contains('active') ? 'week' :
                 document.querySelector('.side_unit_month').classList.contains('active') ? 'month' : 'year';
     
     switch(unit) {
+        case 'day':
+            currentDate.setDate(currentDate.getDate() - 1);
+            break;
         case 'week':
             currentDate.setDate(currentDate.getDate() - 7);
             break;
@@ -174,10 +181,14 @@ document.querySelector('.span_select_left').addEventListener('click', () => {
 });
 
 document.querySelector('.span_select_right').addEventListener('click', () => {
-    const unit = document.querySelector('.side_unit_week').classList.contains('active') ? 'week' :
+    const unit = document.querySelector('.side_unit_day').classList.contains('active') ? 'day' :
+                document.querySelector('.side_unit_week').classList.contains('active') ? 'week' :
                 document.querySelector('.side_unit_month').classList.contains('active') ? 'month' : 'year';
     
     switch(unit) {
+        case 'day':
+            currentDate.setDate(currentDate.getDate() + 1);
+            break;
         case 'week':
             currentDate.setDate(currentDate.getDate() + 7);
             break;
@@ -240,6 +251,10 @@ function createTimeChart(labelUnit) {
 
         let labels;
         switch(labelUnit) {
+            case 'day':
+                // 日表示の場合は時間
+                labels = Array.from({length: 24}, (_, i) => `${i}時`);
+                break;
             case 'week':
                 // 週表示の場合は曜日
                 labels = ['日', '月', '火', '水', '木', '金', '土'].map((day, i) => {
@@ -466,12 +481,17 @@ function createCategoryChart(unit = 'week') {
         });
 }
 
-// 期間ボタンのイベントハンドラー
+// DOMContentLoadedイベントハンドラーを修正
 document.addEventListener('DOMContentLoaded', () => {
+    const dayButton = document.querySelector('.side_unit_day');
     const weekButton = document.querySelector('.side_unit_week');
     const monthButton = document.querySelector('.side_unit_month');
     const yearButton = document.querySelector('.side_unit_year');
 
+    if (dayButton) dayButton.addEventListener('click', () => {
+        createTimeChart('day');
+        createCategoryChart('day');
+    });
     if (weekButton) weekButton.addEventListener('click', () => {
         createTimeChart('week');
         createCategoryChart('week');
