@@ -106,6 +106,12 @@ function addOption() {
         return;
     }
 
+    // 文字数チェックを追加
+    if (optionName.length > 6) {
+        alert("教科名は全角6文字以内で入力してください。");
+        return;
+    }
+
     fetch('../../php/category/add_category.php', {
         method: 'POST',
         headers: {
@@ -140,9 +146,14 @@ function editOption() {
     const oldOptionName = document.getElementById('editOptionSelect').value;
     const newOptionName = document.getElementById('editOptionName').value;
 
-
     if (!oldOptionName || !newOptionName) {
         alert("変更する教科名を選択し、新しい教科名を入力してください。");
+        return;
+    }
+
+    // 文字数チェックを追加
+    if (newOptionName.length > 6) {
+        alert("教科名は全角6文字以内で入力してください。");
         return;
     }
 

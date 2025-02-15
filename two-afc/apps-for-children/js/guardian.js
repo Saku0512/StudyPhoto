@@ -13,6 +13,9 @@ let chartInstance;
 // 現在の表示期間を追跡するための変数
 let currentDate = new Date();
 
+// カテゴリーの色マッピングを保持するオブジェクト
+let categoryColorMap = {};
+
 function showSPopup() {
     document.getElementById("settingPanel").style.display = "block";
 }
@@ -166,7 +169,8 @@ document.querySelector('.span_select_left').addEventListener('click', () => {
             currentDate.setFullYear(currentDate.getFullYear() - 1);
             break;
     }
-    createChart(unit);
+    createTimeChart(unit);
+    createCategoryChart(unit);
 });
 
 document.querySelector('.span_select_right').addEventListener('click', () => {
@@ -184,10 +188,11 @@ document.querySelector('.span_select_right').addEventListener('click', () => {
             currentDate.setFullYear(currentDate.getFullYear() + 1);
             break;
     }
-    createChart(unit);
+    createTimeChart(unit);
+    createCategoryChart(unit);
 });
 
-function createChart(labelUnit) {
+function createTimeChart(labelUnit) {
     // アクティブなボタンのスタイルを更新
     document.querySelectorAll('.side_unit_button button').forEach(btn => {
         btn.classList.remove('active');
@@ -211,11 +216,14 @@ function createChart(labelUnit) {
 
     // 日付をフォーマットする関数
     function formatDate(date) {
-        return date.toISOString().split('T')[0];
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     const weekRange = getWeekRange(currentDate);
-    const apiUrl = `../../php/guardian.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
+    const apiUrl = `../../php/guardian_time.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
 
     fetch(apiUrl, {
         method: 'GET',
@@ -293,7 +301,7 @@ function createChart(labelUnit) {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: '時間',
+                            text: '時間(h)',
                             font: {
                                 size: window.innerWidth * 0.03
                             }
@@ -345,17 +353,139 @@ function createChart(labelUnit) {
     });
 }
 
-// DOMContentLoaded イベントでボタンのクリックイベントを設定
+// カテゴリーチャートのコンテキストを取得
+const categoryChartContext = document.getElementById('categoryChart').getContext('2d');
+let categoryChartInstance;
+
+// 日付をフォーマットする関数
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// HSLカラーを使用して動的に色を生成する関数
+function generateColors(categories) {
+    categories.forEach((category, index) => {
+        if (!categoryColorMap[category]) {
+            // 新しいカテゴリーの場合のみ色を生成
+            const hue = (index * (360 / categories.length)) % 360;
+            categoryColorMap[category] = `hsl(${hue}, 70%, 60%)`;
+        }
+    });
+    
+    // カテゴリーに対応する色の配列を返す
+    return categories.map(category => categoryColorMap[category]);
+}
+
+function createCategoryChart(unit = 'week') {
+    const apiUrl = `../../php/guardian_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
+
+    const spanText = document.querySelector('.span_select_text').textContent;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+                return;
+            }
+
+            // 時間文字列を時間数に変換（より小さな値も保持）
+            const timeToHours = timeStr => {
+                const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+                const totalHours = hours + minutes / 60 + seconds / 3600;
+                // 0.01時間（36秒）未満の場合は0.01として表示
+                return totalHours < 0.01 ? 0.01 : Number(totalHours.toFixed(2));
+            };
+
+            // 時間を「○h」形式にフォーマットする関数
+            const formatTime = (timeInHours) => {
+                return `${timeInHours}h`;
+            };
+
+            const categories = data.categories.map(item => item.category_name);
+            const times = data.categories.map(item => timeToHours(item.total_time));
+            
+            // カテゴリー名と時間を組み合わせたラベルを作成
+            const labels = categories.map((category, index) => 
+                `${category}:${formatTime(times[index])}`
+            );
+            
+            const colors = generateColors(categories);
+
+            const config = {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: times,
+                        backgroundColor: colors,
+                        borderColor: colors.map(color => color.replace('60%', '50%')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,  // アスペクト比を固定しない
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: window.innerWidth * 0.02
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: `${spanText}`,
+                            font: {
+                                size: window.innerWidth * 0.03
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            if (categoryChartInstance) {
+                categoryChartInstance.destroy();
+            }
+            categoryChartInstance = new Chart(categoryChartContext, config);
+        })
+        .catch(error => {
+            console.error('Error fetching category data:', error);
+        });
+}
+
+// 期間ボタンのイベントハンドラー
 document.addEventListener('DOMContentLoaded', () => {
-    // 期間ボタンのイベント設定
     const weekButton = document.querySelector('.side_unit_week');
     const monthButton = document.querySelector('.side_unit_month');
     const yearButton = document.querySelector('.side_unit_year');
 
-    if (weekButton) weekButton.addEventListener('click', () => createChart('week'));
-    if (monthButton) monthButton.addEventListener('click', () => createChart('month'));
-    if (yearButton) yearButton.addEventListener('click', () => createChart('year'));
+    if (weekButton) weekButton.addEventListener('click', () => {
+        createTimeChart('week');
+        createCategoryChart('week');
+    });
+    if (monthButton) monthButton.addEventListener('click', () => {
+        createTimeChart('month');
+        createCategoryChart('month');
+    });
+    if (yearButton) yearButton.addEventListener('click', () => {
+        createTimeChart('year');
+        createCategoryChart('year');
+    });
 
-    // 初期グラフを週単位で表示
-    createChart('week');
+    // 初期表示
+    createTimeChart('week');
+    createCategoryChart('week');
 });
