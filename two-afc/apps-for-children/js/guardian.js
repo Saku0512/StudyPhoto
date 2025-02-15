@@ -13,6 +13,9 @@ let chartInstance;
 // 現在の表示期間を追跡するための変数
 let currentDate = new Date();
 
+// カテゴリーの色マッピングを保持するオブジェクト
+let categoryColorMap = {};
+
 function showSPopup() {
     document.getElementById("settingPanel").style.display = "block";
 }
@@ -167,6 +170,7 @@ document.querySelector('.span_select_left').addEventListener('click', () => {
             break;
     }
     createTimeChart(unit);
+    createCategoryChart(unit);
 });
 
 document.querySelector('.span_select_right').addEventListener('click', () => {
@@ -185,6 +189,7 @@ document.querySelector('.span_select_right').addEventListener('click', () => {
             break;
     }
     createTimeChart(unit);
+    createCategoryChart(unit);
 });
 
 function createTimeChart(labelUnit) {
@@ -211,7 +216,10 @@ function createTimeChart(labelUnit) {
 
     // 日付をフォーマットする関数
     function formatDate(date) {
-        return date.toISOString().split('T')[0];
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     const weekRange = getWeekRange(currentDate);
@@ -345,17 +353,128 @@ function createTimeChart(labelUnit) {
     });
 }
 
-// DOMContentLoaded イベントでボタンのクリックイベントを設定
+// カテゴリーチャートのコンテキストを取得
+const categoryChartContext = document.getElementById('categoryChart').getContext('2d');
+let categoryChartInstance;
+
+// 日付をフォーマットする関数
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// HSLカラーを使用して動的に色を生成する関数
+function generateColors(categories) {
+    categories.forEach((category, index) => {
+        if (!categoryColorMap[category]) {
+            // 新しいカテゴリーの場合のみ色を生成
+            const hue = (index * (360 / categories.length)) % 360;
+            categoryColorMap[category] = `hsl(${hue}, 70%, 60%)`;
+        }
+    });
+    
+    // カテゴリーに対応する色の配列を返す
+    return categories.map(category => categoryColorMap[category]);
+}
+
+function createCategoryChart(unit = 'week') {
+    const apiUrl = `../../php/guardian_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+                return;
+            }
+
+            // 時間文字列を時間数に変換
+            const timeToHours = timeStr => {
+                const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+                return Number(((hours + minutes / 60 + seconds / 3600)).toFixed(2));
+            };
+
+            const categories = data.categories.map(item => item.category_name);
+            const times = data.categories.map(item => timeToHours(item.total_time));
+            
+            // カテゴリーに応じた色を取得
+            const colors = generateColors(categories);
+
+            const config = {
+                type: 'doughnut',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: times,
+                        backgroundColor: colors,
+                        borderColor: colors.map(color => color.replace('60%', '50%')), // やや暗い境界線
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: window.innerWidth * 0.02
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: '科目別学習時間',
+                            font: {
+                                size: window.innerWidth * 0.03
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const hours = context.raw;
+                                    const hoursInt = Math.floor(hours);
+                                    const minutes = Math.round((hours - hoursInt) * 60);
+                                    return `${context.label}: ${hoursInt}時間${minutes}分`;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            if (categoryChartInstance) {
+                categoryChartInstance.destroy();
+            }
+            categoryChartInstance = new Chart(categoryChartContext, config);
+        })
+        .catch(error => {
+            console.error('Error fetching category data:', error);
+        });
+}
+
+// 期間ボタンのイベントハンドラー
 document.addEventListener('DOMContentLoaded', () => {
-    // 期間ボタンのイベント設定
     const weekButton = document.querySelector('.side_unit_week');
     const monthButton = document.querySelector('.side_unit_month');
     const yearButton = document.querySelector('.side_unit_year');
 
-    if (weekButton) weekButton.addEventListener('click', () => createTimeChart('week'));
-    if (monthButton) monthButton.addEventListener('click', () => createTimeChart('month'));
-    if (yearButton) yearButton.addEventListener('click', () => createTimeChart('year'));
+    if (weekButton) weekButton.addEventListener('click', () => {
+        createTimeChart('week');
+        createCategoryChart('week');
+    });
+    if (monthButton) monthButton.addEventListener('click', () => {
+        createTimeChart('month');
+        createCategoryChart('month');
+    });
+    if (yearButton) yearButton.addEventListener('click', () => {
+        createTimeChart('year');
+        createCategoryChart('year');
+    });
 
-    // 初期グラフを週単位で表示
+    // 初期表示
     createTimeChart('week');
+    createCategoryChart('week');
 });

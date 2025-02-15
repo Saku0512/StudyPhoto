@@ -216,3 +216,66 @@ main {
 .span_select_text {
     font-size: 3vw;
 }
+.category-chart-container {
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    align-items: left;
+    margin-top: 2vh;
+}
+
+.chart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 90vw;
+    height: 28vh;
+    margin-top: 2vh;
+    gap: 2vw;
+}
+
+.category-chart-container {
+    width: 50%;
+    height: 100%;
+}
+
+.category-chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.gurdian_comment {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.gurdian_comment_text {
+    width: 100%;
+    height: 100%;
+    padding: 1vw;
+    font-size: 2.5vw;
+    resize: none;
+    border: 2px solid #4870BD;
+    border-radius: 10px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .chart-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 3vh;
+    }
+
+    .category-chart-container,
+    .gurdian_comment {
+        width: 95vw;
+        height: 40vh;
+    }
+
+    .gurdian_comment_text {
+        font-size: 4vw;
+    }
+}
