@@ -406,6 +406,7 @@ function createCategoryChart(unit = 'week') {
     const apiUrl = `../../php/guardian_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
 
     const spanText = document.querySelector('.span_select_text').textContent;
+    const chartFooter = document.querySelector('.chart-footer');
 
     fetch(apiUrl)
         .then(response => response.json())
@@ -414,6 +415,15 @@ function createCategoryChart(unit = 'week') {
                 console.error('Error:', data.error);
                 return;
             }
+
+            // データが空の場合はchart-footerを非表示にする
+            if (!data.categories || data.categories.length === 0) {
+                chartFooter.style.display = 'none';
+                return;
+            }
+
+            // データがある場合はchart-footerを表示する
+            chartFooter.style.display = 'flex';
 
             // 時間文字列を時間数に変換（より小さな値も保持）
             const timeToHours = timeStr => {
@@ -486,6 +496,7 @@ function createCategoryChart(unit = 'week') {
         })
         .catch(error => {
             console.error('Error fetching category data:', error);
+            chartFooter.style.display = 'none';
         });
 }
 
