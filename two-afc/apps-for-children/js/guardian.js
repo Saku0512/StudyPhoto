@@ -382,7 +382,6 @@ function generateColors(categories) {
 function createCategoryChart(unit = 'week') {
     const apiUrl = `../../php/guardian_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
 
-    // span_select_textの内容を取得
     const spanText = document.querySelector('.span_select_text').textContent;
 
     fetch(apiUrl)
@@ -393,22 +392,33 @@ function createCategoryChart(unit = 'week') {
                 return;
             }
 
-            // 時間文字列を時間数に変換
+            // 時間文字列を時間数に変換（より小さな値も保持）
             const timeToHours = timeStr => {
                 const [hours, minutes, seconds] = timeStr.split(':').map(Number);
-                return Number(((hours + minutes / 60 + seconds / 3600)).toFixed(2));
+                const totalHours = hours + minutes / 60 + seconds / 3600;
+                // 0.01時間（36秒）未満の場合は0.01として表示
+                return totalHours < 0.01 ? 0.01 : Number(totalHours.toFixed(2));
+            };
+
+            // 時間を「○h」形式にフォーマットする関数
+            const formatTime = (timeInHours) => {
+                return `${timeInHours}h`;
             };
 
             const categories = data.categories.map(item => item.category_name);
             const times = data.categories.map(item => timeToHours(item.total_time));
             
-            // カテゴリーに応じた色を取得
+            // カテゴリー名と時間を組み合わせたラベルを作成
+            const labels = categories.map((category, index) => 
+                `${category}:${formatTime(times[index])}`
+            );
+            
             const colors = generateColors(categories);
 
             const config = {
                 type: 'doughnut',
                 data: {
-                    labels: categories,
+                    labels: labels,
                     datasets: [{
                         data: times,
                         backgroundColor: colors,
@@ -437,10 +447,7 @@ function createCategoryChart(unit = 'week') {
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const hours = context.raw;
-                                    const hoursInt = Math.floor(hours);
-                                    const minutes = Math.round((hours - hoursInt) * 60);
-                                    return `${context.label}: ${hoursInt}時間${minutes}分`;
+                                    return `${context.label}`;
                                 }
                             }
                         }

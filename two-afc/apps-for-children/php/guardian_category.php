@@ -43,7 +43,7 @@ try {
                    AND DATE(s.created_at) BETWEEN :start_date AND :end_date
                    WHERE c.username = :username
                    GROUP BY c.category_name
-                   HAVING total_time > '00:00:00'
+                   HAVING TIME_TO_SEC(total_time) > 0
                    ORDER BY total_time DESC";
             
             $stmt = $pdo->prepare($sql);
@@ -66,7 +66,7 @@ try {
                    AND MONTH(s.created_at) = :month
                    WHERE c.username = :username
                    GROUP BY c.category_name
-                   HAVING total_time > '00:00:00'
+                   HAVING TIME_TO_SEC(total_time) > 0
                    ORDER BY total_time DESC";
             
             $stmt = $pdo->prepare($sql);
@@ -88,7 +88,7 @@ try {
                    AND YEAR(s.created_at) = :year
                    WHERE c.username = :username
                    GROUP BY c.category_name
-                   HAVING total_time > '00:00:00'
+                   HAVING TIME_TO_SEC(total_time) > 0
                    ORDER BY total_time DESC";
             
             $stmt = $pdo->prepare($sql);
