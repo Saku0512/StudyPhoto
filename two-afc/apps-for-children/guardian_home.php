@@ -56,6 +56,9 @@ $idHidden = str_repeat('*', strlen($_SESSION['guardian_id'] ?? ''));
                 <canvas id="categoryChart"></canvas>
             </div>
             <div class="gurdian_comment">
+                <div class="date-input-container">
+                    <input type="date" id="commentDate" class="comment-date-input">
+                </div>
                 <textarea class="gurdian_comment_text" placeholder="コメントを入力してください"></textarea>
             </div>
         </div>
