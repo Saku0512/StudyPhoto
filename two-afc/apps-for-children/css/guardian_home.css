@@ -68,7 +68,7 @@ main {
     display: flex;
     justify-content: center;
     gap: 10vw;
-    margin-top: 5vh;
+    margin-top: 3vh;
 }
 .footer a , .footer button{
     display: flex;
@@ -216,40 +216,28 @@ main {
 .span_select_text {
     font-size: 3vw;
 }
-.category-chart-container {
-    display: flex;
-    justify-content: left;
-    flex-direction: column;
-    align-items: left;
-}
-
 .chart-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
     width: 95vw;
-    height: 28vh;
+    height: 30vh;
     margin-top: 2vh;
-    gap: 5vw;
 }
-
 .category-chart-container {
-    width: calc((100% - 5vw) / 2);
-    height: 100%;
-}
-
-.category-chart-container canvas {
-    width: 100% !important;
-    height: 100% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc((100vw - 5vw) / 1.8);
+    height: 30vh;
+    position: relative;
 }
 
 .gurdian_comment {
-    width: calc((100% - 5vw) / 2);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    width: calc((100vw - 5vw) / 3);
+    height: 30vh;
+    margin-left: 2vw;
 }
-
 .gurdian_comment_text {
     width: 100%;
     height: 100%;
@@ -268,13 +256,8 @@ main {
         gap: 3vh;
     }
 
-    .category-chart-container,
-    .gurdian_comment {
+    .category-chart-container {
         width: 95vw;
         height: 40vh;
-    }
-
-    .gurdian_comment_text {
-        font-size: 4vw;
     }
 }

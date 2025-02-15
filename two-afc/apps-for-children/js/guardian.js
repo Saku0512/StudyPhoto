@@ -428,6 +428,7 @@ function createCategoryChart(unit = 'week') {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,  // アスペクト比を固定しない
                     plugins: {
                         legend: {
                             position: 'right',
