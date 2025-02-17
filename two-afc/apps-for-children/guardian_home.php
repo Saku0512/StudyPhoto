@@ -63,15 +63,15 @@ $idHidden = str_repeat('*', strlen($_SESSION['guardian_id'] ?? ''));
             <div class="category-chart-container">
                 <canvas id="categoryChart"></canvas>
             </div>
-            <div class="gurdian_comment">
-                <div class="gurdian_comment_container">
-                    <p class="gurdian_comment_title">コメントを書く日付を選択</p>
+            <div class="guardian_comment">
+                <div class="guardian_comment_container">
+                    <p class="guardian_comment_title">コメントを書く日付を選択</p>
                     <div class="date-input-container">
                         <input type="date" id="commentDate" class="comment-date-input">
                     </div>
-                    <textarea class="gurdian_comment_text" placeholder="コメントを入力してください"></textarea>
+                    <textarea class="guardian_comment_text" placeholder="コメントを入力してください"></textarea>
                 </div>
-                <button class="gurdian_comment_button">コメントを送信</button>
+                <button class="guardian_comment_button">コメントを送信</button>
             </div>
         </div>
         <div id="imagePopupOverlay" onclick="hideImagePopup()">
