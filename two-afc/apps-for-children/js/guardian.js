@@ -278,6 +278,10 @@ function createTimeChart(labelUnit) {
                 labels = Array.from({length: 24}, (_, i) => `${i}時`);
                 break;
             case 'week':
+                // コメント内容をクリア
+                document.querySelector('.gurdian_comment_text').value = '';
+                // ボタンの文字をデフォルトに変更
+                document.querySelector('.gurdian_comment_button').textContent = 'コメントを送信';
                 // 週表示の場合は曜日
                 labels = ['日', '月', '火', '水', '木', '金', '土'].map((day, i) => {
                     const date = new Date(weekRange.start);
@@ -286,6 +290,10 @@ function createTimeChart(labelUnit) {
                 });
                 break;
             case 'month':
+                // コメント内容をクリア
+                document.querySelector('.gurdian_comment_text').value = '';
+                // ボタンの文字をデフォルトに変更
+                document.querySelector('.gurdian_comment_button').textContent = 'コメントを送信';
                 // 月表示の場合はその月の日数分の日付
                 const daysInMonth = new Date(
                     currentDate.getFullYear(),
@@ -295,6 +303,10 @@ function createTimeChart(labelUnit) {
                 labels = Array.from({length: daysInMonth}, (_, i) => `${i + 1}日`);
                 break;
             case 'year':
+                // コメント内容をクリア
+                document.querySelector('.gurdian_comment_text').value = '';
+                // ボタンの文字をデフォルトに変更
+                document.querySelector('.gurdian_comment_button').textContent = 'コメントを送信';
                 // 年表示の場合は月
                 labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
                 break;
