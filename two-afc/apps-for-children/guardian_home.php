@@ -1,8 +1,12 @@
 <?php
 session_start();
 $GuardianNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $GuardianNonce . "' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js https://cdn.jsdelivr.net/npm/chart.js https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js; style-src 'self';");
-
+header("Content-Security-Policy: 
+    default-src 'self'; 
+    script-src 'self' 'nonce-{$GuardianNonce}' https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js https://cdn.jsdelivr.net/npm/js-base64/base64.min.js https://cdn.jsdelivr.net/npm/chart.js https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js; 
+    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css;
+    img-src 'self' data:;
+");
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -32,6 +36,9 @@ $idHidden = str_repeat('*', strlen($_SESSION['guardian_id'] ?? ''));
     <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js"></script> <!-- date-fns CDN -->
     <link rel="stylesheet" href="./css/guardian_home.css">
     <script src="./js/guardian.js" nonce="<?= htmlspecialchars($GuardianNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
 </head>
 <body>
     <main>

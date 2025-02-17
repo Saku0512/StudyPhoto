@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// カレンダーの日付をカスタマイズする関数を追加
+// カレンダーをカスタマイズする関数
 function customizeCalendar() {
     const commentDateInput = document.getElementById('commentDate');
     
@@ -603,46 +603,101 @@ function customizeCalendar() {
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
     
-    const apiUrl = `./php/get_study_dates.php?year=${currentYear}&month=${currentMonth}`;
-    
-    fetch(apiUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
+    fetch(`./php/guardian_calender.php?year=${currentYear}&month=${currentMonth}`)
+        .then(response => response.json())
         .then(data => {
             if (data.error) {
-                console.error('Error from server:', data.error);
+                console.error('Error:', data.error);
                 return;
             }
 
-            // データが空の場合は早期リターン
-            if (!data.dates || data.dates.length === 0) {
-                console.log('No study dates found for this month');
-                return;
-            }
+            // 勉強記録のある日付をSetに変換
+            const studyDates = new Set(data.dates || []);
 
-            // 日付を持つ要素にクラスを追加
-            commentDateInput.addEventListener('click', () => {
-                // カレンダーが開かれたときの処理
-                setTimeout(() => {
-                    const calendar = document.querySelector('::-webkit-calendar-picker-indicator');
-                    if (calendar) {
-                        // 既存のクラスをリセット
-                        const existingMarked = document.querySelectorAll('.has-study-record');
-                        existingMarked.forEach(el => el.classList.remove('has-study-record'));
-
-                        // 勉強記録がある日付にクラスを追加
-                        data.dates.forEach(date => {
-                            const dateElement = document.querySelector(`[data-date="${date}"]`);
-                            if (dateElement) {
-                                dateElement.classList.add('has-study-record');
-                            }
-                        });
+            // Flatpickrの設定
+            flatpickr(commentDateInput, {
+                locale: 'ja',
+                dateFormat: 'Y-m-d',
+                maxDate: 'today',
+                inline: false,
+                // 日付の有効/無効の設定
+                enable: [
+                    function(date) {
+                        const dateString = date.toISOString().split('T')[0];
+                        return studyDates.has(dateString); // 勉強記録のある日付のみ有効
                     }
-                }, 100); // カレンダーが表示されるまで少し待つ
+                ],
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    const dateString = dayElem.dateObj.toISOString().split('T')[0];
+                    const today = new Date().toISOString().split('T')[0];
+                    
+                    if (studyDates.has(dateString)) {
+                        // 勉強記録のある日付は青色で選択可能
+                        dayElem.classList.add('has-study-record');
+                        dayElem.classList.remove('flatpickr-disabled');
+                    } else if (dateString <= today) {
+                        // 勉強記録のない日付は灰色で選択不可
+                        dayElem.classList.add('no-study-record');
+                        dayElem.classList.add('flatpickr-disabled');
+                    }
+                },
+                onChange: function(selectedDates) {
+                    if (selectedDates.length > 0) {
+                        // 選択された日付を設定
+                        currentDate = selectedDates[0];
+                        
+                        // 日ボタンをアクティブに
+                        document.querySelectorAll('.side_unit_button button').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        document.querySelector('.side_unit_day').classList.add('active');
+                        
+                        // 日グラフを表示
+                        createTimeChart('day');
+                        createCategoryChart('day');
+                    }
+                },
+                onMonthChange: function(selectedDates, dateStr, instance) {
+                    const newYear = instance.currentYear;
+                    const newMonth = instance.currentMonth + 1;
+                    
+                    fetch(`./php/guardian_calender.php?year=${newYear}&month=${newMonth}`)
+                        .then(response => response.json())
+                        .then(newData => {
+                            if (newData.error) {
+                                console.error('Error:', newData.error);
+                                return;
+                            }
+                            
+                            const newStudyDates = new Set(newData.dates || []);
+                            
+                            // 有効な日付を更新
+                            instance.set('enable', [
+                                function(date) {
+                                    const dateString = date.toISOString().split('T')[0];
+                                    return newStudyDates.has(dateString);
+                                }
+                            ]);
+                            
+                            // 日付のスタイルを更新
+                            instance.days.forEach(dayElem => {
+                                const dateString = dayElem.dateObj.toISOString().split('T')[0];
+                                dayElem.classList.remove('has-study-record', 'no-study-record', 'flatpickr-disabled');
+                                
+                                if (newStudyDates.has(dateString)) {
+                                    // 勉強記録のある日付は青色で選択可能
+                                    dayElem.classList.add('has-study-record');
+                                } else {
+                                    // 勉強記録のない日付は灰色で選択不可
+                                    dayElem.classList.add('no-study-record');
+                                    dayElem.classList.add('flatpickr-disabled');
+                                }
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching study dates:', error);
+                        });
+                }
             });
         })
         .catch(error => {
