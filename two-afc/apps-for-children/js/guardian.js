@@ -107,7 +107,6 @@ const today = new Date();
 const year = today.getFullYear();
 const month = today.getMonth() + 1;
 const day = today.getDate();
-console.log(`年: ${year}, 月: ${month}, 日: ${day}`);
 
 function getWeekDates(date) {
     const currentDate = new Date(date);
@@ -130,7 +129,6 @@ function getWeekDates(date) {
 }
 
 const weekDates = getWeekDates(new Date());
-console.log(weekDates);
 
 // 期間の表示テキストを更新する関数を修正
 function updateSpanSelectText(unit) {
@@ -156,6 +154,50 @@ function updateSpanSelectText(unit) {
     }
 }
 
+function get_comment_data(formattedDate, unit){
+    fetch(`./php/get_comment.php?date=${formattedDate}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        
+        const commentText = document.querySelector('.gurdian_comment_text');
+        const commentButton = document.querySelector('.gurdian_comment_button');
+        
+        if (data.exists && data.comment) {
+            // 既存のコメントがある場合
+            commentText.value = data.comment.comment_text;
+            commentButton.textContent = 'コメントを編集';
+            // 編集モードであることを示すフラグを設定
+            commentButton.dataset.mode = 'edit';
+            commentButton.dataset.commentId = data.comment.id;
+        } else {
+            // 新規コメントの場合
+            commentText.value = '';
+            commentButton.textContent = 'コメントを送信';
+            // 新規モードであることを示すフラグを設定
+            commentButton.dataset.mode = 'new';
+            delete commentButton.dataset.commentId;
+        }
+
+        // 日ボタンをアクティブに
+        document.querySelectorAll('.side_unit_button button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`.side_unit_${unit}`).classList.add('active');
+
+        // 日グラフを表示
+        createTimeChart('day');
+        createCategoryChart('day');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('コメントの取得中にエラーが発生しました');
+    });
+}
+
 // 期間移動ボタンのイベントハンドラーを修正
 document.querySelector('.span_select_left').addEventListener('click', () => {
     const unit = document.querySelector('.side_unit_day').classList.contains('active') ? 'day' :
@@ -165,19 +207,28 @@ document.querySelector('.span_select_left').addEventListener('click', () => {
     switch(unit) {
         case 'day':
             currentDate.setDate(currentDate.getDate() - 1);
+            document.querySelector('.gurdian_comment_text').value = '';
+            const formattedDate = formatDate(currentDate);
+
+            // コメントの存在チェックと取得
+            get_comment_data(formattedDate, 'day');
             break;
         case 'week':
             currentDate.setDate(currentDate.getDate() - 7);
+            createTimeChart('week');
+            createCategoryChart('week');
             break;
         case 'month':
             currentDate.setMonth(currentDate.getMonth() - 1);
+            createTimeChart('month');
+            createCategoryChart('month');
             break;
         case 'year':
             currentDate.setFullYear(currentDate.getFullYear() - 1);
+            createTimeChart('year');
+            createCategoryChart('year');
             break;
     }
-    createTimeChart(unit);
-    createCategoryChart(unit);
 });
 
 document.querySelector('.span_select_right').addEventListener('click', () => {
@@ -188,19 +239,28 @@ document.querySelector('.span_select_right').addEventListener('click', () => {
     switch(unit) {
         case 'day':
             currentDate.setDate(currentDate.getDate() + 1);
+            document.querySelector('.gurdian_comment_text').value = '';
+            const formattedDate = formatDate(currentDate);
+
+            // コメントの存在チェックと取得
+            get_comment_data(formattedDate, 'day');
             break;
         case 'week':
             currentDate.setDate(currentDate.getDate() + 7);
+            createTimeChart('week');
+            createCategoryChart('week');
             break;
         case 'month':
             currentDate.setMonth(currentDate.getMonth() + 1);
+            createTimeChart('month');
+            createCategoryChart('month');
             break;
         case 'year':
             currentDate.setFullYear(currentDate.getFullYear() + 1);
+            createTimeChart('year');
+            createCategoryChart('year');
             break;
     }
-    createTimeChart(unit);
-    createCategoryChart(unit);
 });
 
 function createTimeChart(labelUnit) {
@@ -667,47 +727,7 @@ function customizeCalendar() {
                         const formattedDate = formatDate(currentDate);
                         
                         // コメントの存在チェックと取得
-                        fetch(`./php/get_comment.php?date=${formattedDate}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.error) {
-                                alert(data.error);
-                                return;
-                            }
-                            
-                            const commentText = document.querySelector('.gurdian_comment_text');
-                            const commentButton = document.querySelector('.gurdian_comment_button');
-                            
-                            if (data.exists && data.comment) {
-                                // 既存のコメントがある場合
-                                commentText.value = data.comment.comment_text;
-                                commentButton.textContent = 'コメントを編集';
-                                // 編集モードであることを示すフラグを設定
-                                commentButton.dataset.mode = 'edit';
-                                commentButton.dataset.commentId = data.comment.id;
-                            } else {
-                                // 新規コメントの場合
-                                commentText.value = '';
-                                commentButton.textContent = 'コメントを送信';
-                                // 新規モードであることを示すフラグを設定
-                                commentButton.dataset.mode = 'new';
-                                delete commentButton.dataset.commentId;
-                            }
-                            
-                            // 日ボタンをアクティブに
-                            document.querySelectorAll('.side_unit_button button').forEach(btn => {
-                                btn.classList.remove('active');
-                            });
-                            document.querySelector('.side_unit_day').classList.add('active');
-                            
-                            // 日グラフを表示
-                            createTimeChart('day');
-                            createCategoryChart('day');
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('コメントの取得中にエラーが発生しました');
-                        });
+                        get_comment_data(formattedDate, 'day');
                     }
                 },
                 onMonthChange: function(selectedDates, dateStr, instance) {
