@@ -265,6 +265,42 @@ main {
     width: 100%;
     height: 100%;
     font-size: 3vw;
+    position: relative;
+}
+
+/* カレンダーの日付スタイルを追加 */
+.comment-date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    background: transparent;
+}
+
+/* 勉強記録がある日付のスタイル */
+.has-study-record {
+    background-color: #4870BD !important;
+    color: white !important;
+    border-radius: 50%;
+}
+
+input[type="date"] {
+    position: relative;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    color: transparent;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
 
 .gurdian_comment_button {

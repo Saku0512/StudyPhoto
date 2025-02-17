@@ -215,7 +215,10 @@ function createTimeChart(labelUnit) {
     if (labelUnit === 'day') {
         commentDateInput.value = formatDate(currentDate);
     } else {
-        commentDateInput.value = 'yyyy-mm-dd';
+        // デフォルト値を空にする
+        commentDateInput.value = '';
+        // プレースホルダーを設定
+        commentDateInput.placeholder = 'yyyy-MM-dd';
     }
     
     // 期間表示テキストを更新
@@ -312,7 +315,7 @@ function createTimeChart(labelUnit) {
         // データの設定
         if (data.values && Array.isArray(data.values)) {
             data.values.forEach(record => {
-                const index = record.index;
+                const index = record.time_index;
                 const hours = timeToHours(record.study_time);
                 chartData.datasets[0].data[index] = hours;
             });
@@ -551,15 +554,18 @@ document.addEventListener('DOMContentLoaded', () => {
         createTimeChart('day');
         createCategoryChart('day');
     });
-    if (weekButton) weekButton.addEventListener('click', () => {
+    
+    if (weekButton) weekButton.addEventListener('click', () => {       
         createTimeChart('week');
         createCategoryChart('week');
     });
+    
     if (monthButton) monthButton.addEventListener('click', () => {
         createTimeChart('month');
         createCategoryChart('month');
     });
-    if (yearButton) yearButton.addEventListener('click', () => {
+    
+    if (yearButton) yearButton.addEventListener('click', () => {        
         createTimeChart('year');
         createCategoryChart('year');
     });
@@ -573,7 +579,73 @@ document.addEventListener('DOMContentLoaded', () => {
         createCategoryChart('day');
     });
 
-    // 初期表示
+    // 初期表示時は週表示で開始
+    const initialDate = new Date();
+    initialDate.setDate(initialDate.getDate() - initialDate.getDay());
+    currentDate = new Date(initialDate);
     createTimeChart('week');
     createCategoryChart('week');
+
+    // カレンダーをカスタマイズ
+    customizeCalendar();
+    
+    // 月が変わった時にカレンダーを更新
+    commentDateInput.addEventListener('input', () => {
+        customizeCalendar();
+    });
 });
+
+// カレンダーの日付をカスタマイズする関数を追加
+function customizeCalendar() {
+    const commentDateInput = document.getElementById('commentDate');
+    
+    // 現在の年月を取得
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    
+    const apiUrl = `./php/get_study_dates.php?year=${currentYear}&month=${currentMonth}`;
+    
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error('Error from server:', data.error);
+                return;
+            }
+
+            // データが空の場合は早期リターン
+            if (!data.dates || data.dates.length === 0) {
+                console.log('No study dates found for this month');
+                return;
+            }
+
+            // 日付を持つ要素にクラスを追加
+            commentDateInput.addEventListener('click', () => {
+                // カレンダーが開かれたときの処理
+                setTimeout(() => {
+                    const calendar = document.querySelector('::-webkit-calendar-picker-indicator');
+                    if (calendar) {
+                        // 既存のクラスをリセット
+                        const existingMarked = document.querySelectorAll('.has-study-record');
+                        existingMarked.forEach(el => el.classList.remove('has-study-record'));
+
+                        // 勉強記録がある日付にクラスを追加
+                        data.dates.forEach(date => {
+                            const dateElement = document.querySelector(`[data-date="${date}"]`);
+                            if (dateElement) {
+                                dateElement.classList.add('has-study-record');
+                            }
+                        });
+                    }
+                }, 100); // カレンダーが表示されるまで少し待つ
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching study dates:', error);
+        });
+}

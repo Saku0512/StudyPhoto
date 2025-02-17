@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 header('Content-Type: application/json');
 
-require_once './db_connection.php';  // パスを修正
+require_once './db_connection.php';
 
 if (!isset($_SESSION['guardian_username'])) {
     echo json_encode(['error' => 'User not logged in']);
@@ -14,121 +14,90 @@ if (!isset($_SESSION['guardian_username'])) {
 }
 
 $userName = $_SESSION['guardian_username'];
-$unit = $_GET['unit'] ?? 'week';
-$date = new DateTime($_GET['date'] ?? 'now');
+$unit = isset($_GET['unit']) ? $_GET['unit'] : 'week';
+$date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
 
 try {
     $pdo = getDatabaseConnection();
     
-    // デバッグ用のログ追加
-    error_log("Category Chart - User: $userName, Unit: $unit, Date: " . $date->format('Y-m-d'));
-    
-    // 期間に応じてSQLクエリを変更
-    switch($unit) {
+    switch ($unit) {
         case 'day':
-            error_log("Category Chart - Day: " . $date->format('Y-m-d'));
-            
             $sql = "SELECT 
-                    c.category_name,
-                    COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(s.study_time))), '00:00:00') as total_time
-                   FROM categories c
-                   LEFT JOIN study_data s ON s.username = c.username 
-                   AND s.category = c.category_name 
-                   AND s.username = :username 
-                   AND DATE(s.created_at) = :date
-                   WHERE c.username = :username
-                   GROUP BY c.category_name
-                   HAVING TIME_TO_SEC(total_time) > 0
-                   ORDER BY total_time DESC";
-            
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':username', $userName, PDO::PARAM_STR);
-            $stmt->bindValue(':date', $date->format('Y-m-d'));
+                    category,
+                    SEC_TO_TIME(SUM(TIME_TO_SEC(study_time))) as total_time
+                FROM study_data 
+                WHERE username = :username 
+                AND DATE(created_at) = :date
+                GROUP BY category
+                ORDER BY total_time DESC";
             break;
-            
+
         case 'week':
-            $startDate = clone $date;
-            $startDate->modify('last sunday');
-            $endDate = clone $startDate;
-            $endDate->modify('+6 days');
-            
-            error_log("Category Chart - Week range: " . $startDate->format('Y-m-d') . " to " . $endDate->format('Y-m-d'));
-            
             $sql = "SELECT 
-                    c.category_name,
-                    COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(s.study_time))), '00:00:00') as total_time
-                   FROM categories c
-                   LEFT JOIN study_data s ON s.username = c.username 
-                   AND s.category = c.category_name 
-                   AND s.username = :username 
-                   AND DATE(s.created_at) BETWEEN :start_date AND :end_date
-                   WHERE c.username = :username
-                   GROUP BY c.category_name
-                   HAVING TIME_TO_SEC(total_time) > 0
-                   ORDER BY total_time DESC";
-            
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':username', $userName, PDO::PARAM_STR);
-            $stmt->bindValue(':start_date', $startDate->format('Y-m-d'));
-            $stmt->bindValue(':end_date', $endDate->format('Y-m-d'));
+                    category,
+                    SEC_TO_TIME(SUM(TIME_TO_SEC(study_time))) as total_time
+                FROM study_data 
+                WHERE username = :username 
+                AND DATE(created_at) >= DATE_SUB(:date, INTERVAL (DAYOFWEEK(:date) - 1) DAY)
+                AND DATE(created_at) < DATE_ADD(DATE_SUB(:date, INTERVAL (DAYOFWEEK(:date) - 1) DAY), INTERVAL 7 DAY)
+                GROUP BY category
+                ORDER BY total_time DESC";
             break;
-            
+
         case 'month':
-            error_log("Category Chart - Month: " . $date->format('Y-m'));
-            
             $sql = "SELECT 
-                    c.category_name,
-                    COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(s.study_time))), '00:00:00') as total_time
-                   FROM categories c
-                   LEFT JOIN study_data s ON s.username = c.username 
-                   AND s.category = c.category_name 
-                   AND s.username = :username 
-                   AND YEAR(s.created_at) = :year 
-                   AND MONTH(s.created_at) = :month
-                   WHERE c.username = :username
-                   GROUP BY c.category_name
-                   HAVING TIME_TO_SEC(total_time) > 0
-                   ORDER BY total_time DESC";
-            
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':username', $userName, PDO::PARAM_STR);
-            $stmt->bindValue(':year', $date->format('Y'));
-            $stmt->bindValue(':month', $date->format('m'));
+                    category,
+                    SEC_TO_TIME(SUM(TIME_TO_SEC(study_time))) as total_time
+                FROM study_data 
+                WHERE username = :username 
+                AND YEAR(created_at) = YEAR(:date)
+                AND MONTH(created_at) = MONTH(:date)
+                GROUP BY category
+                ORDER BY total_time DESC";
             break;
-            
+
         case 'year':
-            error_log("Category Chart - Year: " . $date->format('Y'));
-            
             $sql = "SELECT 
-                    c.category_name,
-                    COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(s.study_time))), '00:00:00') as total_time
-                   FROM categories c
-                   LEFT JOIN study_data s ON s.username = c.username 
-                   AND s.category = c.category_name 
-                   AND s.username = :username 
-                   AND YEAR(s.created_at) = :year
-                   WHERE c.username = :username
-                   GROUP BY c.category_name
-                   HAVING TIME_TO_SEC(total_time) > 0
-                   ORDER BY total_time DESC";
-            
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':username', $userName, PDO::PARAM_STR);
-            $stmt->bindValue(':year', $date->format('Y'));
+                    category,
+                    SEC_TO_TIME(SUM(TIME_TO_SEC(study_time))) as total_time
+                FROM study_data 
+                WHERE username = :username 
+                AND YEAR(created_at) = YEAR(:date)
+                GROUP BY category
+                ORDER BY total_time DESC";
             break;
+
+        default:
+            echo json_encode(['error' => '無効な期間単位です']);
+            exit;
     }
 
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':username', $userName, PDO::PARAM_STR);
+    $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+
+    // デバッグ用のログ
+    error_log("Category Query parameters - Username: $userName, Date: $date, Unit: $unit");
+    
     $stmt->execute();
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // デバッグ用のログ追加
-    error_log("Category Chart - Query results: " . print_r($results, true));
-
+    // 結果を加工して、category_nameとtotal_timeのキーを持つ配列に変換
+    $formattedCategories = array_map(function($row) {
+        return [
+            'category_name' => $row['category'],
+            'total_time' => $row['total_time']
+        ];
+    }, $categories);
+    
+    // デバッグ用のログ
+    error_log("Category Query results: " . print_r($formattedCategories, true));
+    
     echo json_encode([
-        'categories' => $results
+        'categories' => $formattedCategories
     ]);
 
 } catch (PDOException $e) {
-    error_log("Category Chart - Database error: " . $e->getMessage());
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    error_log("Database error in category query: " . $e->getMessage());
+    echo json_encode(['error' => 'データベースエラーが発生しました: ' . $e->getMessage()]);
 }

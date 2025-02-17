@@ -55,4 +55,4 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 
-.env
+memo.txt
