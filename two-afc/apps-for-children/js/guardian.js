@@ -433,16 +433,24 @@ function formatDate(date) {
 
 // HSLカラーを使用して動的に色を生成する関数
 function generateColors(categories) {
+    const usedColors = new Set(); // 使用済みの色を追跡するセット
+    const colors = []; // カテゴリーに対応する色の配列
+
     categories.forEach((category, index) => {
         if (!categoryColorMap[category]) {
             // 新しいカテゴリーの場合のみ色を生成
-            const hue = (index * (360 / categories.length)) % 360;
+            let hue;
+            do {
+                hue = (index * (360 / categories.length)) % 360; // 色相を計算
+            } while (usedColors.has(hue)); // 重複を避ける
+
             categoryColorMap[category] = `hsl(${hue}, 70%, 60%)`;
+            usedColors.add(hue); // 使用済みの色を追加
         }
+        colors.push(categoryColorMap[category]); // カテゴリーに対応する色を追加
     });
     
-    // カテゴリーに対応する色の配列を返す
-    return categories.map(category => categoryColorMap[category]);
+    return colors; // カテゴリーに対応する色の配列を返す
 }
 
 function createCategoryChart(unit = 'week') {
