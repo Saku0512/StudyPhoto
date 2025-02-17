@@ -32,7 +32,25 @@ if ($study_date === 'yyyy-MM-dd') {
 try {
     $pdo = getDatabaseConnection();
     
-    $sql = "INSERT INTO comment_data (username, comment_text, study_date) VALUES (:username, :comment_text, :study_date)";
+    // 同じ日付のコメントが既に存在するかチェック
+    $checkSql = "SELECT COUNT(*) FROM comment_data 
+                 WHERE username = :username 
+                 AND study_date = :study_date 
+                 AND is_deleted = FALSE";
+    
+    $checkStmt = $pdo->prepare($checkSql);
+    $checkStmt->bindParam(':username', $username, PDO::PARAM_STR);
+    $checkStmt->bindParam(':study_date', $study_date, PDO::PARAM_STR);
+    $checkStmt->execute();
+    
+    if ($checkStmt->fetchColumn() > 0) {
+        echo json_encode(['error' => 'この日付のコメントは既に登録されています']);
+        exit;
+    }
+    
+    // コメントを新規登録
+    $sql = "INSERT INTO comment_data (username, comment_text, study_date) 
+            VALUES (:username, :comment_text, :study_date)";
     $stmt = $pdo->prepare($sql);
     
     $stmt->bindParam(':username', $username, PDO::PARAM_STR);

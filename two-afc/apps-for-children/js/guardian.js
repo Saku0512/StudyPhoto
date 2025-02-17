@@ -643,18 +643,51 @@ function customizeCalendar() {
                 },
                 onChange: function(selectedDates) {
                     if (selectedDates.length > 0) {
-                        // 選択された日付を設定
                         currentDate = selectedDates[0];
+                        const formattedDate = formatDate(currentDate);
                         
-                        // 日ボタンをアクティブに
-                        document.querySelectorAll('.side_unit_button button').forEach(btn => {
-                            btn.classList.remove('active');
+                        // コメントの存在チェックと取得
+                        fetch(`./php/get_comment.php?date=${formattedDate}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                alert(data.error);
+                                return;
+                            }
+                            
+                            const commentText = document.querySelector('.gurdian_comment_text');
+                            const commentButton = document.querySelector('.gurdian_comment_button');
+                            
+                            if (data.exists && data.comment) {
+                                // 既存のコメントがある場合
+                                commentText.value = data.comment.comment_text;
+                                commentButton.textContent = 'コメントを編集';
+                                // 編集モードであることを示すフラグを設定
+                                commentButton.dataset.mode = 'edit';
+                                commentButton.dataset.commentId = data.comment.id;
+                            } else {
+                                // 新規コメントの場合
+                                commentText.value = '';
+                                commentButton.textContent = 'コメントを送信';
+                                // 新規モードであることを示すフラグを設定
+                                commentButton.dataset.mode = 'new';
+                                delete commentButton.dataset.commentId;
+                            }
+                            
+                            // 日ボタンをアクティブに
+                            document.querySelectorAll('.side_unit_button button').forEach(btn => {
+                                btn.classList.remove('active');
+                            });
+                            document.querySelector('.side_unit_day').classList.add('active');
+                            
+                            // 日グラフを表示
+                            createTimeChart('day');
+                            createCategoryChart('day');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('コメントの取得中にエラーが発生しました');
                         });
-                        document.querySelector('.side_unit_day').classList.add('active');
-                        
-                        // 日グラフを表示
-                        createTimeChart('day');
-                        createCategoryChart('day');
                     }
                 },
                 onMonthChange: function(selectedDates, dateStr, instance) {
@@ -705,12 +738,13 @@ function customizeCalendar() {
         });
 }
 
-// コメント送信処理を追加
+// コメントの保存/更新処理を修正
 document.querySelector('.gurdian_comment_button').addEventListener('click', function(e) {
     e.preventDefault();
     
     const commentText = document.querySelector('.gurdian_comment_text').value;
     const commentDate = document.querySelector('.comment-date-input').value;
+    const isEditMode = this.dataset.mode === 'edit';
     
     // 日付が選択されていない場合
     if (commentDate === 'yyyy-MM-dd' || !commentDate) {
@@ -724,16 +758,25 @@ document.querySelector('.gurdian_comment_button').addEventListener('click', func
         return;
     }
     
-    // コメントデータを送信
-    fetch('./php/save_comment.php', {
+    // APIのエンドポイントを決定
+    const endpoint = isEditMode ? './php/update_comment.php' : './php/save_comment.php';
+    const requestData = {
+        comment_text: commentText,
+        study_date: commentDate
+    };
+    
+    // 編集モードの場合はコメントIDを追加
+    if (isEditMode) {
+        requestData.comment_id = this.dataset.commentId;
+    }
+    
+    // コメントの保存/更新を実行
+    fetch(endpoint, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            comment_text: commentText,
-            study_date: commentDate
-        })
+        body: JSON.stringify(requestData)
     })
     .then(response => response.json())
     .then(data => {
@@ -743,10 +786,17 @@ document.querySelector('.gurdian_comment_button').addEventListener('click', func
         }
         
         // 成功時の処理
-        alert('コメントが保存されました');
-        document.querySelector('.gurdian_comment_text').value = ''; // フォームをクリア
-        
-        // 必要に応じてコメント一覧を更新する処理をここに追加
+        alert(isEditMode ? 'コメントが更新されました' : 'コメントが保存されました');
+
+        // コメントテキストをクリア
+        document.querySelector('.gurdian_comment_text').value = '';
+        // 日付をクリア
+        document.querySelector('.comment-date-input').value = 'yyyy-MM-dd';
+        // 週のグラフを表示
+        createTimeChart('week');
+        createCategoryChart('week');
+        // ボタンの状態を更新
+        this.textContent = 'コメントを送信';
     })
     .catch(error => {
         console.error('Error:', error);
