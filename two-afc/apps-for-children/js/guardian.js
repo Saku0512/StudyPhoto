@@ -155,7 +155,7 @@ function updateSpanSelectText(unit) {
 }
 
 function get_comment_data(formattedDate, unit){
-    fetch(`./php/get_comment.php?date=${formattedDate}`)
+    fetch(`./php/guardian/guardian_get_comment.php?date=${formattedDate}`)
     .then(response => response.json())
     .then(data => {
         if (data.error) {
@@ -311,7 +311,7 @@ function createTimeChart(labelUnit) {
     }
 
     const weekRange = getWeekRange(currentDate);
-    const apiUrl = `../../php/guardian_time.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
+    const apiUrl = `../../php/guardian/guardian_time.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
 
     fetch(apiUrl, {
         method: 'GET',
@@ -526,7 +526,7 @@ function generateColors(categories) {
 }
 
 function createCategoryChart(unit = 'week') {
-    const apiUrl = `../../php/guardian_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
+    const apiUrl = `../../php/guardian/guardian_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
 
     const spanText = document.querySelector('.span_select_text').textContent;
     const chartFooter = document.querySelector('.chart-footer');
@@ -683,7 +683,7 @@ function customizeCalendar() {
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
     
-    fetch(`./php/guardian_calender.php?year=${currentYear}&month=${currentMonth}`)
+    fetch(`./php/guardian/guardian_calender.php?year=${currentYear}&month=${currentMonth}`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
@@ -734,7 +734,7 @@ function customizeCalendar() {
                     const newYear = instance.currentYear;
                     const newMonth = instance.currentMonth + 1;
                     
-                    fetch(`./php/guardian_calender.php?year=${newYear}&month=${newMonth}`)
+                    fetch(`./php/guardian/guardian_calender.php?year=${newYear}&month=${newMonth}`)
                         .then(response => response.json())
                         .then(newData => {
                             if (newData.error) {
@@ -817,7 +817,7 @@ document.querySelector('.gurdian_comment_button').addEventListener('click', func
     }
     
     // APIのエンドポイントを決定
-    const endpoint = isEditMode ? './php/update_comment.php' : './php/save_comment.php';
+    const endpoint = isEditMode ? './php/guardian/update_comment.php' : './php/guardian/save_comment.php';
     const requestData = {
         comment_text: commentText,
         study_date: commentDate
