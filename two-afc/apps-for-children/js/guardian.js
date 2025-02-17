@@ -704,3 +704,52 @@ function customizeCalendar() {
             console.error('Error fetching study dates:', error);
         });
 }
+
+// コメント送信処理を追加
+document.querySelector('.gurdian_comment_button').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const commentText = document.querySelector('.gurdian_comment_text').value;
+    const commentDate = document.querySelector('.comment-date-input').value;
+    
+    // 日付が選択されていない場合
+    if (commentDate === 'yyyy-MM-dd' || !commentDate) {
+        alert('日付を選択してください');
+        return;
+    }
+    
+    // コメントが空の場合
+    if (!commentText.trim()) {
+        alert('コメントを入力してください');
+        return;
+    }
+    
+    // コメントデータを送信
+    fetch('./php/save_comment.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            comment_text: commentText,
+            study_date: commentDate
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        
+        // 成功時の処理
+        alert('コメントが保存されました');
+        document.querySelector('.gurdian_comment_text').value = ''; // フォームをクリア
+        
+        // 必要に応じてコメント一覧を更新する処理をここに追加
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('コメントの保存中にエラーが発生しました');
+    });
+});
