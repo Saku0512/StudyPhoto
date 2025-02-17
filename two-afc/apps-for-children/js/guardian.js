@@ -278,6 +278,10 @@ function createTimeChart(labelUnit) {
                 labels = Array.from({length: 24}, (_, i) => `${i}時`);
                 break;
             case 'week':
+                // コメント内容をクリア
+                document.querySelector('.gurdian_comment_text').value = '';
+                // ボタンの文字をデフォルトに変更
+                document.querySelector('.gurdian_comment_button').textContent = 'コメントを送信';
                 // 週表示の場合は曜日
                 labels = ['日', '月', '火', '水', '木', '金', '土'].map((day, i) => {
                     const date = new Date(weekRange.start);
@@ -286,6 +290,10 @@ function createTimeChart(labelUnit) {
                 });
                 break;
             case 'month':
+                // コメント内容をクリア
+                document.querySelector('.gurdian_comment_text').value = '';
+                // ボタンの文字をデフォルトに変更
+                document.querySelector('.gurdian_comment_button').textContent = 'コメントを送信';
                 // 月表示の場合はその月の日数分の日付
                 const daysInMonth = new Date(
                     currentDate.getFullYear(),
@@ -295,6 +303,10 @@ function createTimeChart(labelUnit) {
                 labels = Array.from({length: daysInMonth}, (_, i) => `${i + 1}日`);
                 break;
             case 'year':
+                // コメント内容をクリア
+                document.querySelector('.gurdian_comment_text').value = '';
+                // ボタンの文字をデフォルトに変更
+                document.querySelector('.gurdian_comment_button').textContent = 'コメントを送信';
                 // 年表示の場合は月
                 labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
                 break;
@@ -433,16 +445,24 @@ function formatDate(date) {
 
 // HSLカラーを使用して動的に色を生成する関数
 function generateColors(categories) {
+    const usedColors = new Set(); // 使用済みの色を追跡するセット
+    const colors = []; // カテゴリーに対応する色の配列
+
     categories.forEach((category, index) => {
         if (!categoryColorMap[category]) {
             // 新しいカテゴリーの場合のみ色を生成
-            const hue = (index * (360 / categories.length)) % 360;
+            let hue;
+            do {
+                hue = (index * (360 / categories.length)) % 360; // 色相を計算
+            } while (usedColors.has(hue)); // 重複を避ける
+
             categoryColorMap[category] = `hsl(${hue}, 70%, 60%)`;
+            usedColors.add(hue); // 使用済みの色を追加
         }
+        colors.push(categoryColorMap[category]); // カテゴリーに対応する色を追加
     });
     
-    // カテゴリーに対応する色の配列を返す
-    return categories.map(category => categoryColorMap[category]);
+    return colors; // カテゴリーに対応する色の配列を返す
 }
 
 function createCategoryChart(unit = 'week') {
@@ -643,18 +663,51 @@ function customizeCalendar() {
                 },
                 onChange: function(selectedDates) {
                     if (selectedDates.length > 0) {
-                        // 選択された日付を設定
                         currentDate = selectedDates[0];
+                        const formattedDate = formatDate(currentDate);
                         
-                        // 日ボタンをアクティブに
-                        document.querySelectorAll('.side_unit_button button').forEach(btn => {
-                            btn.classList.remove('active');
+                        // コメントの存在チェックと取得
+                        fetch(`./php/get_comment.php?date=${formattedDate}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                alert(data.error);
+                                return;
+                            }
+                            
+                            const commentText = document.querySelector('.gurdian_comment_text');
+                            const commentButton = document.querySelector('.gurdian_comment_button');
+                            
+                            if (data.exists && data.comment) {
+                                // 既存のコメントがある場合
+                                commentText.value = data.comment.comment_text;
+                                commentButton.textContent = 'コメントを編集';
+                                // 編集モードであることを示すフラグを設定
+                                commentButton.dataset.mode = 'edit';
+                                commentButton.dataset.commentId = data.comment.id;
+                            } else {
+                                // 新規コメントの場合
+                                commentText.value = '';
+                                commentButton.textContent = 'コメントを送信';
+                                // 新規モードであることを示すフラグを設定
+                                commentButton.dataset.mode = 'new';
+                                delete commentButton.dataset.commentId;
+                            }
+                            
+                            // 日ボタンをアクティブに
+                            document.querySelectorAll('.side_unit_button button').forEach(btn => {
+                                btn.classList.remove('active');
+                            });
+                            document.querySelector('.side_unit_day').classList.add('active');
+                            
+                            // 日グラフを表示
+                            createTimeChart('day');
+                            createCategoryChart('day');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('コメントの取得中にエラーが発生しました');
                         });
-                        document.querySelector('.side_unit_day').classList.add('active');
-                        
-                        // 日グラフを表示
-                        createTimeChart('day');
-                        createCategoryChart('day');
                     }
                 },
                 onMonthChange: function(selectedDates, dateStr, instance) {
@@ -704,3 +757,87 @@ function customizeCalendar() {
             console.error('Error fetching study dates:', error);
         });
 }
+
+// コメントの保存/更新処理を修正
+document.querySelector('.gurdian_comment_button').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const commentText = document.querySelector('.gurdian_comment_text').value;
+    const commentDate = document.querySelector('.comment-date-input').value;
+    const isEditMode = this.dataset.mode === 'edit';
+    
+    // 日付が選択されていない場合
+    if (commentDate === 'yyyy-MM-dd' || !commentDate) {
+        alert('日付を選択してください');
+        return;
+    }
+    
+    // コメントが空の場合
+    if (!commentText.trim()) {
+        alert('コメントを入力してください');
+        return;
+    }
+
+    // コメント内容の確認
+    if (commentText.includes('<') || commentText.includes('>')) {
+        alert('コメントに不正な文字が含まれています');
+        return;
+    }else if (commentText.length > 1000) {
+        alert('コメントは1000字以内で入力してください');
+        return;
+    }else if (commentText.includes('ばか') || commentText.includes('馬鹿') || commentText.includes('アホ') || commentText.includes('あほ') || commentText.includes('バカ')) {
+        alert('コメントに不適切な言葉が含まれています');
+        return;
+    } else if (commentText.includes('勉強してください') || commentText.includes('勉強しろ') || commentText.includes('勉強しましょう') || commentText.includes('勉強しなさい') || commentText.includes('勉強しないと')) {
+        alert('コメントに不適切な言葉が含まれています');
+        return;
+    } else if (commentText.includes('死ね') || commentText.includes('しね') || commentText.includes('死ぬな') || commentText.includes('しぬな') || commentText.includes('殺す') || commentText.includes('ころす')) {
+        alert('コメントに不適切な言葉が含まれています');
+        return;
+    }
+    
+    // APIのエンドポイントを決定
+    const endpoint = isEditMode ? './php/update_comment.php' : './php/save_comment.php';
+    const requestData = {
+        comment_text: commentText,
+        study_date: commentDate
+    };
+    
+    // 編集モードの場合はコメントIDを追加
+    if (isEditMode) {
+        requestData.comment_id = this.dataset.commentId;
+    }
+    
+    // コメントの保存/更新を実行
+    fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        
+        // 成功時の処理
+        alert(isEditMode ? 'コメントが更新されました' : 'コメントが保存されました');
+
+        // コメントテキストをクリア
+        document.querySelector('.gurdian_comment_text').value = '';
+        // 日付をクリア
+        document.querySelector('.comment-date-input').value = 'yyyy-MM-dd';
+        // 週のグラフを表示
+        createTimeChart('week');
+        createCategoryChart('week');
+        // ボタンの状態を更新
+        this.textContent = 'コメントを送信';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('コメントの保存中にエラーが発生しました');
+    });
+});
