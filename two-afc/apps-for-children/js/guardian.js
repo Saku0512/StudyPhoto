@@ -765,6 +765,24 @@ document.querySelector('.gurdian_comment_button').addEventListener('click', func
         alert('コメントを入力してください');
         return;
     }
+
+    // コメント内容の確認
+    if (commentText.includes('<') || commentText.includes('>')) {
+        alert('コメントに不正な文字が含まれています');
+        return;
+    }else if (commentText.length > 1000) {
+        alert('コメントは1000字以内で入力してください');
+        return;
+    }else if (commentText.includes('ばか') || commentText.includes('馬鹿') || commentText.includes('アホ') || commentText.includes('あほ') || commentText.includes('バカ')) {
+        alert('コメントに不適切な言葉が含まれています');
+        return;
+    } else if (commentText.includes('勉強してください') || commentText.includes('勉強しろ') || commentText.includes('勉強しましょう') || commentText.includes('勉強しなさい') || commentText.includes('勉強しないと')) {
+        alert('コメントに不適切な言葉が含まれています');
+        return;
+    } else if (commentText.includes('死ね') || commentText.includes('しね') || commentText.includes('死ぬな') || commentText.includes('しぬな') || commentText.includes('殺す') || commentText.includes('ころす')) {
+        alert('コメントに不適切な言葉が含まれています');
+        return;
+    }
     
     // APIのエンドポイントを決定
     const endpoint = isEditMode ? './php/update_comment.php' : './php/save_comment.php';
