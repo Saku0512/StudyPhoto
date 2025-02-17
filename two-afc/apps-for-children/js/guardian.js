@@ -155,7 +155,7 @@ function updateSpanSelectText(unit) {
 }
 
 function get_comment_data(formattedDate, unit){
-    fetch(`./php/get_comment.php?date=${formattedDate}`)
+    fetch(`./php/guardian/guardian_get_comment.php?date=${formattedDate}`)
     .then(response => response.json())
     .then(data => {
         if (data.error) {
@@ -163,8 +163,8 @@ function get_comment_data(formattedDate, unit){
             return;
         }
         
-        const commentText = document.querySelector('.gurdian_comment_text');
-        const commentButton = document.querySelector('.gurdian_comment_button');
+        const commentText = document.querySelector('.guardian_comment_text');
+        const commentButton = document.querySelector('.guardian_comment_button');
         
         if (data.exists && data.comment) {
             // 既存のコメントがある場合
@@ -207,7 +207,7 @@ document.querySelector('.span_select_left').addEventListener('click', () => {
     switch(unit) {
         case 'day':
             currentDate.setDate(currentDate.getDate() - 1);
-            document.querySelector('.gurdian_comment_text').value = '';
+            document.querySelector('.guardian_comment_text').value = '';
             const formattedDate = formatDate(currentDate);
 
             // コメントの存在チェックと取得
@@ -239,7 +239,7 @@ document.querySelector('.span_select_right').addEventListener('click', () => {
     switch(unit) {
         case 'day':
             currentDate.setDate(currentDate.getDate() + 1);
-            document.querySelector('.gurdian_comment_text').value = '';
+            document.querySelector('.guardian_comment_text').value = '';
             const formattedDate = formatDate(currentDate);
 
             // コメントの存在チェックと取得
@@ -311,7 +311,7 @@ function createTimeChart(labelUnit) {
     }
 
     const weekRange = getWeekRange(currentDate);
-    const apiUrl = `../../php/guardian_time.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
+    const apiUrl = `../../php/guardian/guardian_time.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
 
     fetch(apiUrl, {
         method: 'GET',
@@ -339,9 +339,9 @@ function createTimeChart(labelUnit) {
                 break;
             case 'week':
                 // コメント内容をクリア
-                document.querySelector('.gurdian_comment_text').value = '';
+                document.querySelector('.guardian_comment_text').value = '';
                 // ボタンの文字をデフォルトに変更
-                document.querySelector('.gurdian_comment_button').textContent = 'コメントを送信';
+                document.querySelector('.guardian_comment_button').textContent = 'コメントを送信';
                 // 週表示の場合は曜日
                 labels = ['日', '月', '火', '水', '木', '金', '土'].map((day, i) => {
                     const date = new Date(weekRange.start);
@@ -351,9 +351,9 @@ function createTimeChart(labelUnit) {
                 break;
             case 'month':
                 // コメント内容をクリア
-                document.querySelector('.gurdian_comment_text').value = '';
+                document.querySelector('.guardian_comment_text').value = '';
                 // ボタンの文字をデフォルトに変更
-                document.querySelector('.gurdian_comment_button').textContent = 'コメントを送信';
+                document.querySelector('.guardian_comment_button').textContent = 'コメントを送信';
                 // 月表示の場合はその月の日数分の日付
                 const daysInMonth = new Date(
                     currentDate.getFullYear(),
@@ -364,9 +364,9 @@ function createTimeChart(labelUnit) {
                 break;
             case 'year':
                 // コメント内容をクリア
-                document.querySelector('.gurdian_comment_text').value = '';
+                document.querySelector('.guardian_comment_text').value = '';
                 // ボタンの文字をデフォルトに変更
-                document.querySelector('.gurdian_comment_button').textContent = 'コメントを送信';
+                document.querySelector('.guardian_comment_button').textContent = 'コメントを送信';
                 // 年表示の場合は月
                 labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
                 break;
@@ -526,7 +526,7 @@ function generateColors(categories) {
 }
 
 function createCategoryChart(unit = 'week') {
-    const apiUrl = `../../php/guardian_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
+    const apiUrl = `../../php/guardian/guardian_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
 
     const spanText = document.querySelector('.span_select_text').textContent;
     const chartFooter = document.querySelector('.chart-footer');
@@ -683,7 +683,7 @@ function customizeCalendar() {
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
     
-    fetch(`./php/guardian_calender.php?year=${currentYear}&month=${currentMonth}`)
+    fetch(`./php/guardian/guardian_calender.php?year=${currentYear}&month=${currentMonth}`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
@@ -734,7 +734,7 @@ function customizeCalendar() {
                     const newYear = instance.currentYear;
                     const newMonth = instance.currentMonth + 1;
                     
-                    fetch(`./php/guardian_calender.php?year=${newYear}&month=${newMonth}`)
+                    fetch(`./php/guardian/guardian_calender.php?year=${newYear}&month=${newMonth}`)
                         .then(response => response.json())
                         .then(newData => {
                             if (newData.error) {
@@ -779,10 +779,10 @@ function customizeCalendar() {
 }
 
 // コメントの保存/更新処理を修正
-document.querySelector('.gurdian_comment_button').addEventListener('click', function(e) {
+document.querySelector('.guardian_comment_button').addEventListener('click', function(e) {
     e.preventDefault();
     
-    const commentText = document.querySelector('.gurdian_comment_text').value;
+    const commentText = document.querySelector('.guardian_comment_text').value;
     const commentDate = document.querySelector('.comment-date-input').value;
     const isEditMode = this.dataset.mode === 'edit';
     
@@ -817,7 +817,7 @@ document.querySelector('.gurdian_comment_button').addEventListener('click', func
     }
     
     // APIのエンドポイントを決定
-    const endpoint = isEditMode ? './php/update_comment.php' : './php/save_comment.php';
+    const endpoint = isEditMode ? './php/guardian/update_comment.php' : './php/guardian/save_comment.php';
     const requestData = {
         comment_text: commentText,
         study_date: commentDate
@@ -847,7 +847,7 @@ document.querySelector('.gurdian_comment_button').addEventListener('click', func
         alert(isEditMode ? 'コメントが更新されました' : 'コメントが保存されました');
 
         // コメントテキストをクリア
-        document.querySelector('.gurdian_comment_text').value = '';
+        document.querySelector('.guardian_comment_text').value = '';
         // 日付をクリア
         document.querySelector('.comment-date-input').value = 'yyyy-MM-dd';
         // 週のグラフを表示

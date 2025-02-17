@@ -2,7 +2,7 @@
 session_start();
 header('Content-Type: application/json');
 
-require_once './db_connection.php';
+require_once '../db_connection.php';
 
 if (!isset($_SESSION['guardian_username'])) {
     echo json_encode(['error' => 'ユーザーがログインしていません']);

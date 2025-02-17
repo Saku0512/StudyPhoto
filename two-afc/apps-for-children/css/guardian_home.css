@@ -233,21 +233,29 @@ main {
     position: relative;
 }
 
-.gurdian_comment {
+.guardian_comment {
     width: calc((100vw - 5vw) / 3);
     height: 30vh;
     margin-left: 2vw;
 }
-.gurdian_comment_text {
+.guardian_comment_container {
     width: 100%;
-    height: 40%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.guardian_comment_text {
+    width: 100%;
+    height: 70%;
     padding: 1vw;
     font-size: 2.5vw;
     resize: none;
     border: 2px solid #4870BD;
     border-radius: 10px;
 }
-.gurdian_comment_title {
+.guardian_comment_title {
     font-size: 2.5vw;
     margin-bottom: 1vh;
 }
@@ -303,7 +311,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
 }
 
-.gurdian_comment_button {
+.guardian_comment_button {
     width: 100%;
     height: 20%;
     margin-top: 1vh;
@@ -316,21 +324,40 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transition: background-color 0.3s ease;
 }
 
-.gurdian_comment_button:hover {
+.guardian_comment_button:hover {
     background-color: #3860A0;
 }
 
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
     .chart-footer {
+        display: block !important;
         flex-direction: column;
-        align-items: center;
-        gap: 3vh;
+        margin-top: 0;
+        gap: 0;
+        height: 40%;
     }
-
     .category-chart-container {
-        width: 95vw;
-        height: 40vh;
+        width: 96vw;
+        height: 60%;
+    }
+    .guardian_comment {
+        display: flex;
+        width: 90vw;
+        height: 40%;
+        gap: 5vw;
+    }
+    #categoryChart {
+        height: 80% !important;
+        width: 100% !important;
+    }
+    .footer {
+        margin-top: 1vh;
+    }
+    .guardian_comment_button {
+        align-self: center;
+        width: 40%;
+        margin-left: auto;
     }
 }
 
