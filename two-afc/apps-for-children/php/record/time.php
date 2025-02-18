@@ -13,66 +13,113 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
-$username = $_SESSION['username'];
-$unit = $_GET['unit'] ?? 'week'; // デフォルトは 'week'
+$userName = $_SESSION['username'];
+$unit = isset($_GET['unit']) ? $_GET['unit'] : 'week';
+$date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
 
+// jsから受け取るキーをuserNameにする
 try {
     $pdo = getDatabaseConnection();
-
-    // ログを記録
-    error_log("Fetching study data for user: $username, unit: $unit");
-
-    $sql = "SELECT study_time, created_at
-            FROM study_data
-            WHERE username = :username
-            ORDER BY created_at DESC";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-    $stmt->execute();
-
-    $datas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if (empty($datas)) {
-        echo json_encode(['message' => 'データを取得できませんでした']);
-        exit;
-    }
-
-    // 日時と学習時間の配列を準備
-    $labels = [];
     $values = [];
 
-    foreach ($datas as $row) {
-        $createdAt = new DateTime($row['created_at']);
-        $studyTime = floatval($row['study_time']); // 学習時間を数値に変換
+    switch ($unit) {
+        case 'day':
+            $sql = "SELECT 
+                    hour_group as time_index,
+                    SEC_TO_TIME(SUM(TIME_TO_SEC(study_time))) as study_time
+                FROM (
+                    SELECT 
+                        HOUR(created_at) as hour_group,
+                        study_time
+                    FROM study_data 
+                    WHERE username = :username 
+                    AND DATE(created_at) = :date
+                ) as subquery
+                GROUP BY hour_group
+                ORDER BY hour_group";
+            break;
 
-        $labels[] = $createdAt->format('Y-m-d H:i:s'); // 日時をフォーマット
-        $values[] = $studyTime;
+        case 'week':
+            $sql = "SELECT 
+                    day_index as time_index,
+                    SEC_TO_TIME(SUM(TIME_TO_SEC(study_time))) as study_time
+                FROM (
+                    SELECT 
+                        CASE 
+                            WHEN DAYOFWEEK(created_at) = 1 THEN 0  # 日曜日
+                            WHEN DAYOFWEEK(created_at) = 2 THEN 1  # 月曜日
+                            WHEN DAYOFWEEK(created_at) = 3 THEN 2  # 火曜日
+                            WHEN DAYOFWEEK(created_at) = 4 THEN 3  # 水曜日
+                            WHEN DAYOFWEEK(created_at) = 5 THEN 4  # 木曜日
+                            WHEN DAYOFWEEK(created_at) = 6 THEN 5  # 金曜日
+                            WHEN DAYOFWEEK(created_at) = 7 THEN 6  # 土曜日
+                        END as day_index,
+                        study_time
+                    FROM study_data 
+                    WHERE username = :username 
+                    AND DATE(created_at) >= DATE_SUB(:date, INTERVAL (DAYOFWEEK(:date) - 1) DAY)
+                    AND DATE(created_at) < DATE_ADD(DATE_SUB(:date, INTERVAL (DAYOFWEEK(:date) - 1) DAY), INTERVAL 7 DAY)
+                ) as subquery
+                GROUP BY day_index
+                ORDER BY day_index";
+            break;
+
+        case 'month':
+            $sql = "SELECT 
+                    day_group - 1 as time_index,
+                    SEC_TO_TIME(SUM(TIME_TO_SEC(study_time))) as study_time
+                FROM (
+                    SELECT 
+                        DAY(created_at) as day_group,
+                        study_time
+                    FROM study_data 
+                    WHERE username = :username 
+                    AND YEAR(created_at) = YEAR(:date)
+                    AND MONTH(created_at) = MONTH(:date)
+                ) as subquery
+                GROUP BY day_group
+                ORDER BY day_group";
+            break;
+
+        case 'year':
+            $sql = "SELECT 
+                    month_group - 1 as time_index,
+                    SEC_TO_TIME(SUM(TIME_TO_SEC(study_time))) as study_time
+                FROM (
+                    SELECT 
+                        MONTH(created_at) as month_group,
+                        study_time
+                    FROM study_data 
+                    WHERE username = :username 
+                    AND YEAR(created_at) = YEAR(:date)
+                ) as subquery
+                GROUP BY month_group
+                ORDER BY month_group";
+            break;
+
+        default:
+            echo json_encode(['error' => '無効な期間単位です']);
+            exit;
     }
 
-    // ラベルと値を期間に基づいて制限
-    $limit = match ($unit) {
-        'week' => 7,
-        'month' => 30,
-        'year' => 12,
-        default => null
-    };
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':username', $userName, PDO::PARAM_STR);
+    $stmt->bindParam(':date', $date, PDO::PARAM_STR);
 
-    if ($limit !== null) {
-        $labels = array_slice($labels, 0, $limit);
-        $values = array_slice($values, 0, $limit);
-    }
-
-
-
-    // JSONとして返す
+    // デバッグ用のログ
+    error_log("Query parameters - Username: $userName, Date: $date, Unit: $unit");
+    
+    $stmt->execute();
+    $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // デバッグ用のログ
+    error_log("Query results: " . print_r($values, true));
+    
     echo json_encode([
-        'labels' => $labels,
         'values' => $values
     ]);
 
 } catch (PDOException $e) {
-    // 接続失敗時のエラーハンドリング
-    error_log('Database error: ' . $e->getMessage());
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
-    exit;
+    error_log("Database error: " . $e->getMessage());
+    echo json_encode(['error' => 'データベースエラーが発生しました: ' . $e->getMessage()]);
 }
