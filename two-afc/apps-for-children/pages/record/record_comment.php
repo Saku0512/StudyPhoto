@@ -28,7 +28,16 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
         </div>
         <!-- Comment Section -->
         <div id="commentSection" class="section">
-            <p>Comment Section</p>
+            <div class="comment-header">
+                <div class="comment-date-input-container">
+                    <p>日付で検索</p>
+                    <input type="date" id="commentDate" class="comment-date-input">
+                </div>
+                <div class="comment-textSearch-input-container">
+                    <p>キーワードで検索</p>
+                    <input type="text" id="commentText" class="comment-textSearch-input">
+                </div>
+            </div>
         </div>
     </main>
 </body>

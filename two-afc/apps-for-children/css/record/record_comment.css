@@ -67,10 +67,43 @@ main {
 }
 .section {
     width: 100%;
-    margin-top: 10vh;
+    margin-top: 12vh;
 }
 @media (max-width: 600px) {
     .tab {
         align-items: center;
     }
+}
+.comment-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin: auto;
+    width: 80vw;
+    gap: 10vw;
+}
+.comment-date-input-container {
+    width: 45%;
+    font-size: 3vw;
+}
+.comment-textSearch-input-container {
+    width: 45%;
+    font-size: 3vw;
+}
+.comment-date-input {
+    width: 100%;
+    height: 5vh;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 3vw;
+}
+.comment-textSearch-input {
+    width: 100%;
+    height: 5vh;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 3vw;
 }
