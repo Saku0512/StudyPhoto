@@ -12,6 +12,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <link rel="stylesheet" href="../../css/record/record_comment.css" />
     <script src="../../js/load.js" defer></script>
     <script nonce="<?= htmlspecialchars($CommentNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_tab.js" defer></script>
+    <script nonce="<?= htmlspecialchars($CommentNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_comment.js" defer></script>
     <title>記録を振り返る</title>
 </head>
 <body>
@@ -40,6 +41,9 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
                         <img src="../../ui_image/search.png" alt="Search Icon" class="search-icon">
                     </div>
                 </div>
+            </div>
+            <div class="comment-list">
+                <!-- 動的にコメントを表示 -->
             </div>
         </div>
     </main>
