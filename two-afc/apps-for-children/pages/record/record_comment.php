@@ -35,7 +35,10 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
                 </div>
                 <div class="comment-textSearch-input-container">
                     <p>キーワードで検索</p>
-                    <input type="text" id="commentText" class="comment-textSearch-input">
+                    <div class="input-with-icon">
+                        <input type="text" id="commentText" class="comment-textSearch-input">
+                        <img src="../../ui_image/search.png" alt="Search Icon" class="search-icon">
+                    </div>
                 </div>
             </div>
         </div>

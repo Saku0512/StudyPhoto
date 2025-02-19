@@ -105,5 +105,21 @@ main {
     border-radius: 5px;
     border: 1px solid #ccc;
     padding: 10px;
+    padding-right: 60px; /* アイコンのスペースを確保 */
     font-size: 3vw;
+}
+
+.input-with-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px; /* アイコンの位置を調整 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px; /* アイコンのサイズを調整 */
+    height: 40px;
+    cursor: pointer;
 }
