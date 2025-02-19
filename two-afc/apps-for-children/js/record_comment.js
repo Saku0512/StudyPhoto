@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         .catch(error => console.error('Error fetching comments:', error));
                 },
                 onDayCreate: function(dObj, dStr, fp, dayElem) {
-                    const dateString = dayElem.dateObj.toISOString().split('T')[0];
+                    const dateString = new Date(dayElem.dateObj.getTime() - dayElem.dateObj.getTimezoneOffset() * 60000).toISOString().split('T')[0];
                     if (availableDates.has(dateString)) {
                         dayElem.classList.add('has-study-record');
                     } else {
