@@ -132,11 +132,13 @@ main {
     border: 2px solid #4870BD; /* テーブルの外枠に青色を設定 */
     max-height: 60vh; /* 最大高さを設定してスクロールを有効にする */
     overflow-y: auto; /* 縦スクロールを許可 */
+    overflow-x: hidden; /* 横スクロールを無効にする */
 }
 
 .comment-list table {
     width: 100%; /* テーブルを親要素の幅に合わせる */
     border-collapse: collapse; /* ボーダーを重ねて表示 */
+    table-layout: fixed; /* テーブルのレイアウトを固定 */
 }
 
 .comment-list th {
@@ -149,6 +151,8 @@ main {
     text-align: left; /* テキストを左揃え */
     font-size: 3vw; /* フォントサイズを調整 */
     color: black; /* テキストの色を黒に設定 */
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .comment-list td {
@@ -157,4 +161,6 @@ main {
     text-align: left; /* テキストを左揃え */
     font-size: 3vw; /* フォントサイズを調整 */
     color: black; /* テキストの色を黒に設定 */
+    word-wrap: break-word;
+    white-space: normal;
 }
