@@ -43,9 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_ENV['DB_USERPASSWORD'] ?? $_SERVER['DB_USERPASSWORD'] ?? null;
     $db_name = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? null;
 
-
-    var_dump($servername, $username, $password, $db_name);
-
     $dbUsername = $_POST['username'] ?? null;
     $dbEmail = $_POST['email'] ?? null;
     $dbPassword = $_POST['password'] ?? null;
