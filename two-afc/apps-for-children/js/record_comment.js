@@ -33,7 +33,36 @@ document.addEventListener('DOMContentLoaded', function() {
             // カレンダーの設定
             flatpickr("#commentDate", {
                 enable: Array.from(availableDates), // 有効な日付を設定
-                dateFormat: "Y-m-d"
+                dateFormat: "Y-m-d",
+                onChange: function(selectedDates, dateStr, instance) {
+                    fetch(`../../php/record/fetch_date_comment.php?date=${dateStr}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!Array.isArray(data)) {
+                                console.error('Error fetching comments:', data.error || 'Unexpected response format');
+                                return;
+                            }
+                            let filteredTableHTML = `
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>日付</th>
+                                            <th>コメント</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                            `;
+                            data.forEach(comment => {
+                                filteredTableHTML += `<tr><td>${comment.study_date}</td><td>${comment.comment_text}</td></tr>`;
+                            });
+                            filteredTableHTML += `
+                                    </tbody>
+                                </table>
+                            `;
+                            commentList.innerHTML = filteredTableHTML;
+                        })
+                        .catch(error => console.error('Error fetching comments:', error));
+                }
             });
         })
         .catch(error => console.error('Error fetching comments:', error));
