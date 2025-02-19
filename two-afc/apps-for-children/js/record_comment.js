@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // カレンダーの設定
             flatpickr("#commentDate", {
+                locale: 'ja', // 日本語ロケールを設定
                 enable: Array.from(availableDates), // 有効な日付を設定
                 dateFormat: "Y-m-d",
                 onChange: function(selectedDates, dateStr, instance) {
@@ -62,6 +63,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             commentList.innerHTML = filteredTableHTML;
                         })
                         .catch(error => console.error('Error fetching comments:', error));
+                },
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    const dateString = dayElem.dateObj.toISOString().split('T')[0];
+                    if (availableDates.has(dateString)) {
+                        dayElem.classList.add('has-study-record');
+                    } else {
+                        dayElem.classList.add('no-study-record');
+                    }
                 }
             });
 
