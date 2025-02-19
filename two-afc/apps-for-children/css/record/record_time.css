@@ -45,6 +45,7 @@ main {
     height: 40px;
     width: 40px;
     padding: 10px 20px;
+    margin-top: 10px;
     margin-right: auto;
     border-radius: 5px;
     border: none;
@@ -52,7 +53,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
+    position: relative; /* 位置指定を追加 */
 }
 .tab a img {
     height: 65px;
@@ -63,9 +64,9 @@ main {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -15px;
-    height: 2px;
-    background-color: blue;
+    bottom: -15px; /* ボーダーの位置を下げるための距離 */
+    height: 2px; /* ボーダーの高さ */
+    background-color: blue; /* ボーダーの色 */
 }
 .section {
     width: 100%;

@@ -22,8 +22,9 @@ body {
     width: 100vw;
     text-align: center;
 }
-.main {
+main {
     width: 100%;
+    height: 100%;
 }
 .tab {
     position: fixed;
@@ -41,6 +42,7 @@ body {
     height: 40px;
     width: 40px;
     padding: 10px 20px;
+    margin-top: 10px;
     margin-right: auto;
     border-radius: 5px;
     border: none;
@@ -61,14 +63,148 @@ body {
     right: 0;
     bottom: -15px; /* ボーダーの位置を下げるための距離 */
     height: 2px; /* ボーダーの高さ */
-    background-color: blue;
+    background-color: blue; /* ボーダーの色 */
 }
 .section {
     width: 100%;
-    margin-top: 10vh;
+    margin-top: 12vh;
 }
 @media (max-width: 600px) {
     .tab {
         align-items: center;
     }
+}
+.comment-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin: auto;
+    width: 80vw;
+    gap: 10vw;
+}
+.comment-date-input-container {
+    width: 45%;
+    font-size: 3vw;
+}
+.comment-textSearch-input-container {
+    width: 45%;
+    font-size: 3vw;
+}
+.comment-date-input {
+    width: 100%;
+    height: 5vh;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 3vw;
+}
+.comment-textSearch-input {
+    width: 100%;
+    height: 5vh;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    padding-right: 60px; /* アイコンのスペースを確保 */
+    font-size: 3vw;
+}
+
+.input-with-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px; /* アイコンの位置を調整 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6vw; /* アイコンのサイズを調整 */
+    height: 6vw;
+    cursor: pointer;
+}
+
+.comment-list {
+    width: 80vw; /* テーブルの幅を80%に設定 */
+    margin: 0 auto; /* 中央に配置 */
+    margin-top: 5vh;
+    overflow-x: auto; /* 横スクロールを許可 */
+    border: 2px solid #4870BD; /* テーブルの外枠に青色を設定 */
+    max-height: 60vh; /* 最大高さを設定してスクロールを有効にする */
+    overflow-y: auto; /* 縦スクロールを許可 */
+    overflow-x: hidden; /* 横スクロールを無効にする */
+}
+
+.comment-list table {
+    width: 100%; /* テーブルを親要素の幅に合わせる */
+    border-collapse: collapse; /* ボーダーを重ねて表示 */
+    table-layout: fixed; /* テーブルのレイアウトを固定 */
+}
+
+.comment-list th {
+    position: sticky; /* ヘッダーを固定 */
+    top: 0; /* 上部に固定 */
+    background-color: white; /* 背景色を設定 */
+    z-index: 2; /* 他の要素より前面に表示 */
+    border: 2px solid #4870BD; /* セルのボーダーを青色に設定 */
+    padding: 10px; /* セルの内側の余白 */
+    text-align: left; /* テキストを左揃え */
+    font-size: 3vw; /* フォントサイズを調整 */
+    color: black; /* テキストの色を黒に設定 */
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.comment-list td {
+    border: 2px solid #4870BD; /* セルのボーダーを青色に設定 */
+    padding: 10px; /* セルの内側の余白 */
+    text-align: left; /* テキストを左揃え */
+    font-size: 3vw; /* フォントサイズを調整 */
+    color: black; /* テキストの色を黒に設定 */
+    word-wrap: break-word;
+    white-space: normal;
+}
+.clear-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    height: 5vh;
+    margin: auto;
+    margin-top: 2vh;
+    border-radius: 5px;
+    background-color: #4870BD;
+    color: white;
+    font-size: 3vw;
+}
+
+/* Flatpickrカスタマイズ */
+.flatpickr-day.has-study-record {
+    background: #4870BD !important;
+    color: white !important;
+    border-color: #4870BD !important;
+}
+
+.flatpickr-day.has-study-record:hover {
+    background: #3860AD !important;
+}
+
+.flatpickr-day.no-study-record {
+    background: #f5f5f5 !important;
+    color: #999 !important;
+    border-color: #e6e6e6 !important;
+}
+
+.flatpickr-day.no-study-record:hover {
+    background: #e6e6e6 !important;
+}
+
+.flatpickr-day.today {
+    border-color: #4870BD !important;
+}
+
+.flatpickr-calendar {
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
 }
