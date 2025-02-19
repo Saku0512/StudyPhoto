@@ -22,7 +22,6 @@ body {
 a {
     text-decoration: none;
     color: #4870BD; /* 1ab188 -> #4870BD */
-    transition: .5s ease;
 }
 a:hover {
     color: #5F89D7; /* 1ab188 -> #5F89D7 */
@@ -30,7 +29,7 @@ a:hover {
 .text {
     background: rgba(19, 35, 47, 0.9);
     padding: 40px;
-    max-width: 600px;
+    max-width: 80vw;
     margin: 40px auto;
     border-radius: 4px;
     box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
@@ -51,12 +50,11 @@ a:hover {
     padding: 15px;
     background: rgba(160, 179, 176, 0.25);
     color: #a0b3b0;
-    font-size: 20px;
+    font-size: 3vw;
     float: left;
     width: 33%;
     text-align: center;
     cursor: pointer;
-    transition: .5s ease;
 }
 .loginbuttons li a:hover {
     background: #5F89D7; /* 1ab188 -> #5F89D7 */
@@ -75,7 +73,7 @@ a:hover {
 h1 {
     text-align: center;
     color: #ffffff;
-    font-weight: 300;
+    font-size: 3vw;
     margin: 0 0 40px;
 }
 label {
@@ -86,7 +84,7 @@ label {
     transition: all 0.25s ease;
     -webkit-backface-visibility: hidden;
     pointer-events: none;
-    font-size: 22px;
+    font-size: 2vw;
 }
 label .req {
     margin: 2px;
@@ -95,7 +93,7 @@ label .req {
 label.active {
     transform: translateY(50px);
     left: 2px;
-    font-size: 14px;
+    font-size: 1.5vw;
 }
 label.active .req {
     opacity: 0;
@@ -114,7 +112,6 @@ input, textarea {
     border: 1px solid #a0b3b0;
     color: #ffffff;
     border-radius: 0;
-    transition: border-color .25s ease, box-shadow .25s ease;
 }
 input:focus, textarea:focus {
     outline: 0;
@@ -139,7 +136,6 @@ textarea {
     letter-spacing: .1em;
     background: #4870BD;
     color: #ffffff;
-    transition: all 0.5s ease;
     -webkit-appearance: none;
 }
 .btn:hover, .btn:focus {
