@@ -82,6 +82,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 必要に応じて、全コメントを再表示する処理を追加
                 commentList.innerHTML = tableHTML;
             });
+
+            const searchInput = document.getElementById('commentText');
+            const searchIcon = document.getElementById('searchIcon');
+
+            function searchComments(keyword) {
+                fetch(`../../php/record/fetch_keyword_comment.php?keyword=${encodeURIComponent(keyword)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!Array.isArray(data)) {
+                            console.error('Error fetching comments:', data.error || 'Unexpected response format');
+                            return;
+                        }
+                        let filteredTableHTML = `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>日付</th>
+                                        <th>コメント</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        data.forEach(comment => {
+                            filteredTableHTML += `<tr><td>${comment.study_date}</td><td>${comment.comment_text}</td></tr>`;
+                        });
+                        filteredTableHTML += `
+                                </tbody>
+                            </table>
+                        `;
+                        commentList.innerHTML = filteredTableHTML;
+                    })
+                    .catch(error => console.error('Error fetching comments:', error));
+            }
+
+            searchIcon.addEventListener('click', function() {
+                const keyword = searchInput.value.trim();
+                if (keyword) {
+                    searchComments(keyword);
+                }
+            });
+
+            searchInput.addEventListener('change', function() {
+                const keyword = searchInput.value.trim();
+                if (keyword) {
+                    searchComments(keyword);
+                }
+            });
         })
         .catch(error => console.error('Error fetching comments:', error));
 });
