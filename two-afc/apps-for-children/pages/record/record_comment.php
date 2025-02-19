@@ -44,6 +44,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
                         <img src="../../ui_image/search.png" alt="Search Icon" class="search-icon">
                     </div>
                 </div>
+                <button id="clearButton" class="clear-button">クリア</button>
             </div>
             <div class="comment-list">
                 <!-- 動的にコメントを表示 -->

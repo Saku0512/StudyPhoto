@@ -64,6 +64,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         .catch(error => console.error('Error fetching comments:', error));
                 }
             });
+
+            // クリアボタンの設定
+            const clearButton = document.getElementById('clearButton');
+            clearButton.addEventListener('click', function() {
+                document.getElementById('commentDate').value = '';
+                document.getElementById('commentText').value = '';
+                // 必要に応じて、全コメントを再表示する処理を追加
+                commentList.innerHTML = tableHTML;
+            });
         })
         .catch(error => console.error('Error fetching comments:', error));
 });
