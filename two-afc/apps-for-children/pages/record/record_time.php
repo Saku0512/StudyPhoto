@@ -1,6 +1,6 @@
 <?php
 $TimeNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $TimeNonce . "' https://cdn.jsdelivr.net/npm/chart.js https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js;");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $TimeNonce . "' https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js https://cdn.jsdelivr.net/npm/chart.js https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js;");
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -11,11 +11,12 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> <!-- Date-fns adapter -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js"></script> <!-- date-fns CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> <!-- flatpickr CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script> <!-- flatpickr Japanese locale -->
     <link rel="stylesheet" href="../../css/scss/load.css" />
     <link rel="stylesheet" href="../../css/record/record_time.css" />
     <script src="../../js/load.js" nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script src="../../js/record.js" nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
-    <script src="../../js/calender.js" nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_DOM.js" defer></script>
     <title>記録を振り返る</title>
 </head>
@@ -33,51 +34,26 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
         </div>
         <div id="timerSection" class="section">
             <div class="side_unit">
-                <p class="side_unit_text">横軸の単位を選択してください</p>
                 <div class="side_unit_button">
+                    <button class="side_unit_day">日</button>
                     <button class="side_unit_week">週</button>
-                    <button class="side_unit_mounth">月</button>
+                    <button class="side_unit_month">月</button>
                     <button class="side_unit_year">年</button>
                 </div>
+            </div>
+            <div class="span_select">
+                <img class="span_select_left" src="../../ui_image/span_select_left.png" alt="左矢印">
+                <p class="span_select_text"><!-- 動的に表示 --></p>
+                <img class="span_select_right" src="../../ui_image/span_select_right.png" alt="右矢印">
             </div>
             <div class="chart-container">
                 <canvas id="studyChart"></canvas>
             </div>
-            <p id="displayCategory"></p>
-        </div>
-        <div class="chart-container">
-            <canvas id="studyChart"></canvas>
-        </div>
-        <p id="displayCategory"></p>
-        <button class="year-mouth-daybutton">y/m/dの記録</button>
-        <div class="overlay" id="overlay"></div>
-        <div class="popup" id="popup">
-            <div class="calendar">
-                <div class="calendar-header">
-                    <button id="prev-month">◀</button>
-                    <h2 id="month-year"></h2>
-                    <button id="next-month">▶</button>
-                </div>
-                <div class="calendar-days">
-                    <div class="day-name sunday">SUN</div>
-                    <div class="day-name">MON</div>
-                    <div class="day-name">TUE</div>
-                    <div class="day-name">WED</div>
-                    <div class="day-name">THU</div>
-                    <div class="day-name">FRI</div>
-                    <div class="day-name saturday">SAT</div>
+            <div class="chart-footer">
+                <div class="category-chart-container">
+                    <canvas id="categoryChart"></canvas>
                 </div>
             </div>
-            <div class="calendar-days">
-                <div class="day-name sunday">SUN</div>
-                <div class="day-name">MON</div>
-                <div class="day-name">TUE</div>
-                <div class="day-name">WED</div>
-                <div class="day-name">THU</div>
-                <div class="day-name">FRI</div>
-                <div class="day-name saturday">SAT</div>
-            </div>
-            <div id="calendar-body" class="calendar-body"></div>
         </div>
     </main>
 </body>
