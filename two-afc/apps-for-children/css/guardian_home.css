@@ -331,7 +331,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
     .chart-footer {
-        display: block !important;
+        display: flex;
         flex-direction: column;
         margin-top: 0;
         gap: 0;
