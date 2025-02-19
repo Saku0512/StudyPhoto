@@ -49,6 +49,11 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
             <div class="chart-container">
                 <canvas id="studyChart"></canvas>
             </div>
+            <div class="chart-footer">
+                <div class="category-chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
         </div>
     </main>
 </body>

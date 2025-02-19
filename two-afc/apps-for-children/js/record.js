@@ -87,24 +87,23 @@ document.querySelector('.span_select_left').addEventListener('click', () => {
     switch(unit) {
         case 'day':
             currentDate.setDate(currentDate.getDate() - 1);
-            //document.querySelector('.record_comment_text').value = '';
             createTimeChart('day');
-            //createCategoryChart('day');
+            createCategoryChart('day');
             break;
         case 'week':
             currentDate.setDate(currentDate.getDate() - 7);
             createTimeChart('week');
-            //createCategoryChart('week');
+            createCategoryChart('week');
             break;
         case 'month':
             currentDate.setMonth(currentDate.getMonth() - 1);
             createTimeChart('month');
-            //createCategoryChart('month');
+            createCategoryChart('month');
             break;
         case 'year':
             currentDate.setFullYear(currentDate.getFullYear() - 1);
             createTimeChart('year');
-            //createCategoryChart('year');
+            createCategoryChart('year');
             break;
     }
 });
@@ -117,26 +116,23 @@ document.querySelector('.span_select_right').addEventListener('click', () => {
     switch(unit) {
         case 'day':
             currentDate.setDate(currentDate.getDate() + 1);
-            document.querySelector('.guardian_comment_text').value = '';
-            //const formattedDate = formatDate(currentDate);
-            
-            // コメントの存在チェックと取得
-            //get_comment_data(formattedDate, 'day');
+            createTimeChart('day');
+            createCategoryChart('day');
             break;
         case 'week':
             currentDate.setDate(currentDate.getDate() + 7);
             createTimeChart('week');
-            //createCategoryChart('week');
+            createCategoryChart('week');
             break;
         case 'month':
             currentDate.setMonth(currentDate.getMonth() + 1);
             createTimeChart('month');
-            //createCategoryChart('month');
+            createCategoryChart('month');
             break;
         case 'year':
             currentDate.setFullYear(currentDate.getFullYear() + 1);
             createTimeChart('year');
-            //createCategoryChart('year');
+            createCategoryChart('year');
             break;
     }
 });
@@ -176,7 +172,7 @@ function createTimeChart(labelUnit) {
     }
 
     const weekRange = getWeekRange(currentDate);
-    const apiUrl = `../../php/guardian/guardian_time.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
+    const apiUrl = `../../php/record/chart_time.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
 
     fetch(apiUrl, {
         method: 'GET',
@@ -190,6 +186,11 @@ function createTimeChart(labelUnit) {
             console.error('Error from server:', data.error);
             return;
         }
+
+        // データが空かどうかをチェック
+        const hasData = data.values && data.values.some(record =>
+            timeToHours(record.study_time) > 0
+        );
 
         let labels;
         switch(labelUnit) {
@@ -288,6 +289,34 @@ function createTimeChart(labelUnit) {
             }
         };
 
+        // データがない場合の表示設定を追加
+        if (!hasData) {
+            // グラフの色を薄く設定
+            config.data.datasets[0].backgroundColor = 'rgba(72, 112, 189, 0.3)';
+            config.data.datasets[0].borderColor = 'rgba(72, 112, 189, 0.3)';
+            
+            // プラグインの定義を追加
+            const noDataPlugin = {
+                id: 'noData',
+                afterDraw: (chart) => {
+                    if (!hasData) {
+                        const {ctx, width, height} = chart;
+                        ctx.save();
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        // フォントサイズが設定されていない場合のデフォルト値を設定
+                        const fontSize = chart.options.plugins.noData?.font?.size || 16;
+                        ctx.font = `${fontSize}px sans-serif`;
+                        ctx.fillStyle = '#666';
+                        ctx.fillText(chart.options.plugins.noData?.text || 'データがありません', width / 2, height / 2);
+                        ctx.restore();
+                    }
+                }
+            };
+
+            config.plugins = [noDataPlugin];
+        }
+
         if (recordChartInstance) {
             recordChartInstance.destroy();
         }
@@ -298,111 +327,130 @@ function createTimeChart(labelUnit) {
     });
 }
 
-/* カテゴリー別勉強時間グラフを作成する関数 
-function createCategoryChart(labelUnit) {
-    const categoryChartContext = document.getElementById('categoryChart').getContext('2d');
-    const apiUrl = `../../php/guardian/guardian_category.php?unit=${encodeURIComponent(labelUnit)}&date=${formatDate(currentDate)}`;
+const categoryChartContext = document.getElementById('categoryChart').getContext('2d');
+let categoryChartInstance;
 
-    fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            console.error('Error from server:', data.error);
-            return;
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function generateColors(categories) {
+    const usedColors = new Set();
+    const colors = [];
+
+    categories.forEach((category, index) => {
+        if (!categoryColorMap[category]) {
+            let hue;
+            do {
+                hue = (index * (360 / categories.length)) % 360;
+            } while (usedColors.has(hue));
+
+            categoryColorMap[category] = `hsl(${hue}, 70%, 60%)`;
+            usedColors.add(hue);
         }
+        colors.push(categoryColorMap[category]);
+    });
 
-        if (!data.categories || !Array.isArray(data.categories)) {
-            console.error('Invalid data format received:', data);
-            return;
-        }
+    return colors;
+}
 
-        const labels = data.categories.map(record => record.category_name);
-        const chartData = {
-            labels: labels,
-            datasets: [{
-                label: 'カテゴリー別勉強時間(時間)',
-                data: data.categories.map(record => record.study_time),
-                backgroundColor: labels.map(label => categoryColorMap[label] || '#4870BD'),
-                borderColor: labels.map(label => categoryColorMap[label] || '#4870BD'),
-                borderWidth: 1
-            }]
-        };
+function createCategoryChart(unit = 'week') {
+    const apiUrl = `../../php/record/chart_category.php?unit=${encodeURIComponent(unit)}&date=${formatDate(currentDate)}`;
 
-        const config = {
-            type: 'bar',
-            data: chartData,
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
+    const spanText = document.querySelector('.span_select_text').textContent;
+    const chartFooter = document.querySelector('.chart-footer');
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+                return; // エラーがある場合は処理を中断
+            }
+
+            // データが空の場合はchart-footerを非表示にする
+            if (!data.categories || data.categories.length === 0) {
+                chartFooter.style.display = 'none';
+                return;
+            }
+            
+            chartFooter.style.display = 'flex';
+
+            const timeToHours = timeStr => {
+                if (!timeStr) return 0; // timeStrがundefinedまたはnullの場合は0を返す
+                const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+                const totalHours = hours + minutes / 60 + seconds / 3600;
+                return totalHours < 0.01 ? 0.01 : Number(totalHours.toFixed(2));
+            };
+
+            // 時間を「○h」形式にフォーマットする関数
+            const formatTime = (timeInHours) => {
+                return `${timeInHours}h`;
+            };
+            
+            const categories = data.categories.map(item => item.category_name);
+            const times = data.categories.map(item => timeToHours(item.total_time));
+
+            // カテゴリー名と時間を組み合わせたラベルを作成
+            const labels = categories.map((category, index) => 
+                `${category}:${formatTime(times[index])}`
+            );
+
+            const colors = generateColors(categories);
+
+            const config = {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: times,
+                        backgroundColor: colors,
+                        borderColor: colors.map(color => color.replace('60%', '50%')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,  // アスペクト比を固定しない
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: window.innerWidth * 0.02
+                                }
+                            }
+                        },
                         title: {
                             display: true,
-                            text: '時間(h)',
+                            text: `${spanText}`,
                             font: {
                                 size: window.innerWidth * 0.03
                             }
                         },
-                        ticks: {
-                            font: {
-                                size: window.innerWidth * 0.03
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}`;
+                                }
                             }
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            font: {
-                                size: window.innerWidth * 0.03
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            font: {
-                                size: window.innerWidth * 0.03
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const hours = context.raw;
-                                const hoursInt = Math.floor(hours);
-                                const minutes = Math.round((hours - hoursInt) * 60);
-                                return `${hoursInt}時間${minutes}分`;
-                            }
-                        }
-                    },
-                    noData: {
-                        text: 'カテゴリー別データはありません',
-                        align: 'center',
-                        verticalAlign: 'middle',
-                        font: {
-                            size: window.innerWidth * 0.04
                         }
                     }
                 }
-            }
-        };
+            };
 
-        if (recordChartInstance) {
-            recordChartInstance.destroy();
-        }
-        recordChartInstance = new Chart(categoryChartContext, config);
-    })
-    .catch(error => {
-        console.error('Error fetching category data:', error);
-    });
+            if (categoryChartInstance) {
+                categoryChartInstance.destroy();
+            }
+            categoryChartInstance = new Chart(categoryChartContext, config);
+        })
+        .catch(error => {
+            console.error('Error fetching category data:', error);
+        });
 }
-*/
 
 // DOMContentLoadedイベントハンドラーを修正
 document.addEventListener('DOMContentLoaded', () => {
@@ -413,135 +461,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (dayButton) dayButton.addEventListener('click', () => {
         createTimeChart('day');
-        //createCategoryChart('day');
+        createCategoryChart('day');
     });
     
     if (weekButton) weekButton.addEventListener('click', () => {       
         createTimeChart('week');
-        //createCategoryChart('week');
+        createCategoryChart('week');
     });
     
     if (monthButton) monthButton.addEventListener('click', () => {
         createTimeChart('month');
-        //createCategoryChart('month');
+        createCategoryChart('month');
     });
     
     if (yearButton) yearButton.addEventListener('click', () => {        
         createTimeChart('year');
-        //createCategoryChart('year');
+        createCategoryChart('year');
     });
 
-    /*
-    const commentDateInput = document.getElementById('commentDate');
-    commentDateInput.addEventListener('change', (e) => {
-        currentDate = new Date(e.target.value);
-        createTimeChart('day');
-        createCategoryChart('day');
-    });
-    */
-
-    //const initialDate = new Date();
-    //initialDate.setDate(initialDate.getDate() - initialDate.getDay());
-    //currentDate = new Date(initialDate);
     createTimeChart('week');
-    //createCategoryChart('week');
-
-    //customizeCalendar();
-    
-    //commentDateInput.addEventListener('input', () => {
-    //    customizeCalendar();
-    //});
+    createCategoryChart('week');
 });
-
-/* カレンダーをカスタマイズする関数
-function customizeCalendar() {
-    const commentDateInput = document.getElementById('commentDate');
-    
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
-    
-    fetch(`../../php/guardian/guardian_calender.php?year=${currentYear}&month=${currentMonth}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                console.error('Error:', data.error);
-                return;
-            }
-
-            const studyDates = new Set(data.dates || []);
-
-            flatpickr(commentDateInput, {
-                locale: 'ja',
-                dateFormat: 'Y-m-d',
-                maxDate: 'today',
-                inline: false,
-                enable: [
-                    function(date) {
-                        const dateString = date.toISOString().split('T')[0];
-                        return studyDates.has(dateString);
-                    }
-                ],
-                onDayCreate: function(dObj, dStr, fp, dayElem) {
-                    const dateString = dayElem.dateObj.toISOString().split('T')[0];
-                    const today = new Date().toISOString().split('T')[0];
-                    
-                    if (studyDates.has(dateString)) {
-                        dayElem.classList.add('has-study-record');
-                        dayElem.classList.remove('flatpickr-disabled');
-                    } else if (dateString <= today) {
-                        dayElem.classList.add('no-study-record');
-                        dayElem.classList.add('flatpickr-disabled');
-                    }
-                },
-                onChange: function(selectedDates) {
-                    if (selectedDates.length > 0) {
-                        currentDate = selectedDates[0];
-                        const formattedDate = formatDate(currentDate);
-                        
-                        get_comment_data(formattedDate, 'day');
-                    }
-                },
-                onMonthChange: function(selectedDates, dateStr, instance) {
-                    const newYear = instance.currentYear;
-                    const newMonth = instance.currentMonth + 1;
-                    
-                    fetch(`../../php/guardian/guardian_calender.php?year=${newYear}&month=${newMonth}`)
-                        .then(response => response.json())
-                        .then(newData => {
-                            if (newData.error) {
-                                console.error('Error:', newData.error);
-                                return;
-                            }
-                            
-                            const newStudyDates = new Set(newData.dates || []);
-                            
-                            instance.set('enable', [
-                                function(date) {
-                                    const dateString = date.toISOString().split('T')[0];
-                                    return newStudyDates.has(dateString);
-                                }
-                            ]);
-                            
-                            instance.days.forEach(dayElem => {
-                                const dateString = dayElem.dateObj.toISOString().split('T')[0];
-                                dayElem.classList.remove('has-study-record', 'no-study-record', 'flatpickr-disabled');
-                                
-                                if (newStudyDates.has(dateString)) {
-                                    dayElem.classList.add('has-study-record');
-                                } else {
-                                    dayElem.classList.add('no-study-record');
-                                    dayElem.classList.add('flatpickr-disabled');
-                                }
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching study dates:', error);
-                        });
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching study dates:', error);
-        });
-}
-*/
