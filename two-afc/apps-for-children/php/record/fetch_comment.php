@@ -17,7 +17,7 @@ $userName = $_SESSION['username'];
 
 try {
     $pdo = getDatabaseConnection();
-    $sql = "SELECT study_date, comment_text FROM comment_data WHERE is_deleted = 0 AND username = :username";
+    $sql = "SELECT study_date, comment_text FROM comment_data WHERE is_deleted = 0 AND username = :username ORDER BY study_date DESC";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':username', $userName, PDO::PARAM_STR);
     $stmt->execute();
