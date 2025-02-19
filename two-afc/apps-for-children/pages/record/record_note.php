@@ -13,7 +13,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' https://c
     <link rel="stylesheet" href="../../css/record/record_note.css" />
     <script src="../../js/load.js" nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script src="../../js/category-record.js" nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
-    <script nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_DOM.js" defer></script>
+    <script nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_tab.js" defer></script>
     <title>記録を振り返る</title>
 </head>
 <body>

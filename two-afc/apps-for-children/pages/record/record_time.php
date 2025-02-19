@@ -17,7 +17,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <link rel="stylesheet" href="../../css/record/record_time.css" />
     <script src="../../js/load.js" nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script src="../../js/record.js" nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
-    <script nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_DOM.js" defer></script>
+    <script nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_tab.js" defer></script>
     <title>記録を振り返る</title>
 </head>
 <body>
