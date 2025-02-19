@@ -18,8 +18,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <tbody>
             `;
             
+            const availableDates = new Set();
             data.forEach(comment => {
                 tableHTML += `<tr><td>${comment.study_date}</td><td>${comment.comment_text}</td></tr>`;
+                availableDates.add(comment.study_date);
             });
             
             tableHTML += `
@@ -27,6 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 </table>
             `;
             commentList.innerHTML = tableHTML;
+
+            // カレンダーの設定
+            flatpickr("#commentDate", {
+                enable: Array.from(availableDates), // 有効な日付を設定
+                dateFormat: "Y-m-d"
+            });
         })
         .catch(error => console.error('Error fetching comments:', error));
 });

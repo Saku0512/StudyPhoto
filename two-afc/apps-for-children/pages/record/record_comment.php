@@ -1,6 +1,6 @@
 <?php
 $CommentNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $CommentNonce . "';");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $CommentNonce . "' https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js; style-src 'self' https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css");
 ?>
 <!DOCTYPE html>
 <html>
@@ -13,6 +13,9 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <script src="../../js/load.js" defer></script>
     <script nonce="<?= htmlspecialchars($CommentNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_tab.js" defer></script>
     <script nonce="<?= htmlspecialchars($CommentNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_comment.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
     <title>記録を振り返る</title>
 </head>
 <body>
