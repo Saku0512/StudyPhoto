@@ -119,8 +119,8 @@ main {
     right: 10px; /* アイコンの位置を調整 */
     top: 50%;
     transform: translateY(-50%);
-    width: 40px; /* アイコンのサイズを調整 */
-    height: 40px;
+    width: 6vw; /* アイコンのサイズを調整 */
+    height: 6vw;
     cursor: pointer;
 }
 
