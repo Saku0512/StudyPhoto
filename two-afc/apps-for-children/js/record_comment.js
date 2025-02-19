@@ -7,13 +7,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             const commentList = document.querySelector('.comment-list');
-            let tableHTML = '<table><tr><th>日付</th><th>コメント</th></tr>';
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>コメント</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
             
             data.forEach(comment => {
                 tableHTML += `<tr><td>${comment.study_date}</td><td>${comment.comment_text}</td></tr>`;
             });
             
-            tableHTML += '</table>';
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
             commentList.innerHTML = tableHTML;
         })
         .catch(error => console.error('Error fetching comments:', error));

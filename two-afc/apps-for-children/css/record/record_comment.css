@@ -123,3 +123,38 @@ main {
     height: 40px;
     cursor: pointer;
 }
+
+.comment-list {
+    width: 80vw; /* テーブルの幅を80%に設定 */
+    margin: 0 auto; /* 中央に配置 */
+    margin-top: 5vh;
+    overflow-x: auto; /* 横スクロールを許可 */
+    border: 2px solid #4870BD; /* テーブルの外枠に青色を設定 */
+    max-height: 60vh; /* 最大高さを設定してスクロールを有効にする */
+    overflow-y: auto; /* 縦スクロールを許可 */
+}
+
+.comment-list table {
+    width: 100%; /* テーブルを親要素の幅に合わせる */
+    border-collapse: collapse; /* ボーダーを重ねて表示 */
+}
+
+.comment-list th {
+    position: sticky; /* ヘッダーを固定 */
+    top: 0; /* 上部に固定 */
+    background-color: white; /* 背景色を設定 */
+    z-index: 2; /* 他の要素より前面に表示 */
+    border: 2px solid #4870BD; /* セルのボーダーを青色に設定 */
+    padding: 10px; /* セルの内側の余白 */
+    text-align: left; /* テキストを左揃え */
+    font-size: 3vw; /* フォントサイズを調整 */
+    color: black; /* テキストの色を黒に設定 */
+}
+
+.comment-list td {
+    border: 2px solid #4870BD; /* セルのボーダーを青色に設定 */
+    padding: 10px; /* セルの内側の余白 */
+    text-align: left; /* テキストを左揃え */
+    font-size: 3vw; /* フォントサイズを調整 */
+    color: black; /* テキストの色を黒に設定 */
+}
