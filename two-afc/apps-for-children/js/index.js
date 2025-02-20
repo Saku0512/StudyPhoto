@@ -41,9 +41,6 @@ document.querySelectorAll('.tab a').forEach(function (tab) {
         });
 
         var target = document.querySelector(this.getAttribute('href'));
-        console.log('this', this);
-        console.log("this.getAttribute('href')", this.getAttribute('href'));
-        console.log('target', target);
 
         document.querySelectorAll('.tab-content > div').forEach(function (content) {
             if (content !== target) content.style.display = 'none';
