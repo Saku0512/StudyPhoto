@@ -74,7 +74,7 @@ function loadCategories() {
                             // ポップアップに画像を表示
                             fetchStudyImages(clickedClassName);
                         } else {
-                            console.log(`一致しない: ${clickedClassName} vs ${imageClassName}`);
+                            console.error(`一致しない: ${clickedClassName} vs ${imageClassName}`);
                         }
                     });
                 

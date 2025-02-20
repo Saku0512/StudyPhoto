@@ -120,14 +120,12 @@ function addOption() {
         body: `category_name=${encodeURIComponent(optionName)}`
     })
     .then(response => {
-        console.log('Response Status:', response.status); // ステータスコードを表示
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.text(); // レスポンスをテキスト形式で表示
     })
     .then(text => {
-        console.log('Raw Response:', text); // サーバーからのレスポンスを確認
         return JSON.parse(text); // 必要ならJSONに変換
     })
     .then(data => {
@@ -165,18 +163,15 @@ function editOption() {
         body: `old_category_name=${encodeURIComponent(oldOptionName)}&new_category_name=${encodeURIComponent(newOptionName)}`
     })
     .then(response => {
-        console.log('Response Status:', response.status); // ステータスコードを表示
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.text(); // レスポンスをJSONとして取得
     })
     .then(text => {
-        console.log('Raw Response:', text); // サーバーからのレスポンスを確認
         return JSON.parse(text);
     })
     .then(data => {
-        console.log('Response Data:', data); // レスポンス内容を表示
         if (data.status === "success") {
             alert("カテゴリーが変更されました。");
             hidePopup();
@@ -267,7 +262,7 @@ function loadCategories() {
                             // ポップアップに画像を表示
                             fetchStudyImages(clickedClassName);
                         } else {
-                            console.log(`一致しない: ${clickedClassName} vs ${imageClassName}`);
+                            console.error(`一致しない: ${clickedClassName} vs ${imageClassName}`);
                         }
                     });
                 
@@ -397,7 +392,6 @@ function fetchStudyImages(categoryName) {
 
                 studyDateCell.innerHTML = formattedDate + '<br>' + formattedSpendTime; // 日付と改行された時間帯を表示
                 row.appendChild(studyDateCell);
-                console.log(formattedSpendTime);
 
                 // 勉強時間
                 const studyTimeCell = document.createElement('td');

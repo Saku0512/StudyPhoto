@@ -71,7 +71,6 @@ function stopTimer() {
         const elapsedPeriod = startTime + '-' + endTime;  // "xx:xx-yy:yy" 形式
         elapsedTime.push(elapsedPeriod);
         localStorage.setItem('elapsedTime', JSON.stringify(elapsedTime));
-        console.log('経過時間リスト:', elapsedTime);
 
         // 累計経過時間を更新
         localStorage.setItem('stopwatchTime', elapsedSeconds);

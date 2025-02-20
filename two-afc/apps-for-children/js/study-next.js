@@ -128,7 +128,6 @@ function saveData() {
     const timeString = localStorage.getItem('stopwatchTime') || '00:00:00';
     const parts = timeString.split(':');
     const elapsedSeconds = parseInt(parts[0], 10) * 3600 + parseInt(parts[1], 10) * 60 + parseInt(parts[2], 10);
-    console.log("Saving to record:", timeString);
 
     const hours = Math.floor(elapsedSeconds / 3600);
     const minutes = Math.floor((elapsedSeconds % 3600) / 60);
@@ -211,7 +210,6 @@ function hideDeletePhotoPopup() {
 
 // 写真を撮影する関数
 function capturePhoto() {
-    console.log('capturePhoto関数が呼び出されました');
     const form = document.getElementById('imageForm');
     const submitButton = form.querySelector('input[type="submit"]');
     const input = document.createElement('input');
@@ -222,12 +220,9 @@ function capturePhoto() {
     input.name = 'images[]';
     input.style = 'display: none';
     input.id = `input_${inputCount++}`;
-    console.log('input要素が作成されました');
 
     input.onchange = async function(event) {
-        console.log('input要素のonchangeイベントが発生しました');
         if (!event.target.files || event.target.files.length === 0) {
-            console.log('ファイルが選択されていません');
             return;
         }
 
@@ -235,11 +230,9 @@ function capturePhoto() {
         
         // ファイルの圧縮と処理
         const processedFiles = await Promise.all(files.map(async file => {
-            console.log('ファイルが選択されています');
             // 画像ファイルの検証
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/PNG', 'image/JPG', 'image/JPEG'];
             if (!validTypes.includes(file.type) || file.size === 0) {
-                console.log(`不正なファイル: ${file.name}`);
                 return null;
             }
 
@@ -270,10 +263,8 @@ function capturePhoto() {
         if (newFiles.length > 0) {
             hidePhotoOptionsPopup();
             newFiles = await cropPhoto(newFiles);
-            console.log("トリミングされたあとのcount:"+inputCount);
             selectedFiles.push(...newFiles);
             displayPhoto(newFiles);
-            console.log(`${newFiles.length}個の新しいファイルが追加されました`);
         }
     };
     input.click();
@@ -300,9 +291,6 @@ function selectPhoto() {
         files.forEach(file => {
             // input要素にファイル名を格納する
             input.setAttribute('data-image-name', file.name); // data-image-name 属性にファイル名を格納
-
-            console.log('ファイル名:', file.name); // コンソールにファイル名を表示
-            console.log('inputのdata-image-name属性:', input.getAttribute('data-image-name')); // data-image-name属性からファイル名を取得
         });
 
         // 重複を避けて新しく選ばれたファイルのみを追加
@@ -360,7 +348,6 @@ function cropPhoto(files) {
                 input.name = 'images[]';
                 input.style = 'display: none';
                 input.id = `input_${inputCount}`;
-                console.log("新しく作成したinputのid:"+input.id);
 
                 // ファイルオブジェクトを作成してinputにセット
                 const dataTransfer = new DataTransfer();
@@ -400,8 +387,6 @@ function displayPhoto(files) {
             URL.revokeObjectURL(img.src);
         };
     });
-
-    console.log("表示している写真:", files);
 }
 
 function deleteSelectedPhotos() {
