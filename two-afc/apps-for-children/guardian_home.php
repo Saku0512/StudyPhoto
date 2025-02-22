@@ -94,7 +94,7 @@ $idHidden = str_repeat('*', strlen($_SESSION['guardian_id'] ?? ''));
                     <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
                 </div>
             </div>
-            <a href="./php/contact.php" class="contact">問い合わせ</a>
+            <a href="" class="contact">問い合わせ</a>
         </div>
     </main>
 </body>

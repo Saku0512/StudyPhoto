@@ -178,7 +178,7 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
                     <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
                 </div>
             </div>
-            <a href="./php/contact.php" class="contact">問い合わせ</a>
+            <a href="" class="contact">問い合わせ</a>
         </div>
     </main>
 </body>
