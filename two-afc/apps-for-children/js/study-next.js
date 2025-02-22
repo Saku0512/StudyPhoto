@@ -306,67 +306,81 @@ function selectPhoto() {
     input.click(); // ファイル選択ダイアログを表示
 }
 
-let cropper = null;
+let cropperInstance = null;
 
 function cropPhoto(files) {
     return new Promise((resolve) => {
         document.getElementById('cropContainer').style.display = 'flex';
         document.getElementById('cropContainer_overlay').style.display = 'block';
+
         const image = document.getElementById('previewImage');
-        image.src = URL.createObjectURL(files[0]);
+        const file = files[0];
+        const objectURL = URL.createObjectURL(file);
+        image.src = objectURL;
 
-        // 前のCropperインスタンスが存在する場合は破棄
-        if (cropper) {
-            cropper.destroy();
-        }
-
-        // 画像読み込み完了後にCropperを初期化
+        // 画像が読み込まれた後に処理を実行
         image.onload = function() {
-            cropper = new Cropper(image);
-        };
-
-        // トリミングボタンのクリックイベント
-        document.getElementById('cropButton').onclick = async function() {
-            if (!cropper) return;
-
-            // トリミングされた画像を取得
-            const canvas = cropper.getCroppedCanvas();
+            const naturalWidth = image.naturalWidth;
+            const naturalHeight = image.naturalHeight;
             
-            // canvasをBlobに変換
-            canvas.toBlob(async (blob) => {
-                // 新しいFileオブジェクトを作成
-                const croppedFile = new File([blob], files[0].name, {
-                    type: 'image/jpeg',
-                    lastModified: new Date().getTime()
+            
+            // 既存のCropperインスタンスを破棄
+            if (cropperInstance) {
+                cropperInstance.destroy();
+            }
+
+            // Cropperを初期化
+            cropperInstance = new Cropper(image, {
+                aspectRatio: naturalWidth / naturalHeight,
+                viewMode: 1,
+                autoCropArea: 1,
+                responsive: true,
+                background: false
+            });
+
+            // トリミングボタンのクリックイベント
+            document.getElementById('cropButton').onclick = function() {
+                if (!cropperInstance) return;
+
+                // トリミング後のキャンバスサイズを画像の元のサイズにする
+                const croppedCanvas = cropperInstance.getCroppedCanvas({
+                    with: naturalWidth,
+                    height: naturalHeight
                 });
 
-                // トリミングされたファイルをフォームに追加
-                const form = document.getElementById('imageForm');
-                const submitButton = form.querySelector('input[type="submit"]');
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.name = 'images[]';
-                input.style = 'display: none';
-                input.id = `input_${inputCount}`;
+                // トリミングされた画像をBlobに変換
+                croppedCanvas.toBlob((croppedImage) => {
+                    const croppedFile = new File([croppedImage], file.name, {
+                        type: 'image/jpeg',
+                        lastModified: new Date().getTime()
+                    });
 
-                // ファイルオブジェクトを作成してinputにセット
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(croppedFile);
-                input.files = dataTransfer.files;
+                    // トリミングされたファイルをフォームに追加
+                    const form = document.getElementById('imageForm');
+                    const submitButton = form.querySelector('input[type="submit"]');
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.name = 'images[]';
+                    input.style = 'display: none';
+                    input.id = `input_${inputCount}`;
 
-                // data-image-name属性にファイル名をセット
-                input.setAttribute('data-image-name', croppedFile.name);
+                    // ファイルオブジェクトを作成してinputにセット
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(croppedFile);
+                    input.files = dataTransfer.files;
+                    input.setAttribute('data-image-name', croppedFile.name);
 
-                form.insertBefore(input, submitButton);
+                    form.insertBefore(input, submitButton);
 
-                // トリミング後の処理
-                document.getElementById('cropContainer').style.display = 'none';
-                document.getElementById('cropContainer_overlay').style.display = 'none';
-                cropper.destroy();
-                cropper = null;
+                    // トリミング後の処理
+                    document.getElementById('cropContainer').style.display = 'none';
+                    document.getElementById('cropContainer_overlay').style.display = 'none';
+                    cropperInstance.destroy();
+                    cropperInstance = null;
 
-                resolve([croppedFile]); // トリミングされた画像を返す
-            }, 'image/jpeg');
+                    resolve([croppedFile]);
+                }, 'image/jpeg');
+            };
         };
     });
 }

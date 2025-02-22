@@ -1,7 +1,7 @@
 <?php
 session_start();
 $nonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $nonce . "' https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.js; style-src 'self' 'nonce-" . $nonce . "' https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.css; img-src 'self' blob: data:;");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $nonce . "' https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js; style-src 'self' 'nonce-" . $nonce . "' https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css; img-src 'self' blob: data:; connect-src 'self' blob:; frame-src 'self';");
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,8 +15,8 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <script src="../../js/study-next.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script src="../../js/category-study.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <!-- Cropper.jsのCSSとJS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.css" integrity="sha512-087vysR/jM0N5cp13Vlp+ZF9wx6tKbvJLwPO8Iit6J7R+n7uIMMjg37dEgexOshDmDITHYY5useeSmfD1MYiQA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.js" integrity="sha512-lR8d1BXfYQuiqoM/LeGFVtxFyspzWFTZNyYIiE5O2CcAGtTCRRUMLloxATRuLz8EmR2fYqdXYlrGh+D6TVGp3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
     <title>Stopwatch Next</title>
 </head>
