@@ -255,3 +255,8 @@ document.querySelectorAll('.copyName, .copyId, .copyEmail, .copyPass').forEach(f
         });
     });
 });
+
+document.querySelector('.contact').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('開発中です。');
+});

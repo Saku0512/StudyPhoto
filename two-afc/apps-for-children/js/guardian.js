@@ -861,3 +861,8 @@ document.querySelector('.guardian_comment_button').addEventListener('click', fun
         alert('コメントの保存中にエラーが発生しました');
     });
 });
+
+document.querySelector('.contact').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('開発中です');
+});
