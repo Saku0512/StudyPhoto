@@ -270,9 +270,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         -->
         <div class="index-buttons">
-            <a href="demo.html">お試し</a>
-            <button>ログイン</button>
-            <button>保護者用</button>
+            <a href="demo.html" class="demo">お試し</a>
+            <button class="login">ログイン</button>
+            <button class="gurdian">保護者用</button>
         </div>
     </main>
 </body>

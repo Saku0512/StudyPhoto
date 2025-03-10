@@ -29,7 +29,16 @@ a:hover {
 .index-buttons {
     display: flex;
     justify-content: center;
+    text-align: center;
+    align-items: center;
     flex-direction: column;
     margin: 40px auto;
     gap: 20px;
+    width: 80vw;
+    a {
+        width: 100%;
+    }
+    button {
+        width: 100%;
+    }
 }
