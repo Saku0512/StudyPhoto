@@ -26,3 +26,10 @@ a {
 a:hover {
     color: #5F89D7; /* 1ab188 -> #5F89D7 */
 }
+.index-buttons {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 40px auto;
+    gap: 20px;
+}
