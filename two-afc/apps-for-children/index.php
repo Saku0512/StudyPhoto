@@ -212,6 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="logo">
             <img src="./ui_image/logo.png" alt="logo" title="logo">
         </div>
+        <!--
         <div class="text">
             <ul class="loginbuttons">
                 <li class="tab active"><a href="#signup" >Sign Up</a></li>
@@ -266,6 +267,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </form>
                 </div>
             </div>
+        </div>
+        -->
+        <div class="index-buttons">
+            <a href="demo.html">お試し</a>
+            <button>ログイン</button>
+            <button>保護者用</button>
         </div>
     </main>
 </body>
