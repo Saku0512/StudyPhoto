@@ -1,18 +1,64 @@
 // ポップアップ表示
-function showPopup(FormName) {
+const loginPopup = document.getElementById('loginPopup');
+const signupPopup = document.getElementById('signupPopup');
+const guardianPopup = document.getElementById('guardianPopup');
+const loginForm = document.querySelector('.loginForm');
+const guardianForm = document.querySelector('.guardianForm');
+const overlay = document.getElementById('overlay');
+const loginLink = document.querySelector('.loginPopup .message a');
+const signupLink = document.querySelector('.signupPopup .message a');
+const closeBtns = document.querySelectorAll('.close-btn');
+
+function showPopup(popup) {
     closePopup();
-    console.log(FormName);
-    document.getElementById('overlay').style.display = 'block';
-    document.getElementById(FormName).style.display = 'block';
+    overlay.style.display = 'block';
+    popup.style.display = 'block';
+    setTimeout(() => {
+        popup.classList.remove("hide"); // フェードイン
+    }, 200);
 }
+
+function togglePopup(popupToShow, popupToHide) {
+    popupToHide.classList.add('hide');
+    setTimeout(() => {
+        popupToHide.style.display = 'none';
+        popupToShow.style.display = 'block';
+        setTimeout(() => {
+            popupToShow.classList.remove('hide');
+        }, 10);
+    }, 200);
+}
+
 function closePopup() {
-    document.getElementById('loginPopup').style.display = 'none';
-    document.getElementById('guardianForm').style.display = 'none';
-    document.getElementById('signupForm').style.display = 'none';
+    overlay.style.display = 'none';
+    loginPopup.style.display = 'none';
+    loginPopup.classList.add('hide');
+    guardianPopup.style.display = 'none';
+    guardianPopup.classList.add('hide');
+    signupPopup.style.display = 'none';
 }
-document.querySelector('.loginForm').addEventListener('click', () => {
-    showPopup('loginPopup');
+
+loginForm.addEventListener('click', () => {
+    showPopup(loginPopup);
 });
-document.querySelector('.guardianForm').addEventListener('click', () => {
-    showPopup('guardianForm');
+
+loginLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    togglePopup(signupPopup, loginPopup);
 });
+
+signupLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    togglePopup(loginPopup, signupPopup);
+});
+
+guardianForm.addEventListener('click', () => {
+    showPopup(guardianPopup);
+});
+
+closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        closePopup();
+    });
+});
+overlay.addEventListener('click', closePopup);

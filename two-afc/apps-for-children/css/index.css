@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
 .logo {
     display: flex;
     justify-content: center;
@@ -16,7 +18,7 @@
     box-sizing: border-box;
 }
 html {
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 body {
     background: white;
@@ -56,16 +58,85 @@ a:hover {
 }
 
 /* ログイン関連 */
-.loginPopup {
+.overlay {
     display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
-
-/* 保護者ログイン */
+.loginPopup, .signupPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    width: 80vw;
+    text-align: center;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.hide {
+    opacity: 0;
+    transform: translate(-50%, -50%);
+}
 .guardianPopup {
     display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    width: 80vw;
+    text-align: center;
 }
-
-/* サインアップ */
-.signupPopup {
-    display: none;
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 5vw;
+}
+#headline {
+    font-size: 5vw;
+    margin-bottom: 2vh;
+}
+form input {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin-bottom: 2vh;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 5vw;
+}
+form button {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #4870BD;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 5vw;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+}
+form p {
+    font-size: 3vw;
 }

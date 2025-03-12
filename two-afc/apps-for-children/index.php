@@ -1,7 +1,7 @@
 <?php
 session_start();
 $FormNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $FormNonce . "';");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $FormNonce . "'; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' https://fonts.googleapis.com;");
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $loginStmt->close();
             $conn->close();
         } else {
-            $message = "全てのフィールドを入力してください";
+            $message = "";
         }
     } else if (isset($_POST['guardian'])) {
         // ログイン情報を取得
@@ -182,10 +182,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $message = "ユーザー名またはIDが正しくありません";
             }
         } else {
-            $message = "全てのフィールドを入力してください";
+            $message = "";
+
         }
     } else {
-        $message = "全てのフィールドを入力してください";
+        $message = "";
     }
 }
 ?>
@@ -219,27 +220,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="overlay" id="overlay"></div>
         <div class="loginPopup" id="loginPopup">
-            <h2>Welcome Back</h2>
+            <span class="close-btn">×</span>
+            <h2 id="headline">Welcome Back!</h2>
             <form id="loginForm" action="" method="post">
                 <input type="text" id="login_username" name="login_username" required autocomplete="username" placeholder="Username">
                 <input type="password" id="login_password" name="login_password" required autocomplete="current-password" placeholder="Password">
                 <button type="submit" name="login">LogIn</button>
+                <p class="message">Not registered? <a href="#">Create an account</a></p>
             </form>
         </div>
         <div class="signupPopup" id="signupPopup">
-            <h2>Signup For Free</h2>
+            <span class="close-btn">×</span>
+            <h2 id="headline">Signup For Free</h2>
             <form id="signupForm" action="" method="post">
                 <input type="text" id="username" name="username" required placeholder="Username">
                 <input type="email" id="email" name="email" required placeholder="Email">
                 <input type="password" id="password" name="password" required placeholder="Password">
                 <button type="submit" name="signup">SignUp</button>
+                <p class="message">Already registered? <a href="#">Sign In</a></p>
             </form>
         </div>
         <div class="guardianPopup" id="guardianPopup">
-            <h2>Guardian Login</h2>
+            <span class="close-btn">×</span>
+            <h2 id="headline">Guardian Login</h2>
             <form id="guardianForm" action="" method="post">
                 <input type="text" id="guardian_username" name="guardian_username" required autocomplete="username" placeholder="Child's Username">
-                <input type="password" id="guardian_password" name="guadian_password" required autocomplete="current-password" placeholder="Child's Password">
+                <input type="password" id="guardian_password" name="guadian_password" required autocomplete="current-password" placeholder="Child's Id">
                 <button type="submit" name="guardian">LogIn</button>
             </form>
         </div>
