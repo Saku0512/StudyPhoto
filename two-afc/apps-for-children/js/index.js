@@ -62,3 +62,19 @@ closeBtns.forEach(btn => {
     });
 });
 overlay.addEventListener('click', closePopup);
+
+// PCで開いたときに確認ダイアログ
+document.addEventListener("DOMContentLoaded", function () {
+    // ユーザーエージェントでPCかどうかを判定
+    function isPC() {
+        return !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    if (isPC()) {
+        const userConfirmed = confirm("このサイトは携帯やiPad向けです。本当にアクセスしますか？");
+
+        if (!userConfirmed) {
+            window.location.href = "https://www.google.com";
+        }
+    }
+});
