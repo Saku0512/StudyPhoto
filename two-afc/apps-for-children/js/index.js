@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (isPC()) {
-        const userConfirmed = confirm("このサイトは携帯やiPad向けです。本当にアクセスしますか？");
+        const userConfirmed = confirm("このwebアプリは携帯やiPad向けです。PCでアクセスしますか？");
 
         if (!userConfirmed) {
             window.location.href = "https://www.google.com";
