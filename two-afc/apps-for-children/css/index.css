@@ -2,8 +2,10 @@
     display: flex;
     justify-content: center;
     margin: 0 auto 0;
-    height: 400px;
-    width: 400px;
+    width: 40vh;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }
 .logo img {
     width: 100%;
@@ -35,10 +37,35 @@ a:hover {
     margin: 40px auto;
     gap: 20px;
     width: 80vw;
+    height: 50vh;
+    font-size: 5vw;
     a {
-        width: 100%;
+        width: 35%;
+        font-size: 5vw;
+        border-bottom: 1px #4870BD solid;
     }
     button {
-        width: 100%;
+        width: 50%;
+        height: 10%;
+        font-size: 5vw;
+        background-color: #4870BD;
+        color: white;
+        border: none;
+        margin-top: 5vh;
     }
+}
+
+/* ログイン関連 */
+.loginPopup {
+    display: none;
+}
+
+/* 保護者ログイン */
+.guardianPopup {
+    display: none;
+}
+
+/* サインアップ */
+.signupPopup {
+    display: none;
 }

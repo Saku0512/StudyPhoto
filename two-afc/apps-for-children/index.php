@@ -270,9 +270,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         -->
         <div class="index-buttons">
-            <a href="demo.html" class="demo">お試し</a>
-            <button class="login">ログイン</button>
-            <button class="gurdian">保護者用</button>
+            <a href="#demo" class="demo">Try Now ➡</a>
+            <button class="loginForm">Login</button>
+            <button class="guardianForm">Guardian</button>
+        </div>
+        <div class="overlay" id="overlay"></div>
+        <div class="loginPopup" id="loginPopup">
+            <h2>Welcome Back</h2>
+            <form id="loginForm" action="" method="post">
+                <input type="text" id="login_username" name="login_username" required autocomplete="username" placeholder="Username">
+                <input type="password" id="login_password" name="login_password" required autocomplete="current-password" placeholder="Password">
+                <button type="submit" name="login">LogIn</button>
+            </form>
+        </div>
+        <div class="signupPopup" id="signupPopup">
+            <h2>Signup For Free</h2>
+            <form id="signupForm" action="" method="post">
+                <input type="text" id="username" name="username" required placeholder="Username">
+                <input type="email" id="email" name="email" required placeholder="Email">
+                <input type="password" id="password" name="password" required placeholder="Password">
+                <button type="submit" name="signup">SignUp</button>
+            </form>
+        </div>
+        <div class="guardianPopup" id="guardianPopup">
+            <h2>Guardian Login</h2>
+            <form id="guardianForm" action="" method="post">
+                <input type="text" id="guardian_username" name="guardian_username" required autocomplete="username" placeholder="Child's Username">
+                <input type="password" id="guardian_password" name="guadian_password" required autocomplete="current-password" placeholder="Child's Password">
+                <button type="submit" name="guardian">LogIn</button>
+            </form>
         </div>
     </main>
 </body>
