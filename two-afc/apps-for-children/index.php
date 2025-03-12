@@ -212,63 +212,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="logo">
             <img src="./ui_image/logo.png" alt="logo" title="logo">
         </div>
-        <!--
-        <div class="text">
-            <ul class="loginbuttons">
-                <li class="tab active"><a href="#signup" >Sign Up</a></li>
-                <li class="tab"><a href="#login">Log In</a></li>
-                <li class="tab"><a href="#guardian">Guardian</a></li>
-            </ul>
-            <div class="tab-content">
-                <div id="signup">
-                    <h1>Sign Up for Free</h1>
-                    <form id="signupForm" action="" method="post">
-                        <div class="field-wrap">
-                            <label for="username">User Name<span class="req">*</span></label>
-                            <input type="text" id="username" name="username" required class="gradient" autocomplete="username"><br>
-                        </div>
-                        <div class="field-wrap">
-                            <label for="email">Email Address<span class="req">*</span></label>
-                            <input type="email" id="email" name="email" required class="gradient" autocomplete="email"><br>
-                        </div>
-                        <div class="field-wrap">
-                            <label for="password">Password<span class="req">*</span></label>
-                            <input type="password" id="password" name="password" required class="gradient" autocomplete="current-password"><br>
-                        </div>
-                        <button type="submit" class="btn btn-gradient">Sign Up</button>
-                    </form>
-                </div>
-                <div id="login">
-                    <h1>Welcome Back!</h1>
-                    <form id="loginForm" action="" method="post">
-                        <div class="field-wrap">
-                            <label for="login_username">User Name<span class="req">*</span></label>
-                            <input type="text" id="login_username" name="login_username" required class="gradient" autocomplete="username"><br>
-                        </div>
-                        <div class="field-wrap">
-                            <label for="login_password">Password<span class="req">*</span></label>
-                            <input type="password" id="login_password" name="login_password" required class="gradient" autocomplete="current-password"><br>
-                        </div>
-                        <button type="submit" name="login" class="btn btn-gradient" >Log In</button>
-                    </form>
-                </div>
-                <div id="guardian">
-                    <h1>Guardian Login</h1>
-                    <form id="guardianForm" action="" method="post">
-                        <div class="field-wrap">
-                            <label for="guardian_username">Child's User Name<span class="req">*</span></label>
-                            <input type="text" id="guardian_username" name="guardian_username" required class="gradient" autocomplete="username"><br>
-                        </div>
-                        <div class="field-wrap">
-                            <label for="guardian_id">Child's ID<span class="req">*</span></label>
-                            <input type="password" id="guardian_id" name="guardian_id" required class="gradient" autocomplete="current-password"><br>
-                        </div>
-                        <button type="submit" name="guardian" class="btn btn-gradient">Log In</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        -->
         <div class="index-buttons">
             <a href="#demo" class="demo">Try Now ➡</a>
             <button class="loginForm">Login</button>
