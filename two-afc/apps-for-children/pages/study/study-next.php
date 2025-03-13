@@ -11,6 +11,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <link rel="stylesheet" href="../../css/main.css" />
     <link rel="stylesheet" href="../../css/scss/load.css" />
     <link rel="stylesheet" href="../../css/study/study-next.css" />
+    <link rel="shortcut icon" href="../../favicon.ico">
     <script src="../../js/load.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script src="../../js/study-next.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script src="../../js/category-study.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>

@@ -133,6 +133,7 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/home.css" />
     <link rel="stylesheet" href="css/scss/load.css" />
+    <link rel="shortcut icon" href="favicon.ico">
     <script src="./js/load.js" defer></script>
     <script src="./js/home.js" defer></script>
     <title>ホーム</title>
