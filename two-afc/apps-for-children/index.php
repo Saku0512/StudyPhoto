@@ -14,6 +14,7 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
+// ランダムなIDを作成する関数
 function generateRandomID($conn) {
     $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     $id = "";
@@ -33,6 +34,71 @@ function generateRandomID($conn) {
     $stmt->close();
     return $id;
 }
+
+// ランダムなユーザーを作成する関数
+function generateRandomUser($conn) {
+    $characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $user = "";
+    do {
+        $user = "test_";
+        for($i = 0; $i < 4; $i++) {
+            $user .= $characters[rand(0, strlen($characters) -1)];
+        }
+
+        // 重複確認
+        $stmt = $conn->prepare("SELECT username FROM users WHERE username = ?");
+        $stmt->bind_param("s", $user);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    } while ($result->num_rows > 0); // 重複があれば再生成
+
+    $stmt->close();
+    return $user;
+}
+
+// ランダムなメールアドレスを作成する関数
+function generateRandomEmail($conn)  {
+    $characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $email = "";
+    do {
+        $email = "test_";
+        for($i = 0; $i < 4; $i++) {
+            $email .= $characters[rand(0, strlen($characters) -1)];
+        }
+        $email .= "@example.com";
+
+        // 重複確認
+        $stmt = $conn->prepare("SELECT email FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    } while ($result->num_rows > 0); // 重複があれば再生成
+
+    $stmt->close();
+    return $email;
+}
+
+// ランダムなパスワードを作成する関数
+function generateRandomPassword($conn) {
+    $characters = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $password = "";
+    do {
+        $password = "";
+        for($i = 0; $i < 12; $i++){
+            $password .= $characters[rand(0, strlen($characters) -1)];
+        }
+
+        // 重複確認
+        $stmt = $conn->prepare("SELECT password FROM users WHERE password = ?");
+        $stmt->bind_param("s", $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    } while ($result->num_rows > 0); // 重複があれば再生成
+
+    $stmt->close();
+    return $password;
+}
+
 
 $message = ""; //メッセージを格納する変数
 
@@ -96,11 +162,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // デフォルトのカテゴリーを追加
                     $defaultCategories = ["数学", "英語", "国語"];
                     foreach ($defaultCategories as $category) {
-                    $categorySql = "INSERT INTO categories (username, category_name) VALUES (?, ?)";
-                    $categoryStmt = $conn->prepare($categorySql);
-                    $categoryStmt->bind_param("ss", $dbUsername, $category);
-                    $categoryStmt->execute();
-                    $categoryStmt->close();
+                        $categorySql = "INSERT INTO categories (username, category_name) VALUES (?, ?)";
+                        $categoryStmt = $conn->prepare($categorySql);
+                        $categoryStmt->bind_param("ss", $dbUsername, $category);
+                        $categoryStmt->execute();
+                        $categoryStmt->close();
                     }
                 } else {
                     $message = "ユーザー登録失敗: " . $stmt->error;
@@ -150,6 +216,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn->close();
         } else {
             $message = "";
+        }
+    } else if (isset($_POST['test'])) {
+        $conn = new mysqli($servername, $username, $password, $db_name);
+
+        if ($conn->connect_error) {
+            die("接続失敗: " . $conn->connect_error);
+        }
+
+        $dbTestUserName = generateRandomUser($conn);
+        $dbTestMail = generateRandomEmail($conn);
+        $dbTestPassworod = generateRandomPassword($conn);
+        $dbTestId = generateRandomID($conn);
+
+        $hashed_password = password_hash($dbTestPassworod, PASSWORD_DEFAULT);
+        $sql = "INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            die("SQL文の準備失敗: " . $conn->error);
+        }
+
+        $stmt->bind_param("ssss", $dbTestId, $dbTestUserName, $dbTestMail, $hashed_password);
+
+        if ($stmt->execute()) {
+            $message = "テストユーザーが正常に登録されました。 このユーザーは1時間で自動的に削除されます";
+            // デフォルトのカテゴリーを追加
+            $defaultCategories = ["数学", "英語", "国語", "化学", "物理"];
+            foreach ($defaultCategories as $category) {
+                $categorySql = "INSERT INTO categories (username, category_name) VALUES (?, ?)";
+                $categoryStmt = $conn->prepare($categorySql);
+                $categoryStmt->bind_param("ss", $dbTestUserName, $category);
+                $categoryStmt->execute();
+                $categoryStmt->close();
+            }
+            // デフォルトでstudy_dataを入れる
+            $studySql = "INSERT INTO study_data (username, category, study_time, SspentTime, images, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, NOW() - INTERVAL ? DAY, NOW() - INTERVAL ? DAY)";
+            $studyStmt = $conn->prepare($studySql);
+            // 挿入データ（category, study_time, SspentTime, images, created_at, updated_at の日数）
+            $data = [
+                ['数学', '03:01:00', '10:20-13:21', 'L3Zhci93d3cvaHRtbC91cGxvYWRzL3BkZnMvZGpkYWs1ODJuY3B3cS5wZGY=', 7, 7],
+                ['英語', '05:30:00', '13:20-18:50', 'L3Zhci93d3cvaHRtbC91cGxvYWRzL3BkZnMvZmtkazg0b2FuZjRrai5wZGY=', 6, 6],
+                ['国語', '01:30:00', '10:34-12:04', 'L3Zhci93d3cvaHRtbC91cGxvYWRzL3BkZnMva2pkaGJlaTgzYjcybi5wZGY=', 5, 5],
+                ['化学', '08:20:00', '12:30-20:50', 'L3Zhci93d3cvaHRtbC91cGxvYWRzL3BkZnMvY2pka2FqM2tzODM5MS5wZGY=', 3, 5],
+                ['物理', '06:10:00', '14:20-20:30', 'L3Zhci93d3cvaHRtbC91cGxvYWRzL3BkZnMvcGpqZGs4NGg2bmNnZC5wZGY=', 1, 3]
+            ];
+            foreach ($data as $row) {
+                $studyStmt->bind_param("sssssii", $dbTestUserName, $row[0], $row[1], $row[2], $row[3], $row[4], $row[5]);
+                $studyStmt->execute();
+            }
+            $studyStmt->close();
+            // デフォルトでcomment_dataを入れる
+            $commentSql = "INSERT INTO comment_data (username, comment_text, study_date, created_at, updated_at)
+             VALUES (?, ?, DATE(NOW() - INTERVAL ? DAY), NOW() - INTERVAL ? DAY, NOW() - INTERVAL ? DAY)";
+            $commentStmt = $conn->prepare($commentSql);
+            // 挿入データ
+            $data = [
+                ['頑張ったね', 7],
+                ['たくさん勉強して偉いね', 6],
+                ['国語ってなんの勉強しているの？', 5],
+                ['勉強しすぎなんじゃないの？', 3],
+                ['たまには休みなよ～', 1]
+            ];
+            foreach ($data as $row) {
+                $commentStmt->bind_param("ssiii", $dbTestUserName, $row[0], $row[1], $row[1], $row[1]);
+                $commentStmt->execute();
+            }
+            $commentStmt->close();
+
+            // サインイン処理
+            $loginTestUserName = $dbTestUserName;
+            $loginTestPassword = $dbTestPassworod;
+            $loginSql = "SELECT * FROM users WHERE username = ?";
+            $loginStmt = $conn->prepare($loginSql);
+            $loginStmt->bind_param("s", $loginTestUserName);
+            $loginStmt->execute();
+            $loginResult = $loginStmt->get_result();
+            if ($loginResult->num_rows > 0) {
+                $user = $loginResult->fetch_assoc();
+                if (password_verify($loginTestPassword, $user['password'])){
+                    $message = "ログイン成功";
+                    session_start();
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['password'] = $loginTestPassword;
+                    header("Location: home.php");
+                } else {
+                    $message = "自動ログインに失敗しました";
+                }
+            }
         }
     } else if (isset($_POST['guardian'])) {
         // ログイン情報を取得
@@ -215,7 +371,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="./ui_image/logo.png" alt="logo" title="logo">
         </div>
         <div class="index-buttons">
-            <a href="#demo" class="demo">Try Now ➡</a>
+            <form id="testForm" action="" method="post">
+                <input type="hidden" name="test" value="try_now" />
+                <button type="submit" name="test" class="test">Try Now ➡</button>
+            </form>
             <button class="loginForm">Login</button>
             <button class="guardianForm">Guardian</button>
         </div>
