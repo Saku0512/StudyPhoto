@@ -228,10 +228,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dbTestMail = generateRandomEmail($conn);
         $dbTestPassworod = generateRandomPassword($conn);
         $dbTestId = generateRandomID($conn);
+        $dbTestDeleteAt = date("Y-m-d H:i:s", strtotime("+1 hour"));
 
         $hashed_password = password_hash($dbTestPassworod, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO users (id, username, email, password, delete_at) VALUES (?, ?, ?, ?, NOW() + INTERVAL 1 HOUR)";
         $stmt = $conn->prepare($sql);
+
+        
+        //自動削除
+        //`php/delete_test_user.php`
+        //$ crontab -e
+
+        // */30 * * * * php /var/www/html/ChildApp/two-afc/apps-for-children/php/delete_test_user.php
 
         if ($stmt === false) {
             die("SQL文の準備失敗: " . $conn->error);
