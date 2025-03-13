@@ -16,6 +16,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+    <link rel="shortcut icon" href="../../favicon.ico">
     <title>記録を振り返る</title>
 </head>
 <body>

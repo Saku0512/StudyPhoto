@@ -1,56 +1,80 @@
-document.querySelectorAll('.text input, .text textarea').forEach(function (element) {
-    element.addEventListener('keyup', handleEvent);
-    element.addEventListener('blur', handleEvent);
-    element.addEventListener('focus', handleEvent);
-});
+// ポップアップ表示
+const loginPopup = document.getElementById('loginPopup');
+const signupPopup = document.getElementById('signupPopup');
+const guardianPopup = document.getElementById('guardianPopup');
+const loginForm = document.querySelector('.loginForm');
+const guardianForm = document.querySelector('.guardianForm');
+const overlay = document.getElementById('overlay');
+const loginLink = document.querySelector('.loginPopup .message a');
+const signupLink = document.querySelector('.signupPopup .message a');
+const closeBtns = document.querySelectorAll('.close-btn');
 
-function handleEvent(e) {
-    var label = this.previousElementSibling;
-    
-    if (e.type === 'keyup') {
-        if (this.value === '') {
-            label.classList.remove('active', 'highlight');
-        } else {
-            label.classList.add('active', 'highlight');
-        }
-    } else if (e.type === 'blur') {
-        if (this.value === '') {
-            label.classList.remove('active', 'highlight');
-        } else {
-            label.classList.remove('highlight');
-        }
-    } else if (e.type === 'focus') {
-        if (this.value === '') {
-            label.classList.remove('highlight');
-        } else {
-            label.classList.add('highlight');
-        }
-    }
+function showPopup(popup) {
+    closePopup();
+    overlay.style.display = 'block';
+    popup.style.display = 'block';
+    setTimeout(() => {
+        popup.classList.remove("hide"); // フェードイン
+    }, 200);
 }
 
-// タブのクリックイベント
-document.querySelectorAll('.tab a').forEach(function (tab) {
-    tab.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        var parent = this.parentElement;
-        parent.classList.add('active');
-
-        parent.parentElement.querySelectorAll('.active').forEach(function (sibling) {
-            if (sibling !== parent) sibling.classList.remove('active');
-        });
-
-        var target = document.querySelector(this.getAttribute('href'));
-
-        document.querySelectorAll('.tab-content > div').forEach(function (content) {
-            if (content !== target) content.style.display = 'none';
-        });
-
-        target.style.display = 'block';
-        target.style.opacity = 0;
+function togglePopup(popupToShow, popupToHide) {
+    popupToHide.classList.add('hide');
+    setTimeout(() => {
+        popupToHide.style.display = 'none';
+        popupToShow.style.display = 'block';
         setTimeout(() => {
-            target.style.transition = 'opacity 0.6s';
-            target.style.opacity = 1;
+            popupToShow.classList.remove('hide');
         }, 10);
+    }, 200);
+}
+
+function closePopup() {
+    overlay.style.display = 'none';
+    loginPopup.style.display = 'none';
+    loginPopup.classList.add('hide');
+    guardianPopup.style.display = 'none';
+    guardianPopup.classList.add('hide');
+    signupPopup.style.display = 'none';
+}
+
+loginForm.addEventListener('click', () => {
+    showPopup(loginPopup);
+});
+
+loginLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    togglePopup(signupPopup, loginPopup);
+});
+
+signupLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    togglePopup(loginPopup, signupPopup);
+});
+
+guardianForm.addEventListener('click', () => {
+    showPopup(guardianPopup);
+});
+
+closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        closePopup();
     });
+});
+overlay.addEventListener('click', closePopup);
+
+// PCで開いたときに確認ダイアログ
+document.addEventListener("DOMContentLoaded", function () {
+    // ユーザーエージェントでPCかどうかを判定
+    function isPC() {
+        return !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    if (isPC()) {
+        const userConfirmed = confirm("このwebアプリは携帯やiPad向けです。PCでアクセスしますか？");
+
+        if (!userConfirmed) {
+            window.location.href = "https://www.google.com";
+        }
+    }
 });

@@ -1,9 +1,13 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
 .logo {
     display: flex;
     justify-content: center;
     margin: 0 auto 0;
-    height: 400px;
-    width: 400px;
+    width: 40vh;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }
 .logo img {
     width: 100%;
@@ -14,7 +18,7 @@
     box-sizing: border-box;
 }
 html {
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 body {
     background: white;
@@ -29,7 +33,120 @@ a:hover {
 .index-buttons {
     display: flex;
     justify-content: center;
+    text-align: center;
+    align-items: center;
     flex-direction: column;
     margin: 40px auto;
     gap: 20px;
+    width: 80vw;
+    height: 50vh;
+    font-size: 5vw;
+    .loginForm, .guardianForm {
+        width: 50%;
+        height: 10%;
+        font-size: 5vw;
+        background-color: #4870BD;
+        color: white;
+        border: none;
+        margin-top: 5vh;
+    }
+    #testForm {
+        display: flex;
+        width: 100%;
+        height: 10%;
+        text-align: center;
+        align-items: center;
+        margin-top: 5vh;
+        justify-content: center;
+        .test {
+            padding: 0;
+            width: 50%;
+            height: 100%;
+            font-size: 5vw;
+        }
+    }
+}
+
+/* ログイン関連 */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+.loginPopup, .signupPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    width: 80vw;
+    text-align: center;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.hide {
+    opacity: 0;
+    transform: translate(-50%, -50%);
+}
+.guardianPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    width: 80vw;
+    text-align: center;
+}
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 5vw;
+}
+#headline {
+    font-size: 5vw;
+    margin-bottom: 2vh;
+}
+form input {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin-bottom: 2vh;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 5vw;
+}
+form button {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #4870BD;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 5vw;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+}
+form p {
+    font-size: 3vw;
 }
