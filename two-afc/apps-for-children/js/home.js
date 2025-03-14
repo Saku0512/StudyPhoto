@@ -256,7 +256,11 @@ document.querySelectorAll('.copyName, .copyId, .copyEmail, .copyPass').forEach(f
     });
 });
 
-document.querySelector('.contact').addEventListener('click', function(e) {
-    e.preventDefault();
-    alert('開発中です。');
+// チェックボックスの要素を取得
+const languageSwitch = document.getElementById("switch");
+// チェックボックスにイベントリスナーを追加
+languageSwitch.addEventListener("change", function() {
+    // フォームを自動的に送信
+    this.form.submit();
+    console.log("sousin");
 });

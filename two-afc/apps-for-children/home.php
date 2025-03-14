@@ -1,20 +1,9 @@
 <?php
 session_start();
 
-//データベースにアクセス
-$host = "localhost";
-$username = "childapp_user";
-$password = "sdTJRTPutuXQ-Wlb2WBVE"; // 正しいパスワードを使用
-$dbname = "childapp_test";
+require_once('php/db_connection.php');
 
-//データベースにアクセス
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo "接続失敗: " . $e->getMessage();
-    exit();
-}
+$pdo = getDatabaseConnection();
 
 //ユーザーIDをセッションから取得
 $userId = $_SESSION['user_id'] ?? null;
@@ -30,6 +19,19 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // POSTリクエストで更新処理が送信された場合
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    //var_dump($_SESSION);
+    if (isset($_POST['language'])) {
+        if ($_POST['language'] == 'ja') {
+            $_SESSION['language'] = 'ja'; // 日本語を選択
+        }else {
+            $_SESSION['language'] = 'en'; // 英語を選択
+        }
+        // 言語変更後にリダイレクト
+        header("Location: " . $_SERVER['REQUEST_URI']);
+        exit();
+    } else {
+        $_SESSION['language'] = 'en';
+    }
     try {
         // JSONデータを受け取る
         $input = json_decode(file_get_contents('php://input'), true);
@@ -52,7 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if (!$oldUsername) {
                     // ユーザーが見つからなかった場合
-                    throw new Exception("ユーザーが見つかりませんでした。");
+                    if ($_SESSION['language'] == 'ja') {
+                        throw new Exception("ユーザーが見つかりませんでした。");
+                    } elseif ($_SESSION['language'] == 'en') {
+                        throw new Exception("User not found.");
+                    }
                 }
 
                 // ユーザー名が既に存在するかをチェック
@@ -64,33 +70,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($count > 0) {
                     // ユーザー名がすでに存在する場合は、エラーメッセージを返す
-                    echo json_encode(['success' => false, 'error' => 'このユーザー名は既に使用されています。']);
+                    if ($_SESSION['language'] == 'ja') {
+                        echo json_encode(['success' => false, 'error' => 'このユーザー名は既に使用されています。']);
+                    } elseif ($_SESSION['language'] == 'en') {
+                        echo json_encode(['success' => false, 'error' => 'This user name is already in use.']);
+                    }
                     exit();
                 }
-
                 // 最初に、users テーブルの username を更新
                 $stmt = $pdo->prepare("UPDATE users SET username = :username WHERE id = :id");
                 $stmt->bindParam(":username", $newValue);
                 $stmt->bindParam(":id", $userId);
                 if (!$stmt->execute()) {
-                    throw new Exception("users テーブルの更新に失敗しました。");
-                }
-
-                // 次に、categories テーブルの関連するレコードを更新
-                $stmt = $pdo->prepare("UPDATE categories SET username = :newUsername WHERE username = :oldUsername");
-                $stmt->bindParam(":newUsername", $newValue);
-                $stmt->bindParam(":oldUsername", $oldUsername);
-
-                if (!$stmt->execute()) {
-                    throw new Exception("categories テーブルの更新に失敗しました。");
-                }
-
-                // さらに、study_data テーブルの関連するレコードを更新
-                $stmt = $pdo->prepare("UPDATE study_data SET username = :newUsername WHERE username = :oldUsername");
-                $stmt->bindParam(":newUsername", $newValue);
-                $stmt->bindParam(":oldUsername", $oldUsername);
-                if (!$stmt->execute()) {
-                    throw new Exception("study_data テーブルの更新に失敗しました。");
+                    if ($_SESSION['language'] == 'ja') {
+                        throw new Exception("users テーブルの更新に失敗しました。");
+                    } elseif ($_SESSION['language'] == 'en') {
+                        throw new Exception("Failed to update the users table.");
+                    }
                 }
             } elseif ($field === 'passwordField') {
                 // パスワードの更新処理
@@ -99,7 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bindParam(":password", $newValue);
                 $stmt->bindParam(":id", $userId);
                 if (!$stmt->execute()) {
-                    throw new Exception("パスワードの更新に失敗しました。");
+                    if ($_SESSION['language'] == 'ja') {
+                        throw new Exception("パスワードの更新に失敗しました。");
+                    } elseif ($_SESSION['language'] == 'en') {
+                        throw new Exception("Failed to update the password.");
+                    }
                 }
             }
 
@@ -109,7 +109,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['success' => true]);
         } else {
             // 必要なデータが不足している場合
-            throw new Exception('Invalid data received.');
+            if ($_SESSION['language'] == 'ja') {
+                throw new Exception('データが不足しています。');
+            } elseif ($_SESSION['language'] == 'en') {
+                throw new Exception('Invalid data received.');
+            }
         }
     } catch (Exception $e) {
         $pdo->rollBack();  // エラー発生時にロールバック
@@ -126,7 +130,7 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
 
 ?>
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -141,59 +145,107 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
 <body>
     <div class="loading active">
         <div class="loading__icon"></div>
-        <p class="loading__text">loading</p>
+        <p class="loading__text">
+            <?php echo ($_SESSION['language'] == 'ja' ? '読み込み中' : 'loading'); ?>
+        </p>
     </div>
     <main class="main">
         <div class="logo">
             <img src="./ui_image/logo.png" alt="logo" title="logo">
         </div>
         <div class="contents">
-            <a href="./pages/study/study.html" class="study">勉強する</a>
+            <a href="./pages/study/study.html" class="study">
+                <?php echo ($_SESSION['language'] == 'ja' ? '勉強する' : 'Study'); ?>
+            </a>
             <div class="space-h"></div>
-            <a href="./pages/record/record_time.php" class="note">記録を見る</a>
+            <a href="./pages/record/record_time.php" class="note">
+                <?php echo ($_SESSION['language'] == 'ja' ? '記録を見る' : 'View Record'); ?>
+            </a>
         </div>
         <div class="footer" type="button">
-            <button class="setting" onclick="showSPopup()">設定</button>
+            <button class="setting" onclick="showSPopup()">
+                <?php echo ($_SESSION['language'] == 'ja' ? '設定' : 'Settings'); ?>
+            </button>
             <div class="settingPanel" id="settingPanel">
                 <div class="setting_header">
-                    <p>設定</p>
-                    <div>
-                        <label for="switch" class="switch_label">
-                            <span class="title">English</span>
-                            <div class="swith">
-                                <input type="checkbox" id="switch" />
+                    <p>
+                        <?php echo ($_SESSION['language'] == 'ja' ? '設定' : 'Settings'); ?>
+                    </p>
+                    <form method="post" action="">
+                        <div>
+                            <label for="switch" class="switch_label">
+                                <span class="title">
+                                    <?php echo ($_SESSION['language'] == 'ja' ? '英語' : 'English'); ?>
+                                </span>
+                                <div class="swith">
+                                <input type="hidden" name="language" value="en" />
+                                <input type="checkbox" id="switch" name="language" value="ja" <?php echo ($_SESSION['language'] == 'ja' ? 'checked' : ''); ?> />
                                 <div class="circle"></div>
                                 <div class="base"></div>
-                            </div>
-                            <span class="title">Japanese</span>
-                        </label>
-                    </div>
+                                </div>
+                                <span class="title">
+                                    <?php echo ($_SESSION['language'] == 'ja' ? '日本語' : 'Japanese'); ?>
+                                </span>
+                            </label>
+                        </div>
+                    </form>
                 </div>
-                <p>ユーザー名: 
+                <p>
+                    <?php echo ($_SESSION['language'] == 'ja' ? 'ユーザー名' : 'Username'); ?>: 
                     <img class="hide_show_Name" id="toggleName" src="./ui_image/close_eye.png">
                     <img class="editName" id="editName" src="./ui_image/pencil.png">
                     <img class="copyName" id="copyName" src="./ui_image/copy_mark.png">
-                    <pre class="code-block" id="nameField" data-name="<?php echo htmlspecialchars($user['username']); ?>"><?php echo $nameHidden; ?></pre></p>
-                <p>ユーザーID: 
+                    <pre class="code-block" id="nameField" data-name="<?php echo htmlspecialchars($user['username']); ?>"><?php echo $nameHidden; ?></pre>
+                </p>
+                <p>
+                    <?php echo ($_SESSION['language'] == 'ja' ? 'ユーザーID' : 'User ID'); ?>: 
                     <img class="hide_show_Id" id="toggleId" src="./ui_image/close_eye.png">
                     <img class="copyId" id="copyId" src="./ui_image/copy_mark.png">
-                    <pre class="code-block" id="idField" data-id="<?php echo htmlspecialchars($user['id']); ?>"><?php echo $idHidden; ?></pre></p>
-                <p>メールアドレス: 
+                    <pre class="code-block" id="idField" data-id="<?php echo htmlspecialchars($user['id']); ?>"><?php echo $idHidden; ?></pre>
+                </p>
+                <p>
+                    <?php echo ($_SESSION['language'] == 'ja' ? 'メールアドレス' : 'Email Address'); ?>: 
                     <img class="hide_show_Email" id="toggleEmail" src="./ui_image/close_eye.png">
                     <img class="copyEmail" id="copyEmail" src="./ui_image/copy_mark.png">
-                    <pre class="code-block" id="emailField" data-email="<?php echo htmlspecialchars($user['email']); ?>"><?php echo $emailHidden; ?></pre></p>
-                <p>パスワード: 
+                    <pre class="code-block" id="emailField" data-email="<?php echo htmlspecialchars($user['email']); ?>"><?php echo $emailHidden; ?></pre>
+                </p>
+                <p>
+                    <?php echo ($_SESSION['language'] == 'ja' ? 'パスワード' : 'Password'); ?>: 
                     <img class="hide_show_Pass" id="togglePass" src="./ui_image/close_eye.png">
                     <img class="editPass" id="editPass" src="./ui_image/pencil.png">
                     <img class="copyPass" id="copyPass" src="./ui_image/copy_mark.png">
-                    <pre class="code-block" id="passwordField" data-password="<?php echo htmlspecialchars($_SESSION['password']); ?>"><?php echo $passwordHidden; ?></pre></p>
+                    <pre class="code-block" id="passwordField" data-password="<?php echo htmlspecialchars($_SESSION['password']); ?>"><?php echo $passwordHidden; ?></pre>
+                </p>
                 <div class="button-container2">
-                    <button onclick="hideSPopup()">閉じる</button>
-                    <button class="logout" onclick="window.location.href='php/logout.php'">ログアウト</button>
+                    <button onclick="hideSPopup()">
+                        <?php echo ($_SESSION['language'] == 'ja' ? '閉じる' : 'Close'); ?>
+                    </button>
+                    <button class="logout" onclick="window.location.href='php/logout.php'">
+                        <?php echo ($_SESSION['language'] == 'ja' ? 'ログアウト' : 'Logout'); ?>
+                    </button>
                 </div>
             </div>
-            <a href="" class="contact">問い合わせ</a>
+            <a href="" class="contact">
+                <?php echo ($_SESSION['language'] == 'ja' ? '問い合わせ' : 'Contact Us'); ?>
+            </a>
         </div>
     </main>
+    <input type="hidden" id="hidden_language" value="<?php echo ($_SESSION['language']); ?>" />
+    <script type="text/javascript" defer>
+        document.querySelector('.contact').addEventListener('click', function(e) {
+            const language = document.getElementById("hidden_language").value;
+            let message;
+
+            // 言語に応じてメッセージを切り替える
+            if (language === 'ja') {
+                message = '開発中です。';
+            } else if (language === 'en') {
+                message = 'Under development.';
+            }
+
+            e.preventDefault();
+            alert(message);  // 言語に応じたメッセージを表示
+        });
+    </script>
 </body>
 </html>
