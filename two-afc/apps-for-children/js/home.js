@@ -262,5 +262,4 @@ const languageSwitch = document.getElementById("switch");
 languageSwitch.addEventListener("change", function() {
     // フォームを自動的に送信
     this.form.submit();
-    console.log("sousin");
 });
