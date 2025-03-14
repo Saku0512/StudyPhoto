@@ -1,3 +1,20 @@
+const language = document.getElementById("hidden_language").value;
+let langday;
+let langcomment;
+let locale;
+let dataFormat;
+if (language === 'ja') {
+    langday = '日付';
+    langcomment = 'コメント';
+    locale = 'ja';
+    dataFormat = 'Y-m-d'; // YYYY-MM-DD
+} else if (language === 'en') {
+    langday = 'Date';
+    langcomment = 'Comment';
+    locale = 'en';
+    dataFormat = 'm-d-Y'; // MM-DD-YYYY
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     fetch('../../php/record/fetch_comment.php')
         .then(response => response.json())
@@ -11,8 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <table>
                     <thead>
                         <tr>
-                            <th>日付</th>
-                            <th>コメント</th>
+                            <th>${langday}</th>
+                            <th>${langcomment}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -20,8 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const availableDates = new Set();
             data.forEach(comment => {
-                tableHTML += `<tr><td>${comment.study_date}</td><td>${comment.comment_text}</td></tr>`;
-                availableDates.add(comment.study_date);
+                // 日付をフォーマット
+                const studyDate = new Date(comment.study_date);
+                const formattedDate = language === 'ja'
+                    ? studyDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }) // 例: 2025年3月14日
+                    : studyDate.toLocaleDateString('en-US'); // 例: 03/14/2025
+
+                tableHTML += `<tr><td>${formattedDate}</td><td>${comment.comment_text}</td></tr>`;
             });
             
             tableHTML += `
@@ -32,9 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // カレンダーの設定
             flatpickr("#commentDate", {
-                locale: 'ja', // 日本語ロケールを設定
+                locale: locale, // 日本語ロケールを設定
                 enable: Array.from(availableDates), // 有効な日付を設定
-                dateFormat: "Y-m-d",
+                dateFormat: dataFormat,
                 onChange: function(selectedDates, dateStr, instance) {
                     fetch(`../../php/record/fetch_date_comment.php?date=${dateStr}`)
                         .then(response => response.json())
@@ -47,8 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>日付</th>
-                                            <th>コメント</th>
+                                            <th>${langday}</th>
+                                            <th>${langcomment}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -98,14 +120,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>日付</th>
-                                        <th>コメント</th>
+                                        <th>${langday}</th>
+                                        <th>${langcomment}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                         `;
                         data.forEach(comment => {
-                            filteredTableHTML += `<tr><td>${comment.study_date}</td><td>${comment.comment_text}</td></tr>`;
+                            // 日付をフォーマット
+                            const studyDate = new Date(comment.study_date);
+                            const formattedDate = language === 'ja'
+                                ? studyDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }) // 例: 2025年3月14日
+                                : studyDate.toLocaleDateString('en-US'); // 例: 03/14/2025
+            
+                            filteredTableHTML += `<tr><td>${formattedDate}</td><td>${comment.comment_text}</td></tr>`;
                         });
                         filteredTableHTML += `
                                 </tbody>

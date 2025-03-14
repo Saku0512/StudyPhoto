@@ -1,4 +1,5 @@
 <?php
+session_start();
 $CommentNonce = base64_encode(random_bytes(16));
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $CommentNonce . "' https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js; style-src 'self' https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css");
 ?>
@@ -17,12 +18,17 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
     <link rel="shortcut icon" href="../../favicon.ico">
-    <title>記録を振り返る</title>
+    <title>
+        <?php echo ($_SESSION['language'] == 'ja' ? '記録を振り返る' : 'View Record'); ?>
+    </title>
 </head>
 <body>
+    <input type="hidden" id="hidden_language" value="<?php echo ($_SESSION['language']); ?>" />
     <div class="loading active">
         <div class="loading__icon"></div>
-        <p class="loading__text">loading</p>
+        <p class="loading__text">
+            <?php echo ($_SESSION['language'] == 'ja' ? '読み込み中' : 'loadong'); ?>
+        </p>
     </div>
     <main>
         <div class="tab">
@@ -35,18 +41,24 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
         <div id="commentSection" class="section">
             <div class="comment-header">
                 <div class="comment-date-input-container">
-                    <p>日付で検索</p>
+                    <p>
+                        <?php echo ($_SESSION['language'] == 'ja' ? '日付を検索' : 'Search by Date'); ?>
+                    </p>
                     <input type="date" id="commentDate" class="comment-date-input">
                 </div>
                 <div class="comment-textSearch-input-container">
-                    <p>キーワードで検索</p>
+                    <p>
+                        <?php echo ($_SESSION['language'] == 'ja' ? 'キーワードで検索' : 'Search by keyword'); ?>
+                    </p>
                     <div class="input-with-icon">
-                        <input type="text" id="commentText" class="comment-textSearch-input" placeholder="キーワードで検索">
+                        <input type="text" id="commentText" class="comment-textSearch-input" placeholder="<?php echo ($_SESSION['language'] == 'ja' ? 'キーワードで検索' : 'Search by keyword'); ?>">
                         <img src="../../ui_image/search.png" alt="Search Icon" id="searchIcon" class="search-icon">
                     </div>
                 </div>
             </div>
-            <button id="clearButton" class="clear-button">クリア</button>
+            <button id="clearButton" class="clear-button">
+                <?php echo ($_SESSION['language'] == 'ja' ? 'クリア' : 'Clear'); ?>
+            </button>
             <div class="comment-list">
                 <!-- 動的にコメントを表示 -->
             </div>
