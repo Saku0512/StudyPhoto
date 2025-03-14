@@ -155,7 +155,20 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
         <div class="footer" type="button">
             <button class="setting" onclick="showSPopup()">設定</button>
             <div class="settingPanel" id="settingPanel">
-                <p>設定</p>
+                <div class="setting_header">
+                    <p>設定</p>
+                    <div>
+                        <label for="switch" class="switch_label">
+                            <span class="title">English</span>
+                            <div class="swith">
+                                <input type="checkbox" id="switch" />
+                                <div class="circle"></div>
+                                <div class="base"></div>
+                            </div>
+                            <span class="title">Japanese</span>
+                        </label>
+                    </div>
+                </div>
                 <p>ユーザー名: 
                     <img class="hide_show_Name" id="toggleName" src="./ui_image/close_eye.png">
                     <img class="editName" id="editName" src="./ui_image/pencil.png">
