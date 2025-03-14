@@ -87,9 +87,12 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <div id="cropContainer_overlay"></div>
     <div id="cropContainer">
         <p>トリミングしたい部分を選択してください</p>
-        <img id="previewImage">
+        <div id="crop_div">
+            <img id="previewImage">
+        </div>
         <button id="cropButton">トリミングを実行</button>
     </div>
+    <div class="photo_overlay" id="photo_overlay"></div>
     <div class="photo">
         <button class="photoSelect" >画像を追加</button>
         <button class="photoDelete" >画像を削除</button>

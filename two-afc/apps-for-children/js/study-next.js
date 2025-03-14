@@ -1,6 +1,7 @@
 let selectedFiles = []; // 選択された画像を管理する配列
 let inputCount = 0; // 作成されたinputタグの数を管理する変数
 
+// 時間表示する
 document.addEventListener('DOMContentLoaded', () => {
     const elapsedSeconds = parseInt(localStorage.getItem('stopwatchTime'), 10) || 0;
 
@@ -16,20 +17,59 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('timer-display').textContent = timeString;
 
 });
+// #photo_overlayの設定
+const overlay = document.getElementById('photo_overlay');
+const addButton = document.querySelector('.photoSelect');
+const deleteButton = document.querySelector('.photoDelete');
+function showOverlay() {
+    overlay.style.display = 'block';
+    setTimeout(() => {
+        overlay.style.opacity = '1';
+    }, 10); // 少し遅延を入れてフェードイン
+}
+function hideOverlay() {
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 300); // 少し遅延を入れてフェードアウト
+}
+addButton.addEventListener('click', showOverlay);
+//deleteButton.addEventListener('click', showOverlay);
+// オーバーレイをクリックしたら閉じる
+overlay.addEventListener('click', () => {
+    hideOverlay();
+    hidePhotoOptionsPopup();
+});
+
 // 写真の追加ボタン
 document.querySelector(".photoSelect").addEventListener('click', showPhotoOptions);
 // 写真の削除ボタン
 document.querySelector(".photoDelete").addEventListener('click', showDeletePhotoPopup);
 // 写真撮影ボタン
-document.querySelector(".photoGraph").addEventListener('click', capturePhoto);
+document.querySelector(".photoGraph").addEventListener('click', () => {
+     capturePhoto();
+     hideOverlay();
+});
 // 写真選択ボタン
-document.querySelector(".photo-Select").addEventListener('click', selectPhoto);
+document.querySelector(".photo-Select").addEventListener('click', () => {
+     selectPhoto();
+     hideOverlay();
+});
 // 写真キャンセルボタン
-document.querySelector(".cancel_photo").addEventListener('click', hidePhotoOptionsPopup);
+document.querySelector(".cancel_photo").addEventListener('click', () => {
+    hidePhotoOptionsPopup();
+    hideOverlay();
+});
 // 写真削除キャンセルボタン
-document.querySelector(".delete_cancel").addEventListener('click', hideDeletePhotoPopup);
+document.querySelector(".delete_cancel").addEventListener('click', () => {
+    hideDeletePhotoPopup();
+    hideOverlay();
+});
 // 写真削除ボタン
-document.querySelector(".delete_done").addEventListener('click', deleteSelectedPhotos);
+document.querySelector(".delete_done").addEventListener('click', () => {
+    deleteSelectedPhotos();
+    hideOverlay();
+});
 
 function saveStudySession() {
     return new Promise((resolve, reject) => {
@@ -169,6 +209,7 @@ function showDeletePhotoPopup() {
     if(selectedFiles.length === 0) {
         alert("削除できる写真がありません");
     }else {
+        showOverlay();
         const deletePhotoPopup = document.getElementById("deletePhotoPopup");
         const deletePhotoList = document.getElementById("deletePhotoList");
         deletePhotoList.innerHTML = ""; // 以前の内容をクリア
