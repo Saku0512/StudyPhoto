@@ -1,4 +1,6 @@
 const recordChartContext = document.getElementById('studyChart').getContext('2d');
+// 言語設定
+const language = document.getElementById("hidden_language").value;
 let recordChartInstance;
 
 // 現在の表示期間を追跡するための変数
@@ -61,20 +63,37 @@ function updateSpanSelectText(unit) {
     
     switch(unit) {
         case 'day':
-            spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月${currentDate.getDate()}日`;
+            if (language === 'ja') {
+                spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月${currentDate.getDate()}日`;
+            } else if (language === 'en') {
+                spanText.textContent = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+            }
             break;
         case 'week':
             const weekStart = new Date(currentDate);
             weekStart.setDate(currentDate.getDate() - currentDate.getDay());
             const weekEnd = new Date(weekStart);
             weekEnd.setDate(weekStart.getDate() + 6);
-            spanText.textContent = `${weekStart.getMonth() + 1}月${weekStart.getDate()}日～${weekEnd.getMonth() + 1}月${weekEnd.getDate()}日`;
+            if (language === 'ja') {
+                spanText.textContent = `${weekStart.getMonth() + 1}月${weekStart.getDate()}日～${weekEnd.getMonth() + 1}月${weekEnd.getDate()}日`;
+            } else if (language === 'en') {
+                spanText.textContent = `${weekStart.getMonth() + 1}/${weekStart.getDate()} - ${weekEnd.getMonth() + 1}/${weekEnd.getDate()}`;
+            }
             break;
         case 'month':
-            spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`;
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            if (language === 'ja') {
+                spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`;
+            } else if (language === 'en') {
+                spanText.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            }
             break;
         case 'year':
-            spanText.textContent = `${currentDate.getFullYear()}年`;
+            if (language === 'ja') {
+                spanText.textContent = `${currentDate.getFullYear()}年`;
+            } else if (language === 'en') {
+                spanText.textContent = `${currentDate.getFullYear()}`;
+            }
             break;
     }
 }
@@ -193,15 +212,26 @@ function createTimeChart(labelUnit) {
         );
 
         let labels;
-        switch(labelUnit) {
+        const daysOfWeek = {
+            ja: ['日', '月', '火', '水', '木', '金', '土'],
+            en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        };
+        const monthsOfYear = {
+            ja: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        };
+        
+        switch (labelUnit) {
             case 'day':
-                labels = Array.from({length: 24}, (_, i) => `${i}時`);
+                labels = Array.from({ length: 24 }, (_, i) => 
+                    language === 'ja' ? `${i}時` : `${i}:00`
+                );
                 break;
             case 'week':
-                labels = ['日', '月', '火', '水', '木', '金', '土'].map((day, i) => {
+                labels = daysOfWeek[language].map((day, i) => {
                     const date = new Date(weekRange.start);
                     date.setDate(date.getDate() + i);
-                    return `${day}`;
+                    return day;
                 });
                 break;
             case 'month':
@@ -210,18 +240,28 @@ function createTimeChart(labelUnit) {
                     currentDate.getMonth() + 1,
                     0
                 ).getDate();
-                labels = Array.from({length: daysInMonth}, (_, i) => `${i + 1}日`);
+                labels = Array.from({ length: daysInMonth }, (_, i) => 
+                    language === 'ja' ? `${i + 1}日` : `${i + 1}`
+                );
                 break;
             case 'year':
-                labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+                labels = monthsOfYear[language];
                 break;
+        }
+
+        if (language === 'ja') {
+            label = '勉強時間(時間)';
+            text = '時間(h)';
+        } else if (language === 'en') {
+            label = 'Study Time (Hours)';
+            text = 'Hours';
         }
 
         // データの整形
         const chartData = {
             labels: labels,
             datasets: [{
-                label: '勉強時間(時間)',
+                label: label,
                 data: new Array(labels.length).fill(0),
                 backgroundColor: '#4870BD',
                 borderColor: '#4870BD',
@@ -247,7 +287,7 @@ function createTimeChart(labelUnit) {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: '時間(h)',
+                            text: text,
                             font: {
                                 size: window.innerWidth * 0.03
                             }

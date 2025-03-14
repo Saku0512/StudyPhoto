@@ -1,4 +1,5 @@
 <?php
+session_start();
 $TimeNonce = base64_encode(random_bytes(16));
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $TimeNonce . "' https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js https://cdn.jsdelivr.net/npm/chart.js https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js;");
 ?>
@@ -19,14 +20,19 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <script src="../../js/record.js" nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_tab.js" defer></script>
     <link rel="shortcut icon" href="../../favicon.ico">
-    <title>記録を振り返る</title>
+    <title>
+        <?php echo ($_SESSION['language'] == 'ja' ? '記録を振り返る' : 'View Record'); ?>
+    </title>
 </head>
 <body>
     <div class="loading active">
         <div class="loading__icon"></div>
-        <p class="loading__text">loading</p>
+        <p class="loading__text">
+            <?php echo ($_SESSION['language'] == 'ja' ? '読み込み中' : 'loadong'); ?>
+        </p>
     </div>
     <main>
+        <input type="hidden" id="hidden_language" value="<?php echo ($_SESSION['language']); ?>" />
         <div class="tab">
             <a href="../../home.php"><img src="../../ui_image/return.png" alt="Return"></a>
             <a href="./record_time.php" id="timeButton" type="button"><img src="../../ui_image/clock.png" alt="Time Record"></a>
@@ -36,10 +42,18 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
         <div id="timerSection" class="section">
             <div class="side_unit">
                 <div class="side_unit_button">
-                    <button class="side_unit_day">日</button>
-                    <button class="side_unit_week">週</button>
-                    <button class="side_unit_month">月</button>
-                    <button class="side_unit_year">年</button>
+                    <button class="side_unit_day">
+                        <?php echo ($_SESSION['language'] == 'ja' ? '日' : 'Day'); ?>
+                    </button>
+                    <button class="side_unit_week">
+                        <?php echo ($_SESSION['language'] == 'ja' ? '週' : 'Week'); ?>
+                    </button>
+                    <button class="side_unit_month">
+                        <?php echo ($_SESSION['language'] == 'ja' ? '月' : 'Month'); ?>
+                    </button>
+                    <button class="side_unit_year">
+                        <?php echo ($_SESSION['language'] == 'ja' ? '年' : 'Year'); ?>
+                    </button>
                 </div>
             </div>
             <div class="span_select">

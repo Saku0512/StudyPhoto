@@ -1,4 +1,5 @@
 <?php
+session_start();
 $NoteNonce = base64_encode(random_bytes(16));
 header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js 'nonce-" . $NoteNonce . "'; style-src 'self' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js;");
 ?>
@@ -15,12 +16,17 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' https://c
     <script src="../../js/category-record.js" nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script nonce="<?= htmlspecialchars($NoteNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_tab.js" defer></script>
     <link rel="shortcut icon" href="../../favicon.ico">
-    <title>記録を振り返る</title>
+    <title>
+        <?php echo ($_SESSION['language'] == 'ja' ? '記録を振り返る' : 'View Record'); ?>
+    </title>
 </head>
 <body>
+    <input type="hidden" id="hidden_language" value="<?php echo ($_SESSION['language']); ?>" />
     <div class="loading active">
         <div class="loading__icon"></div>
-        <p class="loading__text">loading</p>
+        <p class="loading__text">
+            <?php echo ($_SESSION['language'] == 'ja' ? '読み込み中' : 'loadong'); ?>
+        </p>
     </div>
     <main>
         <div class="tab">

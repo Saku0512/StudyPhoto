@@ -1,5 +1,6 @@
 let selectedFiles = []; // 選択された画像を管理する配列
 let inputCount = 0; // 作成されたinputタグの数を管理する変数
+const language = document.getElementById("hidden_language").value;
 
 // 時間表示する
 document.addEventListener('DOMContentLoaded', () => {
@@ -97,7 +98,11 @@ function saveStudySession() {
             if (data.success) {
                 resolve(data);
             } else {
-                reject(new Error(data.error || 'データの保存に失敗しました'));
+                if (language == 'ja') {
+                    reject(new Error(data.error || 'データの保存に失敗しました'));
+                } else {
+                    reject(new Error(data.error || 'Failed to save data'));
+                }
             }
         })
         .catch(error => {
@@ -115,12 +120,20 @@ document.getElementById('saveButton').addEventListener('click', async (event) =>
 
     // 選択されたファイルが存在するか確認
     if (selectedFiles.length === 0) {
-        alert("写真を撮影してください。");
+        if (language == 'ja') {
+            alert("写真を撮影してください。");
+        } else {
+            alert("Please take a photo.");
+        }
         return;
     }
 
-    if (selectedCategory === "--教科を選択--" || selectedCategory === "0") {
-        alert("教科を選択してください。");
+    if (selectedCategory === "--教科を選択--" || selectedCategory === "0" || selectedCategory === "--Select Subject--") {
+        if (language == 'ja') {
+            alert("教科を選択してください。");   
+        } else {
+            alert("Please select a subject.");
+        }
         return;
     }
 
@@ -146,7 +159,11 @@ document.getElementById('saveButton').addEventListener('click', async (event) =>
     hasValidFiles = validFileCount > 0;
 
     if (!hasValidFiles) {
-        alert("有効な画像ファイルを選択してください。");
+        if (language == 'ja') {
+            alert("有効な画像ファイルを選択してください。");
+        } else {
+            alert("Please select a valid image file.");
+        }
         return;
     }
 
@@ -156,8 +173,13 @@ document.getElementById('saveButton').addEventListener('click', async (event) =>
         saveData();
         form.submit();
     } catch (error) {
-        console.error('データの保存中にエラーが発生しました:', error);
-        alert('データの保存中にエラーが発生しました。もう一度お試しください。');
+        if (language == 'ja') {
+            console.error('データの保存中にエラーが発生しました:', error);
+            alert("データの保存中にエラーが発生しました。もう一度お試しくじってください。");
+        } else {
+            console.error('An error occurred while saving data:', error);
+            alert("An error occurred while saving data. Please try again.");
+        }
     }
 });
 
@@ -292,7 +314,11 @@ function capturePhoto() {
         const validFiles = processedFiles.filter(file => file !== null);
 
         if (validFiles.length === 0) {
-            alert('有効な画像ファイルが処理できませんでした');
+            if (language === 'ja') {
+                alert('有効な画像ファイルが処理できませんでした');
+            } else {
+                alert('Unable to process valid image files');
+            }
             return;
         }
 
