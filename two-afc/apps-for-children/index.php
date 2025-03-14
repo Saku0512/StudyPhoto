@@ -368,11 +368,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>StudyPhoto</title>
     <script nonce="<?= htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') ?>">
         window.onload = function(){
-            <?php if(!empty($message)): ?>
-                alert("<?php echo addslashes($message); ?>");
-            <?php endif; ?>
+            // localStorageに保存されたフラグがない場合
+            if (!localStorage.getItem('visited')) {
+                <?php if(!empty($message)): ?>
+                    alert("<?php echo addslashes($message); ?>");
+                <?php endif; ?>
+
+                // フラグをlocalStorageに保存
+                localStorage.setItem('visited', 'true');
+            }
         }
-    </script>
+</script>
 </head>
 <body>
     <main>
