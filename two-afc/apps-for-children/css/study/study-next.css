@@ -58,7 +58,7 @@ main {
     align-items: center;
     padding: 2px 6px;
     text-align: center;
-    font-size: 30px;
+    font-size: 5vw;
     background-color: #4870BD;
     color: white;
     height: 10vh;
@@ -103,15 +103,31 @@ main {
     display: none;
     position: fixed;
     flex-direction: column;
-    width: 84vw;
-    height: 90vh;
+    width: 90vw;
+    height: 95vh;
     background-color: white;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     margin-left: auto;
     margin-right: auto;
     z-index: 100;
     padding: 20px;
+    overflow: hidden;
+    img {
+        object-fit: contain;
+    }
+    p {
+        font-size: 3vw;
+    }
+}
+#crop_div {
+    width: 85vw;
+    height: 75vh;
+}
+.cropper-container {
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden !important;
 }
 #cropContainer_overlay{
     display: none;
@@ -135,7 +151,7 @@ main {
 #cropButton {
     height: 5vh;
     width: 70vw;
-    font-size: 20px;
+    font-size: 3vw;
     background-color: #4870BD;
     margin: auto;
     color: white;
@@ -145,13 +161,23 @@ main {
     align-items: center;
     justify-content: center;
     margin-top: 2.5vh;
-    gap: 5vw;  
+    gap: 5vw;
+}
+.photo_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none; /* 初期状態は非表示 */
 }
 .photoSelect, .photoGraph, .photoDelete, .cancel_photo, .photo-Select{
     height: 7vh;
     width: 40vw;
     text-align: center;
-    font-size: 25px;
+    font-size: 5vw;
     background-color: #4870BD;
     color: white;
     border: none;
@@ -195,10 +221,10 @@ main {
     padding: 20px;
     background-color: white;
     border: 1px solid black;
-    z-index: 100;
+    z-index: 1000;
 }
 #photoOptionsPopup p {
-    font-size: 18px;
+    font-size: 3vw;
 }
 .popupbutton_photo_sub {
     align-items: center;
@@ -227,7 +253,7 @@ main {
     background-color: white;
     border: 1px solid black;
     overflow-y: auto;
-    z-index: 100;
+    z-index: 1000;
 }
 
 /*
