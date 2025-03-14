@@ -5,6 +5,8 @@ document.getElementById("popupContent").addEventListener('click', event => event
 // カテゴリーポップアップの閉じるボタン
 document.querySelector(".close-button").addEventListener('click', hidePopup_category);
 
+const language = document.getElementById("hidden_language").value;
+
 // ポップアップを非表示にし、画像をリセット
 function hidePopup_category() {
     document.getElementById("popupOverlay").style.display = "none";
@@ -154,7 +156,13 @@ function fetchStudyImages(categoryName) {
         }
 
         popupText.innerHTML = '';
-        popupText.textContent = `選択されたカテゴリー: ${categoryName}`;
+        let selectedtext;
+        if (language === 'ja') {
+            selectedtext = '選択されたカテゴリー';
+        } else if (language === 'en') {
+            selectedtext = 'Selected Category';
+        }
+        popupText.textContent = `${selectedtext}: ${categoryName}`;
 
         if (data.images && data.images.length > 0) {
             // データを日付で降順にソート
@@ -170,10 +178,10 @@ function fetchStudyImages(categoryName) {
 
             const headerRow = document.createElement('tr');
             const headers = [
-                { id: 'study-date', text: '勉強日' },
-                { id: 'study-time', text: '勉強時間' },
-                { id: 'category', text: 'カテゴリー' },
-                { id: 'image-link', text: '画像リンク' }
+                { id: 'study-date', text: language === 'ja' ? '勉強日' : 'Study Date' },
+                { id: 'study-time', text: language === 'ja' ? '勉強時間' : 'Study Time' },
+                { id: 'category', text: language === 'ja' ? 'カテゴリー' : 'Category' },
+                { id: 'image-link', text: language === 'ja' ? '画像リンク' : 'Image Link' }
             ];
 
             headers.forEach(header => {
@@ -191,7 +199,14 @@ function fetchStudyImages(categoryName) {
                 // 勉強日
                 const studyDateCell = document.createElement('td');
                 const studyDate = new Date(imageData.study_date); // Dateオブジェクトに変換
-                const formattedDate = studyDate.toLocaleDateString('ja-JP'); // 'yyyy/MM/dd'形式で取得
+
+                // 言語ごとのフォーマット
+                const dateOptions = language === 'ja' 
+                    ? { year: 'numeric', month: 'long', day: 'numeric' } // "2025年3月11日"
+                    : { year: 'numeric', month: 'short', day: 'numeric' }; // "Mar 11, 2025"
+
+                const formattedDate = studyDate.toLocaleDateString(language === 'ja' ? 'ja-JP' : 'en-US', dateOptions);
+                
                 // SspentTimeが文字列の場合、コンマで分割して改行を挿入
                 let formattedSpendTime = imageData.SspentTime;
                 if (typeof formattedSpendTime === 'string') {
@@ -225,8 +240,13 @@ function fetchStudyImages(categoryName) {
                         const decodedUrl = Base64.decode(imageData.image_path);  // Base64デコード
                         const imagePath = decodedUrl.replace('/var/www/html', '');  // パスの置換
 
-        
-                        pdfLink.textContent = 'PDFリンク';
+                        let pdftext;
+                        if (language === 'ja') {
+                            pdftext = 'PDFリンク';
+                        } else if (language === 'en') {
+                            pdftext = 'PDF Link';
+                        }
+                        pdfLink.textContent = `${pdftext}`;
                         pdfLink.href = imagePath;
                         //pdfLink.target = '_blank'; // 新しいタブで開く
         
@@ -252,7 +272,7 @@ function fetchStudyImages(categoryName) {
             table.appendChild(tableBody);
             popupText.appendChild(table); // ここでpopupTextにテーブルを追加
         } else {
-            popupText.innerHTML = '<p>画像が見つかりませんでした。</p>';
+            popupText.innerHTML = `<p>画像が見つかりませんでした。</p>`;
         }
 
         document.getElementById("popupOverlay").style.display = "block";
@@ -261,7 +281,7 @@ function fetchStudyImages(categoryName) {
     .catch(error => {
         console.error('Error fetching study images:', error);
         const popupContent = document.getElementById("popupContent");
-        popupContent.innerHTML = '<p>画像の読み込み中にエラーが発生しました。</p>';
+        popupContent.innerHTML = `<p>画像の読み込み中にエラーが発生しました。</p>`;
         document.getElementById("popupOverlay").style.display = "block";
         popupContent.style.display = "block";
     });
