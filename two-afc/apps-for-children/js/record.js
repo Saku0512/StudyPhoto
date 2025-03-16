@@ -348,7 +348,11 @@ function createTimeChart(labelUnit) {
                         const fontSize = chart.options.plugins.noData?.font?.size || 16;
                         ctx.font = `${fontSize}px sans-serif`;
                         ctx.fillStyle = '#666';
-                        ctx.fillText(chart.options.plugins.noData?.text || 'データがありません', width / 2, height / 2);
+                        if (language === 'ja') {
+                            ctx.fillText(chart.options.plugins.noData?.text || 'データがありません', width / 2, height / 2);
+                        } else if (language === 'en') {
+                            ctx.fillText(chart.options.plugins.noData?.text || 'No data available', width / 2, height / 2);
+                        }
                         ctx.restore();
                     }
                 }
