@@ -46,34 +46,7 @@ h1{
     margin: 0; padding: 0;
     font-size: 1.4rem;
 }
-/* フォーム */
-.Form {
-    margin-top: 80px;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 80vw;
-}
-.Form-Item {
-    border-top: 1px solid #ddd;
-    padding-top: 24px;
-    padding-bottom: 24px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.Form-Item-Label {
-    width: 100%;
-    max-width: 40vw;
-    letter-spacing: 0.05em;
-    color: black;
-    font-size: 3vw;
-    margin-bottom: 4px;
-}
-.Form-Item-Label.isMsg {
-    margin-top: 8px;
-    margin-bottom: auto;
-}
+
 .back{
     display: flex;
     align-items: center;
@@ -96,42 +69,4 @@ h1{
 .back a{
     color: black;
     text-decpration: none;
-}
-.Form-Item-Label-Required {
-    border-radius: 6px;
-    margin-right: 8px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    width: 8vw;
-    display: inline-block;
-    text-align: center;
-    background: #5bc8ac;
-    color: black;
-    font-size: 30px;
-}
-.Form-Item-Input {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-left: 40px;
-    padding-left: 1em;
-    padding-right: 1em;
-    height: 48px;
-    flex: 1;
-    width: 100%;
-    max-width: 410px;
-    background: #eaedf2;
-    font-size: 18px;
-}
-.Form-Item-Textarea {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-left: 40px;
-    padding-left: 1em;
-    padding-right: 1em;
-    height: 216px;
-    flex: 1;
-    width: 100%;
-    max-width: 410px;
-    background: #eaedf2;
-    font-size: 18px;
 }
