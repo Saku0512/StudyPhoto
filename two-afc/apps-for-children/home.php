@@ -225,27 +225,11 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
                     </button>
                 </div>
             </div>
-            <a href="" class="contact">
+            <a href="./contact.php" class="contact">
                 <?php echo ($_SESSION['language'] == 'ja' ? '問い合わせ' : 'Contact Us'); ?>
             </a>
         </div>
     </main>
     <input type="hidden" id="hidden_language" value="<?php echo ($_SESSION['language']); ?>" />
-    <script type="text/javascript" defer>
-        document.querySelector('.contact').addEventListener('click', function(e) {
-            const language = document.getElementById("hidden_language").value;
-            let message;
-
-            // 言語に応じてメッセージを切り替える
-            if (language === 'ja') {
-                message = '開発中です。';
-            } else if (language === 'en') {
-                message = 'Under development.';
-            }
-
-            e.preventDefault();
-            alert(message);  // 言語に応じたメッセージを表示
-        });
-    </script>
 </body>
 </html>
