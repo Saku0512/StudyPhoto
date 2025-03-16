@@ -175,7 +175,7 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
                         <div>
                             <label for="switch" class="switch_label">
                                 <span class="title">
-                                    <?php echo ($_SESSION['language'] == 'ja' ? '英語' : 'English'); ?>
+                                    <?php echo ($_SESSION['language'] == 'ja' ? '英語' : 'En'); ?>
                                 </span>
                                 <div class="swith">
                                 <input type="hidden" name="language" value="en" />
@@ -184,7 +184,7 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
                                 <div class="base"></div>
                                 </div>
                                 <span class="title">
-                                    <?php echo ($_SESSION['language'] == 'ja' ? '日本語' : 'Japanese'); ?>
+                                    <?php echo ($_SESSION['language'] == 'ja' ? '日本語' : 'Ja'); ?>
                                 </span>
                             </label>
                         </div>

@@ -7,6 +7,15 @@ document.querySelector(".logout").addEventListener("click", function() {
     window.location.href = 'php/logout.php';
 });
 
+const language = document.getElementById("hidden_language").value;
+// チェックボックスの要素を取得
+const languageSwitch = document.getElementById("switch");
+// チェックボックスにイベントリスナーを追加
+languageSwitch.addEventListener("change", function() {
+    // フォームを自動的に送信
+    this.form.submit();
+});
+
 const chartContext = document.getElementById('studyChart').getContext('2d');
 let chartInstance;
 
@@ -136,20 +145,37 @@ function updateSpanSelectText(unit) {
     
     switch(unit) {
         case 'day':
-            spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月${currentDate.getDate()}日`;
+            if (language === 'ja') {
+                spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月${currentDate.getDate()}日`;
+            } else if (language === 'en') {
+                spanText.textContent = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+            }
             break;
         case 'week':
             const weekStart = new Date(currentDate);
             weekStart.setDate(currentDate.getDate() - currentDate.getDay());
             const weekEnd = new Date(weekStart);
             weekEnd.setDate(weekStart.getDate() + 6);
-            spanText.textContent = `${weekStart.getMonth() + 1}月${weekStart.getDate()}日～${weekEnd.getMonth() + 1}月${weekEnd.getDate()}日`;
+            if (language === 'ja') {
+                spanText.textContent = `${weekStart.getMonth() + 1}月${weekStart.getDate()}日～${weekEnd.getMonth() + 1}月${weekEnd.getDate()}日`;
+            } else if (language === 'en') {
+                spanText.textContent = `${weekStart.getMonth() + 1}/${weekStart.getDate()} - ${weekEnd.getMonth() + 1}/${weekEnd.getDate()}`;
+            }
             break;
         case 'month':
-            spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`;
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            if (language === 'ja') {
+                spanText.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`;
+            } else if (language === 'en') {
+                spanText.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            }
             break;
         case 'year':
-            spanText.textContent = `${currentDate.getFullYear()}年`;
+            if (language === 'ja') {
+                spanText.textContent = `${currentDate.getFullYear()}年`;
+            } else if (language === 'en') {
+                spanText.textContent = `${currentDate.getFullYear()}`;
+            }
             break;
     }
 }
@@ -169,14 +195,22 @@ function get_comment_data(formattedDate, unit){
         if (data.exists && data.comment) {
             // 既存のコメントがある場合
             commentText.value = data.comment.comment_text;
-            commentButton.textContent = 'コメントを編集';
+            if (language == 'ja') {
+                commentButton.textContent = 'コメントを編集';   
+            } else if (language == 'en') {
+                commentButton.textContent = 'Edit Comment';
+            }
             // 編集モードであることを示すフラグを設定
             commentButton.dataset.mode = 'edit';
             commentButton.dataset.commentId = data.comment.id;
         } else {
             // 新規コメントの場合
             commentText.value = '';
-            commentButton.textContent = 'コメントを送信';
+            if (language == 'ja') {
+                commentButton.textContent = 'コメントを送信';
+            } else if (language == 'en') {
+                commentButton.textContent = 'Send Comment';
+            }
             // 新規モードであることを示すフラグを設定
             commentButton.dataset.mode = 'new';
             delete commentButton.dataset.commentId;
@@ -194,7 +228,11 @@ function get_comment_data(formattedDate, unit){
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('コメントの取得中にエラーが発生しました');
+        if (language == 'ja') {
+            alert('コメントの取得中にエラーが発生しました');
+        } else if (language == 'en') {
+            alert('An error occurred while retrieving comments');
+        }
     });
 }
 
@@ -332,21 +370,36 @@ function createTimeChart(labelUnit) {
         );
 
         let labels;
+
+        const daysOfWeek = {
+            ja: ['日', '月', '火', '水', '木', '金', '土'],
+            en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        };
+        const monthsOfYear = {
+            ja: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        };
+
         switch(labelUnit) {
             case 'day':
-                // 日表示の場合は時間
-                labels = Array.from({length: 24}, (_, i) => `${i}時`);
+                labels = Array.from({ length: 24 }, (_, i) => 
+                    language === 'ja' ? `${i}時` : `${i}:00`
+                );
                 break;
             case 'week':
                 // コメント内容をクリア
                 document.querySelector('.guardian_comment_text').value = '';
                 // ボタンの文字をデフォルトに変更
-                document.querySelector('.guardian_comment_button').textContent = 'コメントを送信';
+                if (language == 'ja') {
+                    document.querySelector('.guardian_comment_button').textContent = 'コメントを送信';
+                } else if (language == 'en') {
+                    document.querySelector('.guardian_comment_button').textContent = 'Send comment';
+                }
                 // 週表示の場合は曜日
-                labels = ['日', '月', '火', '水', '木', '金', '土'].map((day, i) => {
+                labels = daysOfWeek[language].map((day, i) => {
                     const date = new Date(weekRange.start);
                     date.setDate(date.getDate() + i);
-                    return `${day}`;
+                    return day;
                 });
                 break;
             case 'month':
@@ -360,7 +413,9 @@ function createTimeChart(labelUnit) {
                     currentDate.getMonth() + 1,
                     0
                 ).getDate();
-                labels = Array.from({length: daysInMonth}, (_, i) => `${i + 1}日`);
+                labels = Array.from({ length: daysInMonth }, (_, i) => 
+                    language === 'ja' ? `${i + 1}日` : `${i + 1}`
+                );
                 break;
             case 'year':
                 // コメント内容をクリア
@@ -368,15 +423,24 @@ function createTimeChart(labelUnit) {
                 // ボタンの文字をデフォルトに変更
                 document.querySelector('.guardian_comment_button').textContent = 'コメントを送信';
                 // 年表示の場合は月
-                labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+                labels = monthsOfYear[language];
                 break;
+        }
+        let label;
+        let text;
+        if (language === 'ja') {
+            label = '勉強時間(時間)';
+            text = '時間(h)';
+        } else if (language === 'en') {
+            label = 'Study Time (Hours)';
+            text = 'Hours';
         }
         
         // データの整形
         const chartData = {
             labels: labels,
             datasets: [{
-                label: '勉強時間(時間)',
+                label: label,
                 data: new Array(labels.length).fill(0),
                 backgroundColor: '#4870BD',
                 borderColor: '#4870BD',
@@ -404,7 +468,7 @@ function createTimeChart(labelUnit) {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: '時間(h)',
+                            text: text,
                             font: {
                                 size: window.innerWidth * 0.03
                             }
@@ -443,7 +507,8 @@ function createTimeChart(labelUnit) {
                         }
                     },
                     noData: {
-                        text: '勉強データはありません',
+                        text: 
+                            language === 'ja' ? 'データがありません' : 'No data available',
                         align: 'center',
                         verticalAlign: 'middle',
                         font: {
@@ -788,31 +853,59 @@ document.querySelector('.guardian_comment_button').addEventListener('click', fun
     
     // 日付が選択されていない場合
     if (commentDate === 'yyyy-MM-dd' || !commentDate) {
-        alert('日付を選択してください');
+        if (language == 'ja') {
+            alert('日付を選択してください');
+        } else if (language == 'en') {
+            alert('Please select a date');
+        }
         return;
     }
     
     // コメントが空の場合
     if (!commentText.trim()) {
-        alert('コメントを入力してください');
+        if (language == 'ja') {
+            alert('コメントを入力してください');
+        } else if (language == 'en') {
+            alert('Please enter a comment');
+        }
         return;
     }
 
     // コメント内容の確認
     if (commentText.includes('<') || commentText.includes('>')) {
-        alert('コメントに不正な文字が含まれています');
+        if (language == 'ja') {
+            alert('コメントに不正な文字が含まれています');
+        } else if (language == 'en') {
+            alert('Comment contains illegal characters');
+        }
         return;
     }else if (commentText.length > 1000) {
-        alert('コメントは1000字以内で入力してください');
+        if (language == 'ja') {
+            alert('コメントは1000字以内で入力してください');
+        } else if (language == 'en') {
+            alert('Comment should not exceed 1000 characters');
+        }
         return;
     }else if (commentText.includes('ばか') || commentText.includes('馬鹿') || commentText.includes('アホ') || commentText.includes('あほ') || commentText.includes('バカ')) {
-        alert('コメントに不適切な言葉が含まれています');
+        if (language == 'ja') {
+            alert('コメントに不適切な言葉が含まれています');
+        } else if (language == 'en') {
+            alert('Comment contains inappropriate words');
+        }
         return;
     } else if (commentText.includes('勉強してください') || commentText.includes('勉強しろ') || commentText.includes('勉強しましょう') || commentText.includes('勉強しなさい') || commentText.includes('勉強しないと')) {
-        alert('コメントに不適切な言葉が含まれています');
+        if (language == 'ja') {
+            alert('コメントに不適切な言葉が含まれています');
+        } else if (language == 'en') {
+            alert('Comment contains inappropriate words');
+        }
         return;
     } else if (commentText.includes('死ね') || commentText.includes('しね') || commentText.includes('死ぬな') || commentText.includes('しぬな') || commentText.includes('殺す') || commentText.includes('ころす')) {
-        alert('コメントに不適切な言葉が含まれています');
+        if (language == 'ja') {
+            alert('コメントに不適切な言葉が含まれています');
+        } else if (language == 'en') {
+            alert('Comment contains inappropriate words');
+        }
         return;
     }
     
@@ -844,7 +937,11 @@ document.querySelector('.guardian_comment_button').addEventListener('click', fun
         }
         
         // 成功時の処理
-        alert(isEditMode ? 'コメントが更新されました' : 'コメントが保存されました');
+        if (language == 'ja') {
+            alert(isEditMode ? 'コメントが更新されました' : 'コメントが保存されました');
+        } else if (language == 'en') {
+            alert(isEditMode ? 'Comment updated successfully' : 'Comment saved successfully');
+        }
 
         // コメントテキストをクリア
         document.querySelector('.guardian_comment_text').value = '';
@@ -854,15 +951,18 @@ document.querySelector('.guardian_comment_button').addEventListener('click', fun
         createTimeChart('week');
         createCategoryChart('week');
         // ボタンの状態を更新
-        this.textContent = 'コメントを送信';
+        if (language == 'ja') {
+            this.textContent = 'コメントを送信';
+        } else if (language == 'en') {
+            this.textContent = 'Send comment';
+        }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('コメントの保存中にエラーが発生しました');
+        if (language == 'ja') {
+            alert('コメントの保存中にエラーが発生しました');
+        } else if (language == 'en') {
+            alert('An error occurred while saving the comment');
+        }
     });
-});
-
-document.querySelector('.contact').addEventListener('click', function(e) {
-    e.preventDefault();
-    alert('開発中です');
 });

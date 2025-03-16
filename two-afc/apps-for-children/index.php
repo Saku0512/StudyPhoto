@@ -178,6 +178,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $checkUsernameStmt->close();
             $conn->close();
         }
+    } else if (isset($_POST['guardian'])) {
+        // ログイン情報を取得
+        $loginUsername = $_POST['guardian_username'] ?? null;
+        $loginId = $_POST['guardian_id'] ?? null;
+
+        if (!empty($loginUsername) && !empty($loginId)) {
+            $conn = new mysqli($servername, $username, $password, $db_name);
+            if ($conn->connect_error) {
+                die('接続失敗： '. $conn->connect_error);
+            }
+
+            $loginSql = "SELECT username, id FROM users WHERE username = ? AND id = ?";
+            $loginStmt = $conn->prepare($loginSql);
+            $loginStmt->bind_param("ss", $loginUsername, $loginId);
+            $loginStmt->execute();
+            $loginResult = $loginStmt->get_result();
+
+            if ($loginResult->num_rows > 0) {
+                //ログイン成功
+                $guardianUser = $loginResult->fetch_assoc();
+                session_start();
+                $_SESSION['guardian_username'] = $guardianUser['username'];
+                $_SESSION['guardian_id'] = $guardianUser['id'];
+                $_SESSION['language'] = 'en';
+                $message = "保護者ログイン成功";
+                header("Location: guardian_home.php"); // 保護者用のホームページにリダイレクト
+                exit;
+            } else {
+                // 照合失敗
+                $message = "ユーザー名またはIDが正しくありません";
+            }
+        } else {
+            $message = "";
+
+        }
     } elseif (isset($_POST['login'])) {
         // サインイン処理
         $loginUsername = $_POST['login_username'] ?? null;
@@ -309,45 +344,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['password'] = $loginTestPassword;
+                    $_SESSION['language'] = 'en';
                     header("Location: home.php");
                 } else {
                     $message = "自動ログインに失敗しました";
                 }
             }
-        }
-    } else if (isset($_POST['guardian'])) {
-        // ログイン情報を取得
-        $loginUsername = $_POST['guardian_username'] ?? null;
-        $loginId = $_POST['guardian_id'] ?? null;
-
-        if (!empty($loginUsername) && !empty($loginId)) {
-            $conn = new mysqli($servername, $username, $password, $db_name);
-            if ($conn->connect_error) {
-                die('接続失敗： '. $conn->connect_error);
-            }
-
-            $loginSql = "SELECT username, id FROM users WHERE username = ? AND id = ?";
-            $loginStmt = $conn->prepare($loginSql);
-            $loginStmt->bind_param("ss", $loginUsername, $loginId);
-            $loginStmt->execute();
-            $loginResult = $loginStmt->get_result();
-
-            if ($loginResult->num_rows > 0) {
-                //ログイン成功
-                $guardianUser = $loginResult->fetch_assoc();
-                session_start();
-                $_SESSION['guardian_username'] = $guardianUser['username'];
-                $_SESSION['guardian_id'] = $guardianUser['id'];
-                $message = "保護者ログイン成功";
-                header("Location: guardian_home.php"); // 保護者用のホームページにリダイレクト
-                exit;
-            } else {
-                // 照合失敗
-                $message = "ユーザー名またはIDが正しくありません";
-            }
-        } else {
-            $message = "";
-
         }
     } else {
         $message = "";
@@ -369,7 +371,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script nonce="<?= htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') ?>">
         window.onload = function(){
             // localStorageに保存されたフラグがない場合
-            if (!localStorage.getItem('visited')) {
+            if (!localStorage.getItem('visited') === 'true') {
                 <?php if(!empty($message)): ?>
                     alert("<?php echo addslashes($message); ?>");
                 <?php endif; ?>
@@ -420,7 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2 id="headline">Guardian Login</h2>
             <form id="guardianForm" action="" method="post">
                 <input type="text" id="guardian_username" name="guardian_username" required autocomplete="username" placeholder="Child's Username">
-                <input type="password" id="guardian_password" name="guadian_password" required autocomplete="current-password" placeholder="Child's Id">
+                <input type="password" id="guardian_password" name="guardian_id" required autocomplete="current-password" placeholder="Child's Id">
                 <button type="submit" name="guardian">LogIn</button>
             </form>
         </div>
