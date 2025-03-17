@@ -428,6 +428,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <form id="loginForm" action="" method="post">
                 <input type="text" id="login_username" name="login_username" required autocomplete="username" placeholder="Username">
                 <input type="password" id="login_password" name="login_password" required autocomplete="current-password" placeholder="Password">
+                <a class="forgotPass" href="#" >Forgot your password?</a>
                 <button type="submit" name="login">LogIn</button>
                 <p class="message">Not registered? <a href="#">Create an account</a></p>
             </form>
@@ -441,6 +442,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!--<input type="password" id="password" name="password" required placeholder="Password">-->
                 <button type="submit" name="signup">Send Mail</button>
                 <p class="message">Already registered? <a href="#">Sign In</a></p>
+            </form>
+        </div>
+        <div class="resetPassPopup" id="resetPassPopup">
+            <span class="close-btn">×</span>
+            <h2 id="headline">Reset Password</h2>
+            <form id="resetPassForm" action="" method="post">
+                <input type="email" id="reset_email" name="reset_email" required placeholder="Email">
+                <button type="submit" name="reset">Send Mail</button>
             </form>
         </div>
         <div class="guardianPopup" id="guardianPopup">

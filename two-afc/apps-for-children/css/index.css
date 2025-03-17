@@ -78,7 +78,7 @@ a:hover {
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
 }
-.loginPopup, .signupPopup {
+.loginPopup, .signupPopup, .resetPassPopup {
     display: none;
     position: fixed;
     top: 50%;
@@ -148,5 +148,10 @@ form button {
     cursor: pointer;
 }
 form p {
+    font-size: 3vw;
+}
+.forgotPass {
+    display: block; /* インライン要素をブロック要素に */
+    text-align: left;
     font-size: 3vw;
 }
