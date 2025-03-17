@@ -202,40 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->send();
                 $mail->smtpClose();
 
-                //$uniqueID = generateRandomID($conn);
-                //パスワードをハッシュ化
-                //$hashed_password = password_hash($dbPassword, PASSWORD_DEFAULT);
-                //$sql = "INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)";
-                //$stmt = $conn->prepare($sql);
-                /*
-                if ($stmt === false) {
-                    die("SQL文の準備失敗: " . $conn->error);
-                }
-                */
-                //$stmt->bind_param("ssss", $uniqueID, $dbUsername, $dbEmail, $hashed_password);
-                /*
-                if ($stmt->execute()) {
-                    $message = "ユーザーが正常に登録されました";
-                    // デフォルトのカテゴリーを追加
-                    $defaultCategories = ["数学", "英語", "国語"];
-                    foreach ($defaultCategories as $category) {
-                        $categorySql = "INSERT INTO categories (username, category_name) VALUES (?, ?)";
-                        $categoryStmt = $conn->prepare($categorySql);
-                        $categoryStmt->bind_param("ss", $dbUsername, $category);
-                        $categoryStmt->execute();
-                        $categoryStmt->close();
-                    }
-                } else {
-                    $message = "ユーザー登録失敗: " . $stmt->error;
-                }
-                $stmt->close();
-                */
-
             }
-
-            //$checkEmailStmt->close();
-            //$checkUsernameStmt->close();
-            //$conn->close();
         }
     } else if (isset($_POST['guardian'])) {
         // ログイン情報を取得
