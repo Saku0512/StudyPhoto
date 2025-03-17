@@ -41,9 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const studyDate = new Date(comment.study_date);
                 const formattedDate = language === 'ja'
                     ? studyDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }) // 例: 2025年3月14日
-                    : studyDate.toLocaleDateString('en-US'); // 例: 03/14/2025
+                    : studyDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); // 例: 03/14/2025
 
                 tableHTML += `<tr><td>${formattedDate}</td><td>${comment.comment_text}</td></tr>`;
+
+                // 有効日をセットに追加
+                const isoDate = studyDate.toISOString().split('T')[0]; // YYYY-MM-DD形式
+                availableDates.add(isoDate);
             });
             
             tableHTML += `
@@ -58,7 +62,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 enable: Array.from(availableDates), // 有効な日付を設定
                 dateFormat: dataFormat,
                 onChange: function(selectedDates, dateStr, instance) {
-                    fetch(`../../php/record/fetch_date_comment.php?date=${dateStr}`)
+                    // ローカルタイムで日付フォーマット
+                    const selectedDate = selectedDates[0];
+                    const year = selectedDate.getFullYear();
+                    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                    const day = String(selectedDate.getDate()).padStart(2, '0');
+                    const isoDate = `${year}-${month}-${day}`;
+
+                    fetch(`../../php/record/fetch_date_comment.php?date=${isoDate}`)
                         .then(response => response.json())
                         .then(data => {
                             if (!Array.isArray(data)) {
@@ -76,8 +87,16 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <tbody>
                             `;
                             data.forEach(comment => {
-                                filteredTableHTML += `<tr><td>${comment.study_date}</td><td>${comment.comment_text}</td></tr>`;
+                                const studyDate = new Date(comment.study_date);
+                                const formattedDate = language === 'ja'
+                                    ? studyDate.toLocaleDateString('Ja-JP', {year: 'numeric', month: 'long', day: 'numeric'}) // 2025年3月14日
+                                    : studyDate.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}); // March 14, 2025
+                                filteredTableHTML += `<tr><td>${formattedDate}</td><td>${comment.comment_text}</td></tr>`;
                             });
+                            // デバッグ用ログ
+                            console.log('Available Dates:', Array.from(availableDates));
+                            console.log('Fetched Data:', data);
+
                             filteredTableHTML += `
                                     </tbody>
                                 </table>

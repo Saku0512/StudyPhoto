@@ -740,15 +740,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+let locale;
+let dataFormat;
+if (language === 'ja') {
+    locale = 'ja';
+    dataFormat = 'Y-m-d'; // YYYY-MM-DD
+} else if (language === 'en') {
+    locale = 'en';
+    dataFormat = 'm-d-Y'; // MM-DD-YYYY
+}
 // カレンダーをカスタマイズする関数
 function customizeCalendar() {
     const commentDateInput = document.getElementById('commentDate');
     
-    // 現在の年月を取得
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
-    
-    fetch(`./php/guardian/guardian_calender.php?year=${currentYear}&month=${currentMonth}`)
+    fetch(`./php/guardian/guardian_calender.php`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
@@ -759,83 +764,43 @@ function customizeCalendar() {
             // 勉強記録のある日付をSetに変換
             const studyDates = new Set(data.dates || []);
 
+            (data.dates || []).forEach(date => {
+                const studyDate = new Date(date);
+                const isoDate = studyDate.toISOString().split('T')[0];
+                studyDates.add(isoDate);
+            });
+
             // Flatpickrの設定
             flatpickr(commentDateInput, {
-                locale: 'ja',
-                dateFormat: 'Y-m-d',
-                maxDate: 'today',
-                inline: false,
-                // 日付の有効/無効の設定
-                enable: [
-                    function(date) {
-                        const dateString = date.toISOString().split('T')[0];
-                        return studyDates.has(dateString); // 勉強記録のある日付のみ有効
-                    }
-                ],
+                locale: locale,
+                enable: Array.from(studyDates),
+                dateFormat: dataFormat,
                 onDayCreate: function(dObj, dStr, fp, dayElem) {
-                    const dateString = dayElem.dateObj.toISOString().split('T')[0];
-                    const today = new Date().toISOString().split('T')[0];
+                    const dateString = new Date(dayElem.dateObj.getTime() - dayElem.dateObj.getTimezoneOffset() * 60000).toISOString().split('T')[0];
                     
                     if (studyDates.has(dateString)) {
                         // 勉強記録のある日付は青色で選択可能
                         dayElem.classList.add('has-study-record');
-                        dayElem.classList.remove('flatpickr-disabled');
-                    } else if (dateString <= today) {
-                        // 勉強記録のない日付は灰色で選択不可
+                    } else {
                         dayElem.classList.add('no-study-record');
-                        dayElem.classList.add('flatpickr-disabled');
                     }
                 },
-                onChange: function(selectedDates) {
-                    if (selectedDates.length > 0) {
-                        currentDate = selectedDates[0];
-                        const formattedDate = formatDate(currentDate);
-                        
-                        // コメントの存在チェックと取得
-                        get_comment_data(formattedDate, 'day');
-                    }
-                },
-                onMonthChange: function(selectedDates, dateStr, instance) {
-                    const newYear = instance.currentYear;
-                    const newMonth = instance.currentMonth + 1;
-                    
-                    fetch(`./php/guardian/guardian_calender.php?year=${newYear}&month=${newMonth}`)
+                onChange: function(selectedDates, dateStr, instance) {
+                    currentDate = selectedDates[0];
+                    const formattedDate = formatDate(currentDate);
+
+                    fetch(`./php/guardian/guardian_calender.php`)
                         .then(response => response.json())
-                        .then(newData => {
-                            if (newData.error) {
-                                console.error('Error:', newData.error);
+                        .then(data => {
+                            if (!Array.isArray(data)) {
+                                console.error('Error fetching study dates:', data.error);
                                 return;
                             }
-                            
-                            const newStudyDates = new Set(newData.dates || []);
-                            
-                            // 有効な日付を更新
-                            instance.set('enable', [
-                                function(date) {
-                                    const dateString = date.toISOString().split('T')[0];
-                                    return newStudyDates.has(dateString);
-                                }
-                            ]);
-                            
-                            // 日付のスタイルを更新
-                            instance.days.forEach(dayElem => {
-                                const dateString = dayElem.dateObj.toISOString().split('T')[0];
-                                dayElem.classList.remove('has-study-record', 'no-study-record', 'flatpickr-disabled');
-                                
-                                if (newStudyDates.has(dateString)) {
-                                    // 勉強記録のある日付は青色で選択可能
-                                    dayElem.classList.add('has-study-record');
-                                } else {
-                                    // 勉強記録のない日付は灰色で選択不可
-                                    dayElem.classList.add('no-study-record');
-                                    dayElem.classList.add('flatpickr-disabled');
-                                }
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching study dates:', error);
                         });
-                }
+                       
+                    // コメントの存在チェックと取得
+                    get_comment_data(formattedDate, 'day');
+                },
             });
         })
         .catch(error => {
