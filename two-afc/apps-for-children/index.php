@@ -139,26 +139,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 die("接続失敗: " . $conn->connect_error);
             }
 
-            //ユーザー名の重複チェック
-            //$checkUsernameSql = "SELECT * FROM users WHERE username = ?";
-            //$checkUsernameStmt = $conn->prepare($checkUsernameSql);
-            //$checkUsernameStmt->bind_param("s", $dbUsername);
-            //$checkUsernameStmt->execute();
-            //$usernameResult = $checkUsernameStmt->get_result();
-
             //メールアドレスの重複チェック
             $checkEmailSql = "SELECT * FROM users WHERE email = ?";
             $checkEmailStmt = $conn->prepare($checkEmailSql);
             $checkEmailStmt->bind_param("s", $dbEmail);
             $checkEmailStmt->execute();
             $emailResult = $checkEmailStmt->get_result();
-            //$emailResult->close();
-
-            //重複チェック
-            /*
-            if($usernameResult->num_rows > 0) {
-                $message = "このユーザー名は既に登録されています";
-            }else*/if($emailResult->num_rows > 0) {
+            
+            if($emailResult->num_rows > 0) {
                 $message = "このメールアドレスは既に登録されています";
             }else{
                 // トークンを生成（32バイトのランダムな文字列をbase64エンコード）
@@ -298,10 +286,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         
         //自動削除
-        //`php/delete_test_user.php`
+        //`php/account/delete_test_user.php`
         //$ crontab -e
 
-        // */30 * * * * php /var/www/html/ChildApp/two-afc/apps-for-children/php/delete_test_user.php
+        // */30 * * * * php /var/www/html/ChildApp/two-afc/apps-for-children/php/account/delete_test_user.php
 
         if ($stmt === false) {
             die("SQL文の準備失敗: " . $conn->error);
