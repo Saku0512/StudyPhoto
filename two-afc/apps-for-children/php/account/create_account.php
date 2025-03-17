@@ -1,6 +1,6 @@
 <?php
 session_start();
-require './php/db_connection.php';
+require '../db_connection.php';
 
 // CSP（Content Security Policy）の設定
 $nonce = base64_encode(random_bytes(16));
@@ -8,7 +8,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
 
 // 不正なアクセス防止
 if (!isset($_GET['email'])) {
-    header('Location: ./index.php');
+    header('Location: ../../index.php');
     exit();
 }
 

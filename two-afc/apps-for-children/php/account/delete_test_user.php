@@ -1,6 +1,6 @@
 <?php
 // delete_test_user.php
-require_once './db_connection.php';
+require_once '../db_connection.php';
 
 // データベース接続を取得
 $pdo = getDatabaseConnection();
