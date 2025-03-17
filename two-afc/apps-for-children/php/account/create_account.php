@@ -74,9 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Create Account</title>
-    <link rel="stylesheet" href="./css/create_account.css">
-    <link rel="stylesheet" href="./css/scss/load.css">
-    <script src="./js/load.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
+    <link rel="stylesheet" href="../../css/create_account.css">
+    <link rel="stylesheet" href="../../css/scss/load.css">
+    <script src="../../js/load.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>">
         window.onload = function() {
             // まだアラートを表示していない場合のみ表示

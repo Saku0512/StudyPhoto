@@ -61,9 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Reset Password</title>
-    <link rel="stylesheet" href="../css/scss/load.css">
-    <link rel="stylesheet" href="../css/reset_password.css" >
-    <script src="../js/load.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
+    <link rel="stylesheet" href="../../css/scss/load.css">
+    <link rel="stylesheet" href="../../css/reset_password.css" >
+    <script src="../../js/load.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>">
         window.onload = function() {
             // まだアラートを表示していない場合のみ表示
