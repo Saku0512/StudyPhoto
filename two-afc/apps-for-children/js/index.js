@@ -1,11 +1,13 @@
 // ポップアップ表示
 const loginPopup = document.getElementById('loginPopup');
 const signupPopup = document.getElementById('signupPopup');
+const resetPassPopup = document.getElementById('resetPassPopup');
 const guardianPopup = document.getElementById('guardianPopup');
 const loginForm = document.querySelector('.loginForm');
 const guardianForm = document.querySelector('.guardianForm');
 const overlay = document.getElementById('overlay');
 const loginLink = document.querySelector('.loginPopup .message a');
+const resetPassLink = document.querySelector('.loginPopup a.forgotPass');
 const signupLink = document.querySelector('.signupPopup .message a');
 const closeBtns = document.querySelectorAll('.close-btn');
 
@@ -36,6 +38,9 @@ function closePopup() {
     guardianPopup.style.display = 'none';
     guardianPopup.classList.add('hide');
     signupPopup.style.display = 'none';
+    signupPopup.classList.add('hide');
+    resetPassPopup.style.display = 'none';
+    resetPassPopup.classList.add('hide');
 }
 
 loginForm.addEventListener('click', () => {
@@ -50,6 +55,11 @@ loginLink.addEventListener('click', (e) => {
 signupLink.addEventListener('click', (e) => {
     e.preventDefault();
     togglePopup(loginPopup, signupPopup);
+});
+
+resetPassLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    togglePopup(resetPassPopup, loginPopup);
 });
 
 guardianForm.addEventListener('click', () => {

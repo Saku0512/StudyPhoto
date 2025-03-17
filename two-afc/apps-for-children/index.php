@@ -6,13 +6,24 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require __DIR__ . '/vendor/autoload.php';
-
 use Dotenv\Dotenv;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
+
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/phpmailer/phpmailer/src/Exception.php';
+require __DIR__ . '/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require __DIR__ . '/vendor/phpmailer/phpmailer/src/SMTP.php';
+require './php/db_connection.php';
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
+
+$Username = $_ENV['MAIL_USERNAME'] ?? $_SERVER['MAIL_USERNAME'];
+$Password = $_ENV['MIAL_APP_PASSWORD'] ?? $_SERVER['MIAL_APP_PASSWORD'];
+
+$mail = new PHPMailer(true);
 
 // ランダムなIDを作成する関数
 function generateRandomID($conn) {
@@ -109,12 +120,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_ENV['DB_USERPASSWORD'] ?? $_SERVER['DB_USERPASSWORD'] ?? null;
     $db_name = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? null;
 
+    $verification = $_ENV['VERIFICATION_LINK'] ?? $_SERVER['VERIFICATION_LINK'] ?? null;
+    $resetLink = $_ENV['RESET_PASSWORD_LINK'] ?? $_SERVER['RESET_PASSWORD_LINK'] ?? null;
+
     $dbUsername = $_POST['username'] ?? null;
     $dbEmail = $_POST['email'] ?? null;
     $dbPassword = $_POST['password'] ?? null;
     $dbId = $_POST['id'] ?? null;
 
-    if (!empty($dbUsername) && !empty($dbEmail) && !empty($dbPassword)) {
+    if (!empty($dbEmail)) {
         //メールアドレスの形式検証
         if (!filter_var($dbEmail, FILTER_VALIDATE_EMAIL)) {
             $message = '無効なメールアドレスです。';
@@ -125,58 +139,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 die("接続失敗: " . $conn->connect_error);
             }
 
-            //ユーザー名の重複チェック
-            $checkUsernameSql = "SELECT * FROM users WHERE username = ?";
-            $checkUsernameStmt = $conn->prepare($checkUsernameSql);
-            $checkUsernameStmt->bind_param("s", $dbUsername);
-            $checkUsernameStmt->execute();
-            $usernameResult = $checkUsernameStmt->get_result();
-
             //メールアドレスの重複チェック
             $checkEmailSql = "SELECT * FROM users WHERE email = ?";
             $checkEmailStmt = $conn->prepare($checkEmailSql);
             $checkEmailStmt->bind_param("s", $dbEmail);
             $checkEmailStmt->execute();
             $emailResult = $checkEmailStmt->get_result();
-
-            //重複チェック
-            if($usernameResult->num_rows > 0) {
-                $message = "このユーザー名は既に登録されています";
-            }elseif($emailResult->num_rows > 0) {
+            
+            if($emailResult->num_rows > 0) {
                 $message = "このメールアドレスは既に登録されています";
             }else{
-                $uniqueID = generateRandomID($conn);
-                //パスワードをハッシュ化
-                $hashed_password = password_hash($dbPassword, PASSWORD_DEFAULT);
-                $sql = "INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)";
-                $stmt = $conn->prepare($sql);
+                // トークンを生成（32バイトのランダムな文字列をbase64エンコード）
+                $token = bin2hex(random_bytes(32));
+                $expires_at = date('Y-m-d H:i:s', time() + 600); // 10分後に有効期限切れ
 
-                if ($stmt === false) {
-                    die("SQL文の準備失敗: " . $conn->error);
-                }
-            
-                $stmt->bind_param("ssss", $uniqueID, $dbUsername, $dbEmail, $hashed_password);
+                $deleteTokenSql = "DELETE FROM email_verification WHERE email = ?";
+                $deleteTokenStmt = $conn->prepare($deleteTokenSql);
+                $deleteTokenStmt->bind_param("s", $dbEmail);
+                $deleteTokenStmt->execute();
+                $deleteTokenStmt->close();
 
-                if ($stmt->execute()) {
-                    $message = "ユーザーが正常に登録されました";
-                    // デフォルトのカテゴリーを追加
-                    $defaultCategories = ["数学", "英語", "国語"];
-                    foreach ($defaultCategories as $category) {
-                        $categorySql = "INSERT INTO categories (username, category_name) VALUES (?, ?)";
-                        $categoryStmt = $conn->prepare($categorySql);
-                        $categoryStmt->bind_param("ss", $dbUsername, $category);
-                        $categoryStmt->execute();
-                        $categoryStmt->close();
-                    }
-                } else {
-                    $message = "ユーザー登録失敗: " . $stmt->error;
-                }
-                $stmt->close();
+                $insertTokenSql = "INSERT INTO email_verification (email, token, expires_at) VALUES (?, ?, ?)";
+                $insertTokenStmt = $conn->prepare($insertTokenSql);
+                $insertTokenStmt->bind_param("sss", $dbEmail, $token, $expires_at);
+                $insertTokenStmt->execute();
+                $insertTokenStmt->close();
+
+                $verification_link = $verification .  $token;
+
+                $mail = new PHPMailer(true);
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = $Username;
+                $mail->Password   = $Password;
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = 587;
+
+                $mail->setFrom($Username, 'StudyPhoto');
+                $mail->addAddress($dbEmail);
+
+                $mail->isHTML(true);
+                $mail->CharSet = 'UTF-8';
+                $mail->Encoding = 'base64';
+
+                $mail->Subject = 'StudyPhoto 仮登録完了';
+                $mail->Body = 'StudyPhotoの仮登録が完了しました。 <br />
+                               以下のリンクから本登録を行ってください。<br />'
+                               . 'リンクの有効期限は10分です。 <br /> <br />'
+                               . $verification_link;
+                $mail->send();
+                $mail->smtpClose();
+
             }
-
-            $checkEmailStmt->close();
-            $checkUsernameStmt->close();
-            $conn->close();
         }
     } else if (isset($_POST['guardian'])) {
         // ログイン情報を取得
@@ -271,10 +286,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         
         //自動削除
-        //`php/delete_test_user.php`
+        //`php/account/delete_test_user.php`
         //$ crontab -e
 
-        // */30 * * * * php /var/www/html/ChildApp/two-afc/apps-for-children/php/delete_test_user.php
+        // */30 * * * * php /var/www/html/ChildApp/two-afc/apps-for-children/php/account/delete_test_user.php
 
         if ($stmt === false) {
             die("SQL文の準備失敗: " . $conn->error);
@@ -351,6 +366,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
+    } else if (isset($_POST['reset'])) {
+        $resetEmail = $_POST['reset_email'] ?? null;
+
+        if (!empty($resetEmail)) {
+            $_SESSION['reset_email'] = $resetEmail;
+
+            $pdo = getDatabaseConnection();
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+            $stmt->execute([$resetEmail]);
+            $user = $stmt->fetch();
+
+            if ($user) {
+                // ランダムなトークンを生成
+                $token = bin2hex(random_bytes(32)); // 32バイトのトークンを生成
+
+                // 有効期限を10分後に設定
+                $expires_at = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+
+                // トークンと有効期限を password_reset_requests テーブルに挿入
+                $insertStmt = $pdo->prepare("INSERT INTO password_reset_requests (email, token, expires_at) VALUES (?, ?, ?)");
+                $insertStmt->execute([$resetEmail, $token, $expires_at]);
+
+                // パスワード再設定URLを生成
+                $resetUrl = $resetLink . $token;
+
+                $mail = new PHPMailer(true);
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = $Username;
+                $mail->Password   = $Password;
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = 587;
+
+                $mail->setFrom($Username, 'StudyPhoto');
+                $mail->addAddress($resetEmail);
+                $mail->isHTML(true);
+                $mail->CharSet = 'UTF-8';
+                $mail->Encoding = 'base64';
+
+                $mail->Subject = 'StudyPhoto パスワード再設定';
+                $mail->Body = 'パスワードを再設定するには、以下のリンクをクリックしてください。<br />'
+                             . 'リンクの有効期限は10分です。<br /> <br />'
+                             . $resetUrl;
+                $mail->send();
+                $mail->smtpClose();
+                header('Location: ./index.php');
+            }
+        }
     } else {
         $message = "";
     }
@@ -380,7 +444,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 localStorage.setItem('visited', 'true');
             }
         }
-</script>
+    </script>
 </head>
 <body>
     <main>
@@ -402,6 +466,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <form id="loginForm" action="" method="post">
                 <input type="text" id="login_username" name="login_username" required autocomplete="username" placeholder="Username">
                 <input type="password" id="login_password" name="login_password" required autocomplete="current-password" placeholder="Password">
+                <a class="forgotPass" href="#" >Forgot your password?</a>
                 <button type="submit" name="login">LogIn</button>
                 <p class="message">Not registered? <a href="#">Create an account</a></p>
             </form>
@@ -410,11 +475,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span class="close-btn">×</span>
             <h2 id="headline">Signup For Free</h2>
             <form id="signupForm" action="" method="post">
-                <input type="text" id="username" name="username" required placeholder="Username">
+                <!--<input type="text" id="username" name="username" required placeholder="Username">-->
                 <input type="email" id="email" name="email" required placeholder="Email">
-                <input type="password" id="password" name="password" required placeholder="Password">
-                <button type="submit" name="signup">SignUp</button>
+                <!--<input type="password" id="password" name="password" required placeholder="Password">-->
+                <button type="submit" name="signup">Send Mail</button>
                 <p class="message">Already registered? <a href="#">Sign In</a></p>
+            </form>
+        </div>
+        <div class="resetPassPopup" id="resetPassPopup">
+            <span class="close-btn">×</span>
+            <h2 id="headline">Reset Password</h2>
+            <form id="resetPassForm" action="" method="post">
+                <input type="email" id="reset_email" name="reset_email" required placeholder="Email">
+                <button type="submit" name="reset">Send Mail</button>
             </form>
         </div>
         <div class="guardianPopup" id="guardianPopup">
