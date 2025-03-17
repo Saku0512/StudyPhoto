@@ -1,6 +1,6 @@
 <?php
 session_start();
-require './db_connection.php';
+require '../db_connection.php';
 
 $nonce = base64_encode(random_bytes(16));
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $nonce . "'; style-src 'self' 'nonce-" . $nonce . "';");
@@ -43,6 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 新しいパスワードをusersテーブルに更新
             $updateStmt = $pdo->prepare("UPDATE users SET password = ? WHERE email = ?");
             if ($updateStmt->execute([$hashedPassword, $email])) {
+                $_SESSION['username'] = $username;
+                $_SESSION['password'] = $password;
+                $_SESSION['user_id'] = $stmt->fetchColumn();
                 $message = 'パスワードが正常に更新されました。';
             } else {
                 $message = 'パスワードの更新に失敗しました。';
@@ -53,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $message = 'ユーザーが見つかりません。';
     }
-    header('Location: ../index.php');
+    header('Location: ../../home.php');
     exit();
 }
 ?>
@@ -61,9 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Reset Password</title>
-    <link rel="stylesheet" href="../css/scss/load.css">
-    <link rel="stylesheet" href="../css/reset_password.css" >
-    <script src="../js/load.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
+    <link rel="stylesheet" href="../../css/scss/load.css">
+    <link rel="stylesheet" href="../../css/reset_password.css" >
+    <script src="../../js/load.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>">
         window.onload = function() {
             // まだアラートを表示していない場合のみ表示
@@ -82,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p class="loading__text">loading</p>
     </div>
     <p class="title">Reset Password</p>
-    <img class="logo" src="../ui_image/logo.png" alt="logo">
+    <img class="logo" src="../../ui_image/logo.png" alt="logo">
     <form class="resetForm" method="post" action="">
         <input class="Name" type="text" name="name" placeholder="Username" required />
         <input class="NewPassword" type="password" name="password" placeholder="New Password" required />

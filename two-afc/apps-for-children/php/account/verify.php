@@ -1,9 +1,9 @@
 <?php
 session_start();
-require './php/db_connection.php';
+require '../db_connection.php';
 
 if (!isset($_GET['token'])) {
-    header('Location: ./index.php');
+    header('Location: ../../index.php');
     exit();
 }
 
