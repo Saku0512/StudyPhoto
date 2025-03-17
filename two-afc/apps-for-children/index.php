@@ -21,7 +21,7 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 $Username = $_ENV['MAIL_USERNAME'] ?? $_SERVER['MAIL_USERNAME'];
-$Password = $_ENV['MIAL_APP_PASSWORD'] ?? $_SERVER['MIAL_APP_PASSWORD'];
+$Password = $_ENV['MAIL_APP_PASSWORD'] ?? $_SERVER['MIAL_APP_PASSWORD'];
 
 $mail = new PHPMailer(true);
 
