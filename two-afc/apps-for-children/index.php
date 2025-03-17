@@ -15,7 +15,7 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/vendor/phpmailer/phpmailer/src/Exception.php';
 require __DIR__ . '/vendor/phpmailer/phpmailer/src/PHPMailer.php';
 require __DIR__ . '/vendor/phpmailer/phpmailer/src/SMTP.php';
-
+require './php/db_connection.php';
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
@@ -121,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db_name = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? null;
 
     $verification = $_ENV['VERIFICATION_LINK'] ?? $_SERVER['VERIFICATION_LINK'] ?? null;
+    $resetLink = $_ENV['RESET_PASSWORD_LINK'] ?? $_SERVER['RESET_PASSWORD_LINK'] ?? null;
 
     $dbUsername = $_POST['username'] ?? null;
     $dbEmail = $_POST['email'] ?? null;
@@ -375,6 +376,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $message = "自動ログインに失敗しました";
                 }
+            }
+        }
+    } else if (isset($_POST['reset'])) {
+        $resetEmail = $_POST['reset_email'] ?? null;
+
+        if (!empty($resetEmail)) {
+            $_SESSION['reset_email'] = $resetEmail;
+
+            $pdo = getDatabaseConnection();
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+            $stmt->execute([$resetEmail]);
+            $user = $stmt->fetch();
+
+            if ($user) {
+                // ランダムなトークンを生成
+                $token = bin2hex(random_bytes(32)); // 32バイトのトークンを生成
+
+                // 有効期限を10分後に設定
+                $expires_at = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+
+                // トークンと有効期限を password_reset_requests テーブルに挿入
+                $insertStmt = $pdo->prepare("INSERT INTO password_reset_requests (email, token, expires_at) VALUES (?, ?, ?)");
+                $insertStmt->execute([$resetEmail, $token, $expires_at]);
+
+                // パスワード再設定URLを生成
+                $resetUrl = $resetLink . $token;
+
+                $mail = new PHPMailer(true);
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = $Username;
+                $mail->Password   = $Password;
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = 587;
+
+                $mail->setFrom($Username, 'StudyPhoto');
+                $mail->addAddress($resetEmail);
+                $mail->isHTML(true);
+                $mail->CharSet = 'UTF-8';
+                $mail->Encoding = 'base64';
+
+                $mail->Subject = 'StudyPhoto パスワード再設定';
+                $mail->Body = 'パスワードを再設定するには、以下のリンクをクリックしてください。<br />'
+                             . 'リンクの有効期限は10分です。<br /> <br />'
+                             . $resetUrl;
+                $mail->send();
+                $mail->smtpClose();
+                header('Location: ./index.php');
             }
         }
     } else {
