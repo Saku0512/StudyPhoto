@@ -163,7 +163,7 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
             </a>
         </div>
         <div class="footer" type="button">
-            <button class="setting" onclick="showSPopup()">
+            <button class="setting" onclick="togglePopup('show')">
                 <?php echo ($_SESSION['language'] == 'ja' ? '設定' : 'Settings'); ?>
             </button>
             <div class="settingPanel" id="settingPanel">
@@ -217,7 +217,7 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
                     <pre class="code-block" id="passwordField" data-password="<?php echo htmlspecialchars($_SESSION['password']); ?>"><?php echo $passwordHidden; ?></pre>
                 </p>
                 <div class="button-container2">
-                    <button onclick="hideSPopup()">
+                    <button onclick="togglePopup('hide')">
                         <?php echo ($_SESSION['language'] == 'ja' ? '閉じる' : 'Close'); ?>
                     </button>
                     <button class="logout" onclick="window.location.href='php/logout.php'">

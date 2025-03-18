@@ -2,71 +2,64 @@ let selectedFiles = []; // 選択された画像を管理する配列
 let inputCount = 0; // 作成されたinputタグの数を管理する変数
 const language = document.getElementById("hidden_language").value;
 
-// 時間表示する
-document.addEventListener('DOMContentLoaded', () => {
+// DOMContentLoaded時にタイマーを初期化
+document.addEventListener('DOMContentLoaded', initializeTimer);
+
+function initializeTimer() {
     const elapsedSeconds = parseInt(localStorage.getItem('stopwatchTime'), 10) || 0;
-
-    const hours = Math.floor(elapsedSeconds / 3600);
-    const minutes = Math.floor((elapsedSeconds % 3600) / 60);
-    const seconds = elapsedSeconds % 60;
-
-    const timeString = 
-        String(hours).padStart(2, '0') + ':' +
-        String(minutes).padStart(2, '0') + ':' +
-        String(seconds).padStart(2, '0');
-
+    const timeString = formatTime(elapsedSeconds);
     document.getElementById('timer-display').textContent = timeString;
+}
 
-});
-// #photo_overlayの設定
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    return [
+        String(hours).padStart(2, '0'),
+        String(minutes).padStart(2, '0'),
+        String(remainingSeconds).padStart(2, '0')
+    ].join(':');
+}
+
+// オーバーレイの表示と非表示
 const overlay = document.getElementById('photo_overlay');
-const addButton = document.querySelector('.photoSelect');
-const deleteButton = document.querySelector('.photoDelete');
-function showOverlay() {
-    overlay.style.display = 'block';
-    setTimeout(() => {
-        overlay.style.opacity = '1';
-    }, 10); // 少し遅延を入れてフェードイン
-}
-function hideOverlay() {
-    overlay.style.opacity = '0';
-    setTimeout(() => {
-        overlay.style.display = 'none';
-    }, 300); // 少し遅延を入れてフェードアウト
-}
-addButton.addEventListener('click', showOverlay);
-//deleteButton.addEventListener('click', showOverlay);
-// オーバーレイをクリックしたら閉じる
+document.querySelector('.photoSelect').addEventListener('click', showOverlay);
 overlay.addEventListener('click', () => {
     hideOverlay();
     hidePhotoOptionsPopup();
 });
 
-// 写真の追加ボタン
+function showOverlay() {
+    overlay.style.display = 'block';
+    setTimeout(() => overlay.style.opacity = '1', 10);
+}
+
+function hideOverlay() {
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.style.display = 'none', 300);
+}
+
+// 写真関連のイベントリスナー
 document.querySelector(".photoSelect").addEventListener('click', showPhotoOptions);
-// 写真の削除ボタン
 document.querySelector(".photoDelete").addEventListener('click', showDeletePhotoPopup);
-// 写真撮影ボタン
 document.querySelector(".photoGraph").addEventListener('click', () => {
-     capturePhoto();
-     hideOverlay();
+    capturePhoto();
+    hideOverlay();
 });
-// 写真選択ボタン
 document.querySelector(".photo-Select").addEventListener('click', () => {
-     selectPhoto();
-     hideOverlay();
+    selectPhoto();
+    hideOverlay();
 });
-// 写真キャンセルボタン
 document.querySelector(".cancel_photo").addEventListener('click', () => {
     hidePhotoOptionsPopup();
     hideOverlay();
 });
-// 写真削除キャンセルボタン
 document.querySelector(".delete_cancel").addEventListener('click', () => {
     hideDeletePhotoPopup();
     hideOverlay();
 });
-// 写真削除ボタン
 document.querySelector(".delete_done").addEventListener('click', () => {
     deleteSelectedPhotos();
     hideOverlay();
@@ -223,53 +216,49 @@ window.onload = function() {
     allPhotos = []; // リロードされたら写真のデータを削除
 }
 
+// その他の補助関数
 function showPhotoOptions() {
     document.getElementById("photoOptionsPopup").style.display = "block";
-}
-
-function showDeletePhotoPopup() {
-    if(selectedFiles.length === 0) {
-        alert("削除できる写真がありません");
-    }else {
-        showOverlay();
-        const deletePhotoPopup = document.getElementById("deletePhotoPopup");
-        const deletePhotoList = document.getElementById("deletePhotoList");
-        deletePhotoList.innerHTML = ""; // 以前の内容をクリア
-
-        selectedFiles.forEach((photo, index) => {
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(photo);
-            img.classList.add('photo_img');
-
-            img.onclick = function() {
-                const photoIndex = allPhotos.indexOf(photo);
-
-                if (photoIndex !== -1) {
-                    // 既にallPhotosに含まれている場合、選択を解除
-                    allPhotos.splice(photoIndex, 1);
-                    img.style.opacity = '1.0';
-                } else {
-                    // allPhotosに含まれていない場合、選択を追加
-                    allPhotos.push(photo);
-                    img.style.opacity = '0.5';
-                }
-            };
-
-            deletePhotoList.appendChild(img); // 画像をリストに追加
-        });
-
-        deletePhotoPopup.style.display = "block"; // ポップアップを表示
-    }
 }
 
 function hidePhotoOptionsPopup() {
     document.getElementById("photoOptionsPopup").style.display = "none";
 }
 
+function showDeletePhotoPopup() {
+    if (selectedFiles.length === 0) {
+        alert(language === 'ja' ? "削除できる写真がありません" : "No photos to delete");
+        return;
+    }
+    showOverlay();
+    populateDeletePhotoList();
+    document.getElementById("deletePhotoPopup").style.display = "block";
+}
+
 function hideDeletePhotoPopup() {
     document.getElementById("deletePhotoPopup").style.display = "none";
 }
 
+function populateDeletePhotoList() {
+    const deletePhotoList = document.getElementById("deletePhotoList");
+    deletePhotoList.innerHTML = '';
+    selectedFiles.forEach(photo => {
+        const img = createImageElement(photo);
+        img.onclick = () => togglePhotoSelection(photo, img);
+        deletePhotoList.appendChild(img);
+    });
+}
+
+function togglePhotoSelection(photo, img) {
+    const photoIndex = allPhotos.indexOf(photo);
+    if (photoIndex !== -1) {
+        allPhotos.splice(photoIndex, 1);
+        img.style.opacity = '1.0';
+    } else {
+        allPhotos.push(photo);
+        img.style.opacity = '0.5';
+    }
+}
 
 // 写真を撮影する関数
 function capturePhoto() {
@@ -455,52 +444,45 @@ function cropPhoto(files) {
 // 画像を表示する
 function displayPhoto(files) {
     const photoDisplay = document.getElementById('photoDisplay_id');
-
     files.forEach(file => {
-        const img = document.createElement('img');
-        // FileReaderの代わりにBlobURLを使用
-        img.src = URL.createObjectURL(file);
-        img.classList.add('photo_img');
+        const img = createImageElement(file);
         photoDisplay.appendChild(img);
-        
-        // メモリリークを防ぐため、画像読み込み後にBlobURLを解放
-        img.onload = () => {
-            URL.revokeObjectURL(img.src);
-        };
     });
 }
 
+function createImageElement(file) {
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.classList.add('photo_img');
+    img.onload = () => URL.revokeObjectURL(img.src); // メモリリーク防止
+    return img;
+}
+
+// 写真削除関連
 function deleteSelectedPhotos() {
-    // 選択された画像を allPhotos から削除
     selectedFiles = selectedFiles.filter(photo => !allPhotos.includes(photo));
+    removeDeletedInputs();
+    allPhotos = [];
+    hideDeletePhotoPopup();
+    updatePhotoDisplay();
+}
+
+function removeDeletedInputs() {
     const imageForm = document.getElementById('imageForm');
-    const inputs = imageForm.querySelectorAll('input[data-image-name]'); // imageFormないの全てのinputタグを取得
-    // 選択された写真のinputタグを削除
+    const inputs = imageForm.querySelectorAll('input[data-image-name]');
     inputs.forEach(input => {
-        const imageName = input.getAttribute('data-image-name'); // data-image-name属性からファイル名を取得
+        const imageName = input.getAttribute('data-image-name');
         if (allPhotos.some(file => file.name === imageName)) {
-            input.remove(); // inputタグを削除
+            input.remove();
         }
     });
-    allPhotos = []; // 選択された画像をリセット
-    hideDeletePhotoPopup(); // ポップアップを隠す
-    updatePhotoDisplay(); // 表示を更新
 }
 
 function updatePhotoDisplay() {
     const photoDisplay = document.getElementById('photoDisplay_id');
     photoDisplay.innerHTML = '';
-
     selectedFiles.forEach(photo => {
-        const img = document.createElement('img');
-        // FileReaderの代わりにBlobURLを使用
-        img.src = URL.createObjectURL(photo);
-        img.classList.add('photo_img');
+        const img = createImageElement(photo);
         photoDisplay.appendChild(img);
-        
-        // メモリリークを防ぐため、画像読み込み後にBlobURLを解放
-        img.onload = () => {
-            URL.revokeObjectURL(img.src);
-        };
     });
 }
