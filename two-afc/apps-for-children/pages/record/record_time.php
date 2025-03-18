@@ -98,9 +98,12 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
                 </div>
                 <div class="total_count">
                     <p>
-                        <?php echo ($_SESSION['language'] == 'ja' ? '合計回数 :' : 'Total number of Times :'); ?>
+                        <?php echo ($_SESSION['language'] == 'ja' ? '合計回数 :　' : 'Total number of Times :　'); ?>
                     </p>
                     <p class="total_count_text"><!--動的に表示--></p>
+                    <p>
+                        <?php echo ($_SESSION['language'] == 'ja' ? '回' : ''); ?>
+                    </p>
                 </div>
             </div>
         </div>
