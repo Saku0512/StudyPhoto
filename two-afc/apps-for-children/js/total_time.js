@@ -24,7 +24,24 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateCategory() {
         if (categories.length > 0) {
             document.querySelector(".total_span_select_text").textContent = categories[currentIndex];
+            updateTotalStudyTime(categories[currentIndex]); // 合計時間を更新
         }
+    }
+
+    // 合計時間を取得＆更新
+    function updateTotalStudyTime(category) {
+        fetch(`../../php/record/total_study_time.php?category=${encodeURIComponent(category)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error("Error:", data.error);
+                    return;
+                }
+                console.log("Fetched Data:", data);
+                document.querySelector(".total_time_text_hour").textContent = data.hours;
+                document.querySelector(".total_time_text_min").textContent = data.minutes;
+            })
+            .catch(error => console.error("Fetch Error:", error));
     }
 
     // 右矢印（次のカテゴリーへ）

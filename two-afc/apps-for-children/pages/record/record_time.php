@@ -85,9 +85,16 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
             <div class="total_time_container">
                 <div class="total_time">
                     <p>
-                        <?php echo ($_SESSION['language'] == 'ja' ? '合計時間 :' : 'Total Time :'); ?>
+                        <?php echo ($_SESSION['language'] == 'ja' ? '合計時間 :　' : 'Total Time :　'); ?>
                     </p>
-                    <p class="total_time_text"><!--動的に表示--></p>
+                    <p class="total_time_text_hour"><!--動的に表示--></p>
+                    <p class="hour">
+                        <?php echo ($_SESSION['language'] == 'ja' ? '時間' : 'h'); ?>
+                    </p>
+                    <p class="total_time_text_min"><!--動的に表示--></p>
+                    <p class="minutes">
+                        <?php echo ($_SESSION['language'] == 'ja' ? '分' : 'min'); ?>
+                    </p>
                 </div>
                 <div class="total_count">
                     <p>
