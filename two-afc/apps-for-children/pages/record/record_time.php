@@ -19,6 +19,7 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
     <script src="../../js/load.js" nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script src="../../js/record.js" nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <script nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/record_tab.js" defer></script>
+    <script nonce="<?= htmlspecialchars($TimeNonce, ENT_QUOTES, 'UTF-8') ?>" src="../../js/total_time.js" defer></script>
     <link rel="shortcut icon" href="../../favicon.ico">
     <title>
         <?php echo ($_SESSION['language'] == 'ja' ? '記録を振り返る' : 'View Record'); ?>
@@ -67,6 +68,32 @@ header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" 
             <div class="chart-footer">
                 <div class="category-chart-container">
                     <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="totalSection" id="totalSection">
+            <div class="totalSection_header">
+                <p class="totalSection_header_text">
+                    <?php echo ($_SESSION['language'] == 'ja' ? '合計時間' : 'Total Time'); ?>
+                </p>
+            </div>
+            <div class="total_span_select">
+                <img class="total_span_select_left" src="../../ui_image/span_select_left.png" alt="左矢印">
+                <p class="total_span_select_text"><!--動的に表示--></p>
+                <img class="total_span_select_right" src="../../ui_image/span_select_right.png" alt="右矢印">
+            </div>
+            <div class="total_time_container">
+                <div class="total_time">
+                    <p>
+                        <?php echo ($_SESSION['language'] == 'ja' ? '合計時間 :' : 'Total Time :'); ?>
+                    </p>
+                    <p class="total_time_text"><!--動的に表示--></p>
+                </div>
+                <div class="total_count">
+                    <p>
+                        <?php echo ($_SESSION['language'] == 'ja' ? '合計回数 :' : 'Total number of Times :'); ?>
+                    </p>
+                    <p class="total_count_text"><!--動的に表示--></p>
                 </div>
             </div>
         </div>
