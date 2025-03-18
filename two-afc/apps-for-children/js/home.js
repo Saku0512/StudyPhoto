@@ -4,101 +4,74 @@ document.querySelector('a[href="./pages/study/study.html"]').addEventListener('c
     localStorage.removeItem('isRunning');
 });
 
-function showSPopup() {
-    document.getElementById("settingPanel").style.display = "block";
-}
-function hideSPopup() {
-    document.getElementById("settingPanel").style.display = "none";
+// ポップアップの表示・非表示
+function togglePopup(action) {
+    const panel = document.getElementById("settingPanel");
+    panel.style.display = action === 'show' ? "block" : "none";
 
-    // 各フィールドを非表示状態に戻す
+    if (action === 'hide') {
+        resetFields();
+    }
+}
+
+function resetFields() {
     const inputElements = document.querySelectorAll("input.edit-input");
-    inputElements.forEach(inputElement => {
-        const targetFieldId = inputElement.id;
-        restoreText(inputElement, targetFieldId); // 入力中のフィールドをpreに戻す
+    inputElements.forEach(inputElement => restoreText(inputElement, inputElement.id));
+
+    resetIcons();
+}
+
+function resetIcons() {
+    const iconDefaults = {
+        "editName": "./ui_image/pencil.png",
+        "editPass": "./ui_image/pencil.png",
+        "toggleName": "./ui_image/close_eye.png",
+        "toggleId": "./ui_image/close_eye.png",
+        "toggleEmail": "./ui_image/close_eye.png",
+        "togglePass": "./ui_image/close_eye.png"
+    };
+
+    Object.keys(iconDefaults).forEach(id => {
+        document.getElementById(id).setAttribute("src", iconDefaults[id]);
     });
 
-    // 編集アイコンを非表示状態に戻す
-    document.getElementById("editName").setAttribute("src", "./ui_image/pencil.png");
-    document.getElementById("editPass").setAttribute("src", "./ui_image/pencil.png");
-
-    // チェックマークを削除
-    const checkIcons = document.querySelectorAll(".check-icon");
-    checkIcons.forEach(icon => icon.remove());
-
-    // アイコンを非表示状態に戻す
-    document.getElementById("toggleName").setAttribute("src", "./ui_image/close_eye.png");
-    document.getElementById("toggleId").setAttribute("src", "./ui_image/close_eye.png");
-    document.getElementById("toggleEmail").setAttribute("src", "./ui_image/close_eye.png");
-    document.getElementById("togglePass").setAttribute("src", "./ui_image/close_eye.png");
+    document.querySelectorAll(".check-icon").forEach(icon => icon.remove());
 }
+
 function saveRecord() {
     alert("記録が保存されました。");
-    hidePopup();
+    togglePopup('hide');
 }
 
-// パスワードの表示・非表示を切り替える
-document.getElementById("togglePass").addEventListener("click", function() {
-    const imgElement = this; // クリックされた要素を取得
-    const passwordField = document.getElementById("passwordField"); // パスワードの要素を取得
+// 表示・非表示を切り替える関数
+function toggleFieldVisibility(imgElement, fieldId, fieldType) {
+    console.log("imgElement", imgElement);
+    console.log("fieldId", fieldId);
+    console.log("fieldType", fieldType);
+    const field = document.getElementById(fieldId);
     const currentSrc = imgElement.getAttribute("src");
-    // 画像を切り替え、パスワードの表示・非表示を制御
-    if (currentSrc === "./ui_image/close_eye.png") {
-        imgElement.setAttribute("src", "./ui_image/open_eye.png");
-        passwordField.textContent = passwordField.dataset.password; // 表示
-    } else {
-        imgElement.setAttribute("src", "./ui_image/close_eye.png");
-        passwordField.textContent = "*".repeat(passwordField.dataset.password.length); // 非表示
-    }
-});
-// ユーザーIDの表示・非表示を切り替える
-document.getElementById("toggleId").addEventListener('click', function() {
-    const imgElement = this;
-    const idField = document.getElementById("idField");
-    const currentSrc = imgElement.getAttribute("src");
+    const fieldData = field.dataset[fieldType];
 
     if (currentSrc === "./ui_image/close_eye.png") {
         imgElement.setAttribute("src", "./ui_image/open_eye.png");
-        idField.textContent = idField.dataset.id;
+        field.textContent = fieldData;
     } else {
         imgElement.setAttribute("src", "./ui_image/close_eye.png");
-        idField.textContent = "*".repeat(idField.dataset.id.length);
+        field.textContent = "*".repeat(fieldData.length);
     }
-});
-// ユーザー名の表示・非表示を切り替える
-document.getElementById("toggleName").addEventListener('click', function() {
-    const imgElement = this;
-    const nameField = document.getElementById("nameField");
-    const currentSrc = imgElement.getAttribute("src");
+}
 
-    if (currentSrc === "./ui_image/close_eye.png") {
-        imgElement.setAttribute("src", "./ui_image/open_eye.png");
-        nameField.textContent = nameField.dataset.name;
-    } else {
-        imgElement.setAttribute("src", "./ui_image/close_eye.png");
-        nameField.textContent = "*".repeat(nameField.dataset.name.length);
-    }
-});
-// メールアドレスの表示・非表示を切り替える
-document.getElementById("toggleEmail").addEventListener('click', function() {
-    const imgElement = this;  // クリックされた要素を取得
-    const emailField = document.getElementById("emailField"); // メールアドレスの要素を取得
-    const currentSrc = imgElement.getAttribute("src"); // 現在の画像のパスを取得
-    // 画像を切り替え、メールアドレスの表示・非表示を制御
-    if (currentSrc === "./ui_image/close_eye.png") {
-        imgElement.setAttribute("src", "./ui_image/open_eye.png");
-        emailField.textContent = emailField.dataset.email; // 表示
-    } else {
-        imgElement.setAttribute("src", "./ui_image/close_eye.png");
-        emailField.textContent = "*".repeat(emailField.dataset.email.length); // 非表示
-    }
-});
+// イベントリスナーの追加
+document.getElementById("togglePass").addEventListener("click", () => toggleFieldVisibility(document.getElementById("togglePass"), "passwordField", "password"));
+document.getElementById("toggleId").addEventListener("click", () => toggleFieldVisibility(document.getElementById("toggleId"), "idField", "id"));
+document.getElementById("toggleName").addEventListener("click", () => toggleFieldVisibility(document.getElementById("toggleName"), "nameField", "name"));
+document.getElementById("toggleEmail").addEventListener("click", () => toggleFieldVisibility(document.getElementById("toggleEmail"), "emailField", "email"));
 
+// 編集モードの切り替え
 // ユーザー名の編集処理
 document.getElementById("editName").addEventListener('click', function() {
     toggleEdit(this, "nameField");
 });
-
-// パスワードの編集処理
 document.getElementById("editPass").addEventListener('click', function() {
     toggleEdit(this, "passwordField");
 });
@@ -109,7 +82,7 @@ function toggleEdit(imgElement, targetFieldId) {
     const currentSrc = imgElement.getAttribute("src");
 
     if (currentSrc === "./ui_image/pencil.png") {
-        // 編集モード開始
+        
         imgElement.setAttribute("src", "./ui_image/cross_mark.png");
 
         // 現在のテキストを取得してinputに置き換え
@@ -171,7 +144,6 @@ function toggleEdit(imgElement, targetFieldId) {
     }
 }
 
-// 編集内容を保存し、PHPに送信
 function saveEdit(inputElement, targetFieldId) {
     const newValue = inputElement.value;
 
@@ -206,60 +178,37 @@ function saveEdit(inputElement, targetFieldId) {
     });
 }
 
-// テキストを元の状態に戻す
+// テキストを元に戻す
 function restoreText(inputElement, targetFieldId) {
-    const originalValue = inputElement.value; // inputから元の値を取得
-
+    const originalValue = inputElement.value;
     if (originalValue !== undefined) {
-        // preタグに戻して置き換え
         const preElement = document.createElement("pre");
         preElement.id = targetFieldId;
         preElement.textContent = "*".repeat(originalValue.length);
         preElement.dataset[targetFieldId.replace('Field', '')] = originalValue;
         preElement.classList.add("code-block");
-
         inputElement.replaceWith(preElement);
     } else {
         console.error("原本の値が存在しません: " + targetFieldId);
     }
 }
 
-// すべてのコピーアイコンにイベントリスナーを追加
-document.querySelectorAll('.copyName, .copyId, .copyEmail, .copyPass').forEach(function (icon) {
+// コピーアイコンの処理
+document.querySelectorAll('.copyName, .copyId, .copyEmail, .copyPass').forEach(icon => {
     icon.addEventListener('click', function () {
-        let fieldId;
-        let fieldName;  // アラート用のフィールド名
-
-        if (icon.classList.contains('copyName')) {
-            fieldId = 'nameField';
-            fieldName = 'ユーザー名';
-        } else if (icon.classList.contains('copyId')) {
-            fieldId = 'idField';
-            fieldName = 'ユーザーID';
-        } else if (icon.classList.contains('copyEmail')) {
-            fieldId = 'emailField';
-            fieldName = 'メールアドレス';
-        } else {
-            fieldId = 'passwordField';
-            fieldName = 'パスワード';
-        }
-
-        // 該当フィールドのテキストを取得
+        const fieldId = this.classList[0].replace('copy', '').toLowerCase() + 'Field';
+        const fieldName = this.classList[0].replace('copy', '');
         const text = document.getElementById(fieldId).getAttribute('data-' + fieldId.replace('Field', ''));
 
-        // クリップボードにコピー
-        navigator.clipboard.writeText(text).then(function () {
-            alert(fieldName + 'をクリップボードにコピーしました。');
-        }).catch(function (err) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert(`${fieldName}をクリップボードにコピーしました。`);
+        }).catch(err => {
             console.error('コピーに失敗しました:', err);
         });
     });
 });
 
-// チェックボックスの要素を取得
-const languageSwitch = document.getElementById("switch");
-// チェックボックスにイベントリスナーを追加
-languageSwitch.addEventListener("change", function() {
-    // フォームを自動的に送信
+// チェックボックスの処理
+document.getElementById("switch").addEventListener("change", function() {
     this.form.submit();
 });
