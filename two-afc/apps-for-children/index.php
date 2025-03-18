@@ -254,6 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['password'] = $loginPassword;
+                    $_SESSION['language'] = 'en';
                     header("Location: home.php");
                 } else {
                     $message = "パスワードが間違っています";
