@@ -10,12 +10,10 @@ function formatText(text, lineLength) {
 //ポップアップ関連の要素を取得
 const overlay = document.getElementById('overlay');
 const popup = document.getElementById('popup');
-const confirmSend = document.getElementById('confirmSend');
 const closePopup = document.getElementById('closePopup');
 
 //送信ボタンの要素を取得
 const save = document.querySelector('.save');
-const cancel = document.querySelector('.cancel');
 
 save.addEventListener('click', 
     (e) => {
@@ -101,23 +99,3 @@ save.addEventListener('click',
         }
     },false
 );
-//リセットボタンを押したときの処置
-cancel.addEventListener('click',
-    (e) => {
-        e.preventDefault();
-        window.location.href = 'contact.html';
-    },false
-);
-
-//ポップアップの「送信する」ボタンを押したときの処理
-confirmSend.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    // フォームのデータを収集
-    const data = {
-        name: document.querySelector('#name').value,
-        tell: document.querySelector('#tell').value,
-        mail: document.querySelector('#mail').value,
-        text: document.querySelector('#text').value
-    };
-});
