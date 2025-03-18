@@ -249,6 +249,9 @@ function createTimeChart(labelUnit) {
                 break;
         }
 
+        let label;
+        let text;
+
         if (language === 'ja') {
             label = '勉強時間(時間)';
             text = '時間(h)';
