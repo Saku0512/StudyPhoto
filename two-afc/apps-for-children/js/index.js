@@ -74,17 +74,18 @@ closeBtns.forEach(btn => {
 overlay.addEventListener('click', closePopup);
 
 // PCで開いたときに確認ダイアログ
-document.addEventListener("DOMContentLoaded", function () {
     // ユーザーエージェントでPCかどうかを判定
-    function isPC() {
-        return !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    }
+function isPC() {
+    return !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
 
-    if (isPC()) {
-        const userConfirmed = confirm("このwebアプリは携帯やiPad向けです。PCでアクセスしますか？");
-
+if (isPC()) {
+    if (localStorage.getItem('isPC') !== 'true') {
+        var userConfirmed = confirm('このアプリはスマートフォンでの利用を推奨しています。続行しますか？');
         if (!userConfirmed) {
             window.location.href = "https://www.google.com";
         }
     }
-});
+    
+    localStorage.setItem('isPC', true);
+}
