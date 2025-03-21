@@ -1,7 +1,12 @@
 <?php
 session_start();
 $CommentNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $CommentNonce . "' https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js; style-src 'self' https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css");
+header("Content-Security-Policy:
+    default-src 'self'; script-src 'self' 'nonce-" . $CommentNonce . "' https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js;
+    style-src 'self' https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css
+    frame-src 'self';
+    frame-ancestors 'none';
+");
 ?>
 <!DOCTYPE html>
 <html>

@@ -1,5 +1,13 @@
 <?php
 session_start();
+$nonce = base64_encode(random_bytes(16));
+header("Content-Security-Policy:
+    default-src 'self';
+    script-src 'self' 'nonce-" . $nonce . "';
+    style-src 'self' 'nonce-" . $nonce . "';
+    frame-src 'self';
+    frame-ancestors 'none';
+");
 
 require_once('php/db_connection.php');
 
@@ -138,8 +146,8 @@ $emailHidden = str_repeat('*', strlen($user['email'] ?? ''));
     <link rel="stylesheet" href="css/home.css" />
     <link rel="stylesheet" href="css/scss/load.css" />
     <link rel="shortcut icon" href="favicon.ico">
-    <script src="./js/load.js" defer></script>
-    <script src="./js/home.js" defer></script>
+    <script src="./js/load.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
+    <script src="./js/home.js" nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>" defer></script>
     <title>ホーム</title>
 </head>
 <body>

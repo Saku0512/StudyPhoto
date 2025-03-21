@@ -6,6 +6,8 @@ header("Content-Security-Policy:
     script-src 'self' 'nonce-{$GuardianNonce}' https://cdn.jsdelivr.net/npm/flatpickr https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js https://cdn.jsdelivr.net/npm/js-base64/base64.min.js https://cdn.jsdelivr.net/npm/chart.js https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.28.0/date-fns.min.js; 
     style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css;
     img-src 'self' data:;
+    frame-src 'self';
+    frame-ancestors 'none';
 ");
 ini_set('display_errors', 1);
 error_reporting(E_ALL);

@@ -1,7 +1,14 @@
 <?php
 session_start();
 $FormNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $FormNonce . "'; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' https://fonts.googleapis.com;");
+header("Content-Security-Policy:
+    default-src 'self';
+    script-src 'self' 'nonce-" . $FormNonce . "';
+    font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
+    style-src 'self' https://fonts.googleapis.com;
+    frame-src 'self';
+    frame-ancestors 'none';
+");
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
