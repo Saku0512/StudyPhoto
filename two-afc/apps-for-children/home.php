@@ -9,6 +9,10 @@ header("Content-Security-Policy:
     frame-ancestors 'none';
 ");
 
+if (!isset($_SESSION['language'])) {
+    $_SESSION['language'] = 'ja'; // デフォルトは日本語
+}
+
 require_once('php/db_connection.php');
 
 $pdo = getDatabaseConnection();
@@ -27,18 +31,12 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // POSTリクエストで更新処理が送信された場合
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    //var_dump($_SESSION);
+    var_dump($_SESSION);
     if (isset($_POST['language'])) {
-        if ($_POST['language'] == 'ja') {
-            $_SESSION['language'] = 'ja'; // 日本語を選択
-        }else {
-            $_SESSION['language'] = 'en'; // 英語を選択
-        }
-        // 言語変更後にリダイレクト
+        // 言語設定の更新
+        $_SESSION['language'] = $_POST['language'] === 'ja' ? 'ja' : 'en';
         header("Location: " . $_SERVER['REQUEST_URI']);
         exit();
-    } else {
-        $_SESSION['language'] = 'en';
     }
     try {
         // JSONデータを受け取る

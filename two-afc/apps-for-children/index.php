@@ -290,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 //session_start();
                 $_SESSION['guardian_username'] = $guardianUser['username'];
                 $_SESSION['guardian_id'] = $guardianUser['id'];
-                $_SESSION['language'] = 'en';
+                $_SESSION['language'] = 'ja';
                 $message = "保護者ログイン成功";
                 header("Location: guardian_home.php"); // 保護者用のホームページにリダイレクト
                 exit;
@@ -338,7 +338,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['password'] = $loginPassword;
-                    $_SESSION['language'] = 'en';
+                    $_SESSION['language'] = 'ja';
                     header("Location: home.php");
                 } else {
                     $message = "ユーザー名またはパスワードが間違っています";
@@ -444,7 +444,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['password'] = $loginTestPassword;
-                    $_SESSION['language'] = 'en';
+                    $_SESSION['language'] = 'ja';
                     if (!empty($message)) {
                         echo '<script nonce="' . htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') . '">
                             alert("' . addslashes($message) . '");
