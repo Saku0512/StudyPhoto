@@ -4,11 +4,21 @@ $nonce = base64_encode(random_bytes(16));
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $nonce . "'; style-src 'self' 'nonce-" . $nonce . "';");
 
 $mode = 'input';
-$errmessage = array();
+$message = array();
 
 // CSRFトークンの生成
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+function sanitizeInput($input) {
+    // XSS対策 (HTMLエスケープ)
+    $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+    
+    // メールヘッダーインジェクション対策
+    $input = preg_replace('/[\r\n]+/', ' ', $input);
+    
+    return $input;
 }
 
 use Dotenv\Dotenv;
@@ -37,6 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) && isset($_POST['content'])) {
+    if ($_POST['email'] !== $_SESSION['email']) {
+        $message = 'メールアドレスが正しくありません。';
+    }
+    if (!empty($message)) {
+        echo '<script nonce="' . htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') . '">
+            alert("' . addslashes($message) . '");
+            window.location.href = "'. $_SERVER['PHP_SELF'] .'";
+        </script>';
+        exit(); // ここでスクリプトを強制終了
+    }
     try {
         // 1通目（管理者宛）
         $mail = new PHPMailer(true);
@@ -50,7 +70,7 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
     
         $mail->setFrom($Username, 'StudyPhoto');
         if (!empty($_POST['email']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-            $mail->addReplyTo($_POST['email']);
+            $mail->addReplyTo(sanitizeInput($_POST['email']), sanitizeInput($_POST['name']));
         }
         $mail->addAddress($Username, '管理者');
     
@@ -63,8 +83,8 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
             throw new Exception('メール本文が空です。');
         }
     
-        $mail->Subject = !empty($_POST['subject']) ? $_POST['subject'] : '件名なし';
-        $mail->Body = htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8');
+        $mail->Subject = sanitizeInput($_POST['subject']);
+        $mail->Body = sanitizeInput($_POST['content']);
         // 送信
         $mail->send();
         $mail->smtpClose();
@@ -80,7 +100,7 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
         $mail2->Port       = 587;
     
         $mail2->setFrom($Username, 'StudyPhoto');
-        $mail2->addAddress($_POST['email']);
+        $mail2->addAddress(sanitizeInput($_POST['email']), sanitizeInput($_POST['name']));
         
         // ユーザー向け内容
         if ($_SESSION['language'] == 'ja') {
@@ -89,9 +109,9 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
                          . '平素よりStudyPhotoをご利用いただき、誠にありがとうございます。 <br />'
                          . '以下の内容で問い合わせを受け取りましたので、報告致します。 <br /> <br />'
                          . str_repeat('-', 20) . '<br /> <br />'
-                         . 'お名前: ' . htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
-                         . '件名: ' . htmlspecialchars($_POST['subject'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
-                         . '問い合わせ内容: ' . htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
+                         . 'お名前: <br />' . htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
+                         . '件名: <br />' . htmlspecialchars($_POST['subject'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
+                         . '問い合わせ内容: <br />' . htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
                          . str_repeat('-', 20) . '<br /> <br />'
                          . '今後ともStudyPhotoをよろしくお願いいたします。 <br />'
                          . '開発リーダー: 佐藤佑作';
@@ -101,9 +121,9 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
                          . 'Thank you for using StudyPhto. <br />'
                          . 'We are pleased to report that we have received your inquiry with the following information. <br /> <br />'
                          . str_repeat('-', 20) . '<br /> <br />'
-                         . 'Name: ' . htmlspecialchars($_POST['name']) . '<br /> <br />'
-                         . 'Subject: ' . htmlspecialchars($_POST['subject'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
-                         . 'Message: ' . htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
+                         . 'Name: <br />' . htmlspecialchars($_POST['name']) . '<br /> <br />'
+                         . 'Subject: <br />' . htmlspecialchars($_POST['subject'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
+                         . 'Message: <br />' . htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8') . '<br /> <br />'
                          . str_repeat('-', 20) . '<br /> <br />'
                          . 'Thank you for your continued support of StudyPhoto. <br />'
                          . 'Development Leader: Yusaku Sato';
@@ -116,6 +136,8 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
         
         // 送信
         $mail2->send();
+
+        header('Location: ./home.php');
         
     } catch (Exception $e) {
         echo "<div style='color:red;'>メール送信エラー: " . nl2br($e->getMessage()) . "</div>";
@@ -137,6 +159,14 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
     </title>
 </head>
 <body>
+    <script nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>">
+        window.onload = function(){
+            // localStorageに保存されたフラグがない場合
+            <?php if(!empty($message)): ?>
+                alert("<?php echo addslashes($message); ?>");
+            <?php endif; ?>
+        }
+    </script>
     <div class="loading active">
         <div class="loading__icon"></div>
         <p class="loading__text">
@@ -145,9 +175,6 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
     </div>
     <main>
         <!-- 入力画面 -->
-        <?php if ($errmessage): ?>
-        <div style="color:red"><?php echo implode('<br>', $errmessage); ?></div>
-        <?php endif; ?>
         <form method="post" action="./contact.php">
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <p class="title">

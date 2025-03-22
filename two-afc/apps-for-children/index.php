@@ -1,7 +1,14 @@
 <?php
 session_start();
 $FormNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $FormNonce . "'; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' https://fonts.googleapis.com;");
+header("Content-Security-Policy:
+    default-src 'self';
+    script-src 'self' 'nonce-" . $FormNonce . "';
+    font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
+    style-src 'self' https://fonts.googleapis.com;
+    frame-src 'self';
+    frame-ancestors 'none';
+");
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -24,6 +31,65 @@ $Username = $_ENV['MAIL_USERNAME'] ?? $_SERVER['MAIL_USERNAME'];
 $Password = $_ENV['MAIL_APP_PASSWORD'] ?? $_SERVER['MAIL_APP_PASSWORD'];
 
 $mail = new PHPMailer(true);
+
+$message = ""; //メッセージを格納する変数
+
+// バリデーション関数
+function validateInput($input, $type) {
+    global $message;
+    $message = "";
+    $input = trim($input);
+    
+    if (empty($input)) {
+        $message = "エラー: 入力してください";
+        return false;
+    }
+
+    if ($type === 'username') {
+        if (strlen($input) < 3 || strlen($input) > 20) {
+            $message = "エラー: ユーザー名の長さは3〜20文字にしてください";
+            return false;
+        }
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $input)) {
+            $message = "エラー: ユーザー名は英数字とアンダースコアのみ使用できます";
+            return false;
+        }
+    }
+
+    if ($type === 'password') {
+        if (strlen($input) < 8) {
+            $message = "エラー: パスワードは8文字以上にしてください";
+            return false;
+        }
+    }
+
+    if ($type === 'email') {
+        if (strlen($input) < 5 || strlen($input) > 50) {
+            $message = "エラー: メールアドレスの長さは5〜50文字にしてください";
+            return false;
+        }
+        if (!filter_var($input, FILTER_VALIDATE_EMAIL)) {
+            $message = "エラー: 正しいメールアドレスを入力してください";
+            return false;
+        }
+    }
+
+    if ($type === 'id') {
+        if (strlen($input) !== 8) {
+            if (!preg_match('/^[a-zA-Z0-9]+$/', $input)) {
+                $message = "エラー: 正しいIDを入力してください";
+                return false;
+            }
+        } else {
+            if (!preg_match('/^[a-zA-Z0-9]+$/', $input)) {
+                $message = "エラー: 正しいIDを入力してください";
+                return false;
+            }
+        }
+    }
+
+    return $input;
+}
 
 // ランダムなIDを作成する関数
 function generateRandomID($conn) {
@@ -76,7 +142,7 @@ function generateRandomEmail($conn)  {
         for($i = 0; $i < 4; $i++) {
             $email .= $characters[rand(0, strlen($characters) -1)];
         }
-        $email .= "@example.com";
+        $email .= "@test.studyphoto.com";
 
         // 重複確認
         $stmt = $conn->prepare("SELECT email FROM users WHERE email = ?");
@@ -109,9 +175,6 @@ function generateRandomPassword($conn) {
     $stmt->close();
     return $password;
 }
-
-
-$message = ""; //メッセージを格納する変数
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // データベース接続設定
@@ -147,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $emailResult = $checkEmailStmt->get_result();
             
             if($emailResult->num_rows > 0) {
-                $message = "このメールアドレスは既に登録されています";
+                $message = "このメールアドレスは使用できません";
             }else{
                 // トークンを生成（32バイトのランダムな文字列をbase64エンコード）
                 $token = bin2hex(random_bytes(32));
@@ -198,6 +261,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $loginUsername = $_POST['guardian_username'] ?? null;
         $loginId = $_POST['guardian_id'] ?? null;
 
+        $loginUsername = validateInput($loginUsername, 'username');
+        $loginId = validateInput($loginId, 'id');
+
+        if (!empty($message)) {
+            echo '<script nonce="' . htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') . '">
+                alert("' . addslashes($message) . '");
+                window.location.href = "'. $_SERVER['PHP_SELF'] .'";
+            </script>';
+            exit(); // ここでスクリプトを強制終了
+        }
+
         if (!empty($loginUsername) && !empty($loginId)) {
             $conn = new mysqli($servername, $username, $password, $db_name);
             if ($conn->connect_error) {
@@ -213,10 +287,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($loginResult->num_rows > 0) {
                 //ログイン成功
                 $guardianUser = $loginResult->fetch_assoc();
-                session_start();
+                //session_start();
                 $_SESSION['guardian_username'] = $guardianUser['username'];
                 $_SESSION['guardian_id'] = $guardianUser['id'];
-                $_SESSION['language'] = 'en';
+                $_SESSION['language'] = 'ja';
                 $message = "保護者ログイン成功";
                 header("Location: guardian_home.php"); // 保護者用のホームページにリダイレクト
                 exit;
@@ -232,6 +306,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // サインイン処理
         $loginUsername = $_POST['login_username'] ?? null;
         $loginPassword = $_POST['login_password'] ?? null;
+
+        $loginUsername = validateInput($loginUsername, 'username');
+        $loginPassword = validateInput($loginPassword, 'password');
+        if (!empty($message)) {
+            echo '<script nonce="' . htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') . '">
+                alert("' . addslashes($message) . '");
+                window.location.href = "'. $_SERVER['PHP_SELF'] .'";
+            </script>';
+            exit(); // ここでスクリプトを強制終了
+        }
 
         if (!empty($loginUsername) && !empty($loginPassword)) {
             $conn = new mysqli($servername,  $username, $password, $db_name);
@@ -250,17 +334,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user = $loginResult->fetch_assoc();
                 if (password_verify($loginPassword, $user['password'])) {
                     $message = "ログイン成功";
-                    session_start();
+                    //session_start();
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['password'] = $loginPassword;
-                    $_SESSION['language'] = 'en';
+                    $_SESSION['language'] = 'ja';
                     header("Location: home.php");
                 } else {
-                    $message = "パスワードが間違っています";
+                    $message = "ユーザー名またはパスワードが間違っています";
                 }
             } else {
-                $message = "ユーザー名が見つかりません";
+                $message = "ユーザー名またはパスワードが間違っています";
             }
 
             $loginStmt->close();
@@ -355,13 +439,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($loginResult->num_rows > 0) {
                 $user = $loginResult->fetch_assoc();
                 if (password_verify($loginTestPassword, $user['password'])){
-                    $message = "ログイン成功";
-                    session_start();
+                    $message = "テストログイン成功: このユーザーは1時間で自動的に削除されます";
+                    //session_start();
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['password'] = $loginTestPassword;
-                    $_SESSION['language'] = 'en';
-                    header("Location: home.php");
+                    $_SESSION['language'] = 'ja';
+                    if (!empty($message)) {
+                        echo '<script nonce="' . htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') . '">
+                            alert("' . addslashes($message) . '");
+                            window.location.href = "home.php";
+                        </script>';
+                        exit(); // ここでスクリプトを強制終了
+                    }
                 } else {
                     $message = "自動ログインに失敗しました";
                 }
@@ -369,6 +459,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else if (isset($_POST['reset'])) {
         $resetEmail = $_POST['reset_email'] ?? null;
+        $resetEmail = validateInput($resetEmail, 'email');
+
+        if (!empty($message)) {
+            echo '<script nonce="' . htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') . '">
+                alert("' . addslashes($message) . '");
+                window.location.href = "'. $_SERVER['PHP_SELF'] .'";
+            </script>';
+            exit(); // ここでスクリプトを強制終了
+        }
 
         if (!empty($resetEmail)) {
             $_SESSION['reset_email'] = $resetEmail;
@@ -436,14 +535,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script nonce="<?= htmlspecialchars($FormNonce, ENT_QUOTES, 'UTF-8') ?>">
         window.onload = function(){
             // localStorageに保存されたフラグがない場合
-            if (!localStorage.getItem('visited') === 'true') {
-                <?php if(!empty($message)): ?>
-                    alert("<?php echo addslashes($message); ?>");
-                <?php endif; ?>
-
-                // フラグをlocalStorageに保存
-                localStorage.setItem('visited', 'true');
-            }
+            <?php if(!empty($message)): ?>
+                alert("<?php echo addslashes($message); ?>");
+            <?php endif; ?>
         }
     </script>
 </head>

@@ -1,7 +1,13 @@
 <?php
 session_start();
 $NoteNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js 'nonce-" . $NoteNonce . "'; style-src 'self' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js;");
+header("Content-Security-Policy:
+    default-src 'self';
+    script-src 'self' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js 'nonce-" . $NoteNonce . "';
+    style-src 'self' https://cdn.jsdelivr.net/npm/js-base64/base64.min.js;
+    frame-src 'self';
+    frame-ancestors 'none';
+");
 ?>
 <!DOCTYPE html>
 <html>
