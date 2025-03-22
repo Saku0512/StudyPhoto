@@ -4,7 +4,7 @@ $nonce = base64_encode(random_bytes(16));
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . $nonce . "'; style-src 'self' 'nonce-" . $nonce . "';");
 
 $mode = 'input';
-$errmessage = array();
+$message = array();
 
 // CSRFトークンの生成
 if (empty($_SESSION['csrf_token'])) {
@@ -47,6 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) && isset($_POST['content'])) {
+    if ($_POST['email'] !== $_SESSION['email']) {
+        $message = 'メールアドレスが正しくありません。';
+    }
+    if (!empty($message)) {
+        echo '<script nonce="' . htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') . '">
+            alert("' . addslashes($message) . '");
+            window.location.href = "'. $_SERVER['PHP_SELF'] .'";
+        </script>';
+        exit(); // ここでスクリプトを強制終了
+    }
     try {
         // 1通目（管理者宛）
         $mail = new PHPMailer(true);
@@ -149,6 +159,14 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
     </title>
 </head>
 <body>
+    <script nonce="<?= htmlspecialchars($nonce, ENT_QUOTES, 'UTF-8') ?>">
+        window.onload = function(){
+            // localStorageに保存されたフラグがない場合
+            <?php if(!empty($message)): ?>
+                alert("<?php echo addslashes($message); ?>");
+            <?php endif; ?>
+        }
+    </script>
     <div class="loading active">
         <div class="loading__icon"></div>
         <p class="loading__text">
@@ -157,9 +175,6 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['subject']) 
     </div>
     <main>
         <!-- 入力画面 -->
-        <?php if ($errmessage): ?>
-        <div style="color:red"><?php echo implode('<br>', $errmessage); ?></div>
-        <?php endif; ?>
         <form method="post" action="./contact.php">
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <p class="title">

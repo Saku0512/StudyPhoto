@@ -129,6 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
+$_SESSION['email'] = $user['email'];
+
 $passwordHidden = str_repeat('*', strlen($_SESSION['password'] ?? ''));
 $idHidden = str_repeat('*', strlen($user['id'] ?? ''));
 $nameHidden = str_repeat('*', strlen($user['username'] ?? ''));
