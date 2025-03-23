@@ -1,5 +1,0 @@
-AddType application/font-woff2 .woff2
-AddType application/font-woff .woff
-AddType font/ttf .ttf
-AddType font/opentype .otf
-
