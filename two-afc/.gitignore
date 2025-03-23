@@ -56,3 +56,5 @@ node_modules/
 .dataconnect
 
 memo.txt
+
+setup.sh
