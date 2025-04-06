@@ -9,6 +9,7 @@ body {
     text-align: center;
     overflow: hidden;
 }
+
 .return {
     position: absolute;
     top: 10px;
@@ -17,21 +18,30 @@ body {
     justify-content: flex-start;
     width: 100%;
 }
-.return a{
+
+.return a {
     font-size: 18px;
-    height: 20px;
-    width: 20px;
+    height: 40px;
+    width: 40px;
     padding: 10px 20px;
     margin: 5px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-}
-.return a img {
-    height: 50px;
-    width: 50px;
+    border-radius: 50%;
+    background-color: #86a1d4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
 }
 
+.return a:hover {
+    background-color: #5d81c9;
+}
+
+.return a img {
+    height: 30px;
+    width: 30px;
+}
 
 .circle-timer {
     position: relative;
@@ -41,7 +51,7 @@ body {
     max-height: 300px;
     aspect-ratio: 1; /* 縦横比を1:1に保つ */
     border-radius: 50%;
-    background: conic-gradient(#5bc8ac var(--percentage, 0%), #ddd 0%);
+    background: conic-gradient(#4e6da9 var(--percentage, 0%), #ddd 0%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -53,13 +63,65 @@ body {
     color: #000;
 }
 .button-container {
-    text-align: center;
+    display: flex;        /* 横並びにする */
+    justify-content: center;  /* ボタンを中央に配置 */
+    gap: 10px;            /* ボタン間の間隔 */
     margin-top: 20px;
 }
+
 .timer-container h1 img {
     text-align: center;
     width: 80px;
     height: 80px;
+}
+
+#timer-settings {
+    display: none; /* 最初は非表示にする */
+}
+
+.mode-switch {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.mode-switch button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 10px;
+    background-color: #4e6da9;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+.mode-switch button:hover {
+    background-color: #4e6da9;
+}
+
+/* 最初はタイマーのみ表示し、ストップウォッチは非表示に */
+#timer-mode {
+    display: block; /* タイマーを表示 */
+}
+
+#timer-display {
+    display: block; /* タイマーの表示部分 */
+}
+
+#stopwatch-mode { 
+    display: none; /* 最初はストップウォッチを非表示 */
+}
+
+
+
+#timer-display {
+    font-size: 48px;
+    color: #4e6da9;
+    margin-top: -10vh;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
 
 .start-container button img {
@@ -74,10 +136,92 @@ body {
     height: 30px;
 
 }
+
+
+.start-container button,
+.stop-container button {
+    background-color: #4e6da9;
+    border: none;
+    padding: 10px 30px;
+    margin: 10px;
+    font-size: 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.start-container button:hover,
+.stop-container button:hover {
+    background-color: #4070d0;
+    transform: scale(1.1);
+}
+
+.start-container button img,
+.stop-container button img {
+    width: 40px;
+    height: 40px;
+}
+
 #stop-btn {
     display: none; /* 最初は見えないように設定 */
 }
 
+#finish-btn {
+    font-size: 18px;
+    padding: 10px 40px;
+    background-color: #4e6da9;
+    color: white;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#finish-btn:hover {
+    background-color: #4070d0;
+    transform: scale(1.1);
+}
+
+/* タイマーの表示部分のスタイル */
+#timer-timer-display {
+    font-size: 48px;
+    color: #4e6da9;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+}
+
+/* タイマーの入力フィールド部分 */
+.input-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.input-container input {
+    width: 50px; /* 少し幅を広げる */
+    height: 50px;
+    font-size: 24px;
+    text-align: center;
+    border: 2px solid #4e6da9;
+    border-radius: 15px;
+    background-color: #f3f5f7;
+    color: #4e6da9;
+    transition: all 0.3s ease;
+}
+
+.input-container input:focus {
+    outline: none;
+    border-color: #86a1d4;
+    background-color: #ffffff;
+    box-shadow: 0 0 5px rgba(72, 112, 179, 0.5);
+}
+
+.input-container input::placeholder {
+    color: #aaa;
+}
 
 .button-container button {
     display: block;
@@ -86,10 +230,11 @@ body {
     margin: 5px auto;
     border-radius: 5px;
     border: none;
-    background-color: #5bc8ac;
+    background-color: #4e6da9;
     color: white;
     cursor: pointer;
 }
 .button-container button:hover {
-    background-color: #45a29e;
+    background-color: #4e6da9;
 }
+
